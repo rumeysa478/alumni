@@ -1,188 +1,206 @@
-# 🎓 Alumni Tracking System (Mezun Takip Sistemi)
+# 🎓 Alumni Tracking System
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15%2B-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![GitHub](https://img.shields.io/badge/GitHub-Workflow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rumeysa478/alumni)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Workflow](https://img.shields.io/badge/GitHub-Workflow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rumeysa478/alumni)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **3. Sınıf Web Programlama Dersi Kapsamında Geliştirilen Mezun Bilgi ve Takip Sistemi Projesi**
+> **3rd Year Web Programming Course Project — An end-to-end web platform connecting university alumni, current students, and faculty.**
 
 ---
 
-## 📌 Proje Hakkında
+## 📌 Project Overview
 
-**Alumni Tracking System (Mezun Takip Sistemi)**, üniversite mezunlarının birbirleriyle, mevcut öğrencilerle ve üniversite yönetimiyle olan iletişim ve etkileşimini sürdürülebilir kılmak amacıyla geliştirilmektedir. 
+The **Alumni Tracking System** is a modern web application designed to bridge the gap between university graduates, current students, and the institution. It serves as an active networking platform where alumni can track their career milestones, share job and internship opportunities, connect with other graduates, and participate in academic and social events.
 
-Sistem; mezunların kariyer yolculuklarını güncellemelerine, iş/staj fırsatları paylaşmalarına, üniversite etkinliklerinden haberdar olmalarına ve mezun ağını (network) güçlendirmelerine olanak tanır. Proje sürecinde modern web standartları, mikroservis/konteyner mimarisi ve ekip içi çevik geliştirme prensipleri benimsenmiştir.
-
----
-
-## 🚀 Temel Özellikler
-
-- **👤 Mezun Profili & Portfolyo Yönetimi:**
-  - Eğitim bilgileri (fakülte, bölüm, mezuniyet yılı, derece).
-  - Güncel kariyer durumu (şirket, pozisyon, sektör, lokasyon, LinkedIn/GitHub bağlantıları).
-  - Yetenekler, sertifikalar ve kişisel özet.
-- **💼 Kariyer & Fırsat Merkezi:**
-  - Mezunlar ve işverenler tarafından iş/staj ilanlarının yayımlanması.
-  - İlanlara başvuru ve başvuru takibi.
-- **🔍 Gelişmiş Arama ve Filtreleme:**
-  - Mezuniyet yılı, bölüm, sektör, çalışılan kurum ve şehre göre mezun filtreleme.
-  - İsim veya anahtar kelimeye göre arama.
-- **📅 Etkinlikler ve Duyurular:**
-  - Mezun buluşmaları, seminerler, kariyer günleri ve üniversite duyuruları.
-  - Etkinliklere katılım bildirimi (RSVP).
-- **🔒 Güvenli Kimlik Doğrulama & Yetkilendirme:**
-  - JWT (JSON Web Token) tabanlı oturum yönetimi ve şifreleme (bcrypt).
-  - Rol Tabanlı Yetkilendirme (Admin, Mezun, Öğrenci).
-- **🛡️ Yönetici (Admin) Paneli:**
-  - Sisteme kaydolan mezunların öğrenci işleri/üniversite verileriyle doğrulanması ve onaylanması.
-  - İlan ve etkinlik içerik denetimi.
-  - İstatistiksel raporlar (mezun istihdam oranları, sektör dağılım grafikleri vb.).
+This project is developed as part of the **3rd Year Web Programming Course**, adhering to industry-standard software engineering practices, containerized microservices, relational database design, and collaborative Git workflows.
 
 ---
 
-## 🛠️ Teknoloji Yığını (Tech Stack)
+## ✨ Key Features
 
-| Alan | Teknoloji | Açıklama |
+- **👤 Alumni Profiles & Portfolio Management:**
+  - Comprehensive academic history (faculty, department, graduation year, degree).
+  - Career journey tracking (current employer, position, industry, location, LinkedIn & GitHub profiles).
+  - Skills, certifications, and portfolio links.
+- **💼 Job & Internship Board:**
+  - Alumni and verified employers can post job and internship openings.
+  - Search, filter, and apply for open positions.
+- **🔍 Advanced Search & Directory:**
+  - Multi-criteria filtering by graduation year, department, company, sector, and location.
+  - Full-text search for finding peers and mentors.
+- **📅 Events & Announcements:**
+  - University reunions, webinars, career fairs, and departmental announcements.
+  - Event registration and RSVP tracking.
+- **🔒 Authentication & Role-Based Access Control (RBAC):**
+  - Secure authentication using JWT (JSON Web Tokens) and password hashing with `bcrypt`.
+  - Distinct permission tiers: **Admin**, **Alumni**, and **Student**.
+- **🛡️ Administrative Dashboard:**
+  - Verification and approval workflow for new alumni registrations against university records.
+  - Moderation of job posts and public announcements.
+  - Statistical insights and analytics (employment rates, industry distribution, geographic dispersion).
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Purpose / Rationale |
 | :--- | :--- | :--- |
-| **Backend** | [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) | RESTful API mimarisi, asenkron ve modüler servis yapısı |
-| **Veritabanı** | [PostgreSQL](https://www.postgresql.org/) | Güçlü ilişkisel veri modeli, ACID desteği ve indeksleme |
-| **ORM / Query Builder** | Prisma / Sequelize / pg | Veritabanı modellemesi ve migration yönetimi |
-| **Konteynerizasyon** | [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) | İzole geliştirme ve prodüksiyon ortamları, taşınabilirlik |
-| **Versiyon Kontrol & CI/CD** | [Git](https://git-scm.com/) & [GitHub](https://github.com/) | Branch stratejisi, Pull Request yönetimi ve GitHub Actions otomasyonu |
-| **Kimlik Doğrulama** | JWT & Bcrypt | Güvenli kimlik doğrulama ve parola hashleme |
-| **Frontend** | HTML5, CSS3 / Tailwind CSS, JavaScript | Responsive, kullanıcı dostu ve erişilebilir arayüz |
+| **Backend** | [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) | High-performance, asynchronous RESTful API architecture |
+| **Database** | [PostgreSQL](https://www.postgresql.org/) | Reliable relational database with ACID compliance and indexing |
+| **ORM / Query Builder** | Prisma / Sequelize / pg | Type-safe database queries, schema migrations, and seeding |
+| **Containerization** | [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) | Consistent, isolated development and production environments |
+| **Version Control & CI/CD** | [Git](https://git-scm.com/) & [GitHub](https://github.com/) | Branching strategy, issue tracking, code reviews, and automated workflows |
+| **Security & Auth** | JWT & Bcrypt | Stateless session management and secure credential hashing |
+| **Frontend** | HTML5, CSS3 / Tailwind CSS, Modern JavaScript | Responsive, accessible, and intuitive user interface |
 
 ---
 
-## 📂 Örnek Proje Mimarisi
+## 📂 System Architecture & Directory Structure
 
 ```plaintext
 alumni/
-├── .github/                  # GitHub Actions CI/CD iş akışları ve şablonlar
+├── .github/                  # GitHub Actions CI/CD workflows & issue templates
 │   └── workflows/
-├── docker/                   # Docker konfigürasyonları
-│   └── Dockerfile
+├── docker/                   # Docker configuration files
+│   ├── Dockerfile            # Application container configuration
+│   └── Dockerfile.dev        # Development container configuration
 ├── src/
-│   ├── config/               # Veritabanı ve ortam konfigürasyonları
-│   ├── controllers/          # İstek kontrolcüleri (Business logic yönlendirme)
-│   ├── middleware/           # Auth, error handling ve validation ara yazılımları
-│   ├── models/               # Veritabanı modelleri / şemaları
-│   ├── routes/               # API endpoint tanımları
-│   ├── services/             # İş mantığı (Business logic)
-│   ├── utils/                # Yardımcı fonksiyonlar ve loglayıcılar
-│   └── app.js (veya server.js) # Ana uygulama giriş noktası
-├── .env.example              # Örnek ortam değişkenleri şablonu
-├── .gitignore                # Git dışı bırakılacak dosyalar
-├── docker-compose.yml        # Docker servis tanımları (App + PostgreSQL)
-├── package.json              # Bağımlılıklar ve npm betikleri
-└── README.md                 # Proje dokümantasyonu
+│   ├── config/               # Database, environment, and third-party configs
+│   ├── controllers/          # Route handlers & request validation
+│   ├── middlewares/          # Authentication, error handling & logging middlewares
+│   ├── models/               # Database schemas & ORM entities
+│   ├── routes/               # Modular REST API routes
+│   ├── services/             # Core business logic and external integrations
+│   ├── utils/                # Helper functions, constants, and custom loggers
+│   └── server.js             # Application entry point
+├── .env.example              # Sample environment variables template
+├── .gitignore                # Git ignore rules
+├── docker-compose.yml        # Docker Compose configuration (App + PostgreSQL)
+├── package.json              # Project dependencies and npm scripts
+└── README.md                 # Project documentation
 ```
 
 ---
 
-## ⚡ Kurulum ve Çalıştırma
+## ⚡ Quick Start Guide
 
-Projeyi yerel ortamınızda iki farklı şekilde çalıştırabilirsiniz:
+### Prerequisites
 
-### 1. Docker ile Hızlı Başlatma (Önerilen) 🐳
+Ensure you have the following installed on your machine:
+- [Node.js](https://nodejs.org/) (v18.x or higher)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [Docker](https://www.docker.com/get-started) & [Docker Compose](https://docs.docker.com/compose/) (Recommended)
+- [Git](https://git-scm.com/)
 
-Sisteminizde [Docker](https://www.docker.com/) ve [Docker Compose](https://docs.docker.com/compose/) kurulu olmalıdır.
+---
 
-1. **Repoyu klonlayın:**
+### Option 1: Running with Docker (Recommended) 🐳
+
+Run the entire stack (Node.js API + PostgreSQL) in isolated containers with a single command:
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/rumeysa478/alumni.git
    cd alumni
    ```
 
-2. **Ortam değişkenlerini hazırlayın:**
+2. **Configure environment variables:**
    ```bash
    cp .env.example .env
    ```
 
-3. **Konteynerleri derleyin ve ayağa kaldırın:**
+3. **Build and start services:**
    ```bash
    docker compose up --build
    ```
-   *Uygulama ve PostgreSQL veritabanı otomatik olarak yapılandırılıp çalıştırılacaktır.*
 
-4. **Uygulamaya erişin:**
-   - Web API / Uygulama: `http://localhost:3000`
-   - PostgreSQL Veritabanı: `localhost:5432`
+4. **Access the application:**
+   - Web App / API: `http://localhost:3000`
+   - PostgreSQL Database: `localhost:5432`
+
+To stop the containers:
+```bash
+docker compose down
+```
 
 ---
 
-### 2. Yerel Ortamda Manuel Çalıştırma 💻
+### Option 2: Local Manual Setup 💻
 
-Sisteminizde **Node.js** (v18+) ve **PostgreSQL** kurulu olmalıdır.
-
-1. **Bağımlılıkları yükleyin:**
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. **`.env` dosyasını oluşturun ve veritabanı bağlantı bilgilerinizi girin:**
+2. **Create and configure `.env`:**
    ```env
    PORT=3000
    NODE_ENV=development
    DATABASE_URL=postgresql://postgres:password@localhost:5432/alumni_db
-   JWT_SECRET=super_secret_jwt_key
+   JWT_SECRET=your_jwt_super_secret_key
    JWT_EXPIRES_IN=7d
    ```
 
-3. **Veritabanı migration işlemlerini tamamlayın:**
+3. **Run database migrations:**
    ```bash
-   npx prisma migrate dev  # veya kullanılan ORM'e göre migration komutu
+   npx prisma migrate dev  # or your respective ORM migration command
    ```
 
-4. **Geliştirme sunucusunu başlatın:**
+4. **Start the development server:**
    ```bash
    npm run dev
    ```
 
 ---
 
-## 🌿 GitHub ve Ekip Çalışma Kuralları
+## 🌿 Git & GitHub Collaboration Guidelines
 
-Projeyi geliştirirken temiz bir sürüm geçmişi ve düzenli iş akışı için aşağıdaki kurallar uygulanır:
+To maintain code quality and a clear commit history, team members should adhere to the following standards:
 
-### Dal (Branch) Stratejisi
-- `main`: Yalnızca test edilmiş, stabil ve canlıya hazır sürümler yer alır. Doğrudan commit atılmaz.
-- `develop`: Geliştirme ana dalı.
-- `feature/<ozellik-adi>`: Yeni bir özellik eklerken (örneğin: `feature/auth-system`, `feature/job-board`).
-- `bugfix/<hata-adi>`: Hata düzeltmeleri için (örneğin: `bugfix/login-redirect`).
+### Branch Strategy
+- `main`: Production-ready, stable code only. Direct commits to `main` are restricted.
+- `develop`: Integration branch for ongoing development.
+- `feature/<feature-name>`: Feature branches branched off `develop` (e.g., `feature/auth-jwt`, `feature/alumni-search`).
+- `bugfix/<bug-name>`: Bug fixes (e.g., `bugfix/profile-update-error`).
 
-### Commit Mesaj Standartları (Conventional Commits)
-- `feat:` Yeni bir özellik eklendiğinde (örn: `feat: add alumni profile filtering`)
-- `fix:` Bir hata düzeltildiğinde (örn: `fix: resolve jwt expiration bug`)
-- `docs:` Yalnızca dokümantasyon değişikliklerinde (örn: `docs: update setup instructions in readme`)
-- `refactor:` Kodun davranışını değiştirmeyen yapısal düzenlemelerde (örn: `refactor: modularize db connection`)
-- `style:` Kod formatı, noktalı virgül eksikliği vb. (işlevsel olmayan) değişikliklerde
-- `chore:` Paket güncellemeleri veya build konfigürasyonlarında (örn: `chore: update dependencies`)
+### Commit Message Convention (Conventional Commits)
+Follow semantic commit messages:
+- `feat:` A new feature (e.g., `feat: implement alumni directory search filter`)
+- `fix:` A bug fix (e.g., `fix: correct token expiry handling`)
+- `docs:` Documentation updates only (e.g., `docs: update api endpoints table`)
+- `refactor:` Code restructuring without changing functionality
+- `test:` Adding or updating unit/integration tests
+- `chore:` Maintenance tasks, dependency updates, build configurations
 
----
-
-## 🗺️ Proje Yol Haritası (Roadmap)
-
-- [x] **Aşama 1:** Proje gereksinimlerinin belirlenmesi ve mimari planlama
-- [ ] **Aşama 2:** Veritabanı E-R diyagramının çıkarılması ve PostgreSQL şemasının oluşturulması
-- [ ] **Aşama 3:** Docker & Docker Compose altyapısının kurulması
-- [ ] **Aşama 4:** Node.js/Express.js REST API çekirdek mimarisinin ve JWT kimlik doğrulamasının yazılması
-- [ ] **Aşama 5:** Mezun profilleri, arama/filtreleme ve ilan modüllerinin tamamlanması
-- [ ] **Aşama 6:** Yönetici paneli ve onay mekanizması
-- [ ] **Aşama 7:** Frontend entegrasyonu ve arayüz testleri
-- [ ] **Aşama 8:** Proje sunumu ve final teslimi
+### Pull Request (PR) Workflow
+1. Create a feature branch from `develop`.
+2. Commit your changes following the commit guidelines.
+3. Open a Pull Request into `develop`.
+4. Request at least one peer code review before merging.
 
 ---
 
-## 👥 Katkıda Bulunanlar
+## 🗺️ Project Milestones & Roadmap
 
-- **Rumeysa Aydın** - *Geliştirici / Proje Sahibi* - [GitHub](https://github.com/rumeysa478)
+- [x] **Milestone 1:** Project requirements definition & architectural design
+- [ ] **Milestone 2:** PostgreSQL database schema design & E-R diagram
+- [ ] **Milestone 3:** Docker & Docker Compose setup
+- [ ] **Milestone 4:** Core REST API & JWT-based authentication
+- [ ] **Milestone 5:** Alumni profiles, search/filter, and job board modules
+- [ ] **Milestone 6:** Admin verification panel & system analytics
+- [ ] **Milestone 7:** Frontend integration & UI/UX testing
+- [ ] **Milestone 8:** Final testing, deployment, and presentation
 
 ---
 
-## 📄 Lisans
+## 👥 Contributors
 
-Bu proje akademik ve eğitim amaçlı geliştirilmiş olup [MIT Lisansı](LICENSE) kapsamında lisanslanmıştır.
+- **Rumeysa Aydın** — *Developer / Project Lead* — [@rumeysa478](https://github.com/rumeysa478)
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes under the **Web Programming** course and is licensed under the [MIT License](LICENSE).
