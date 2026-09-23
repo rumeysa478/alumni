@@ -62,6 +62,40 @@ app.get('/sum/:num1/:num2', (req, res) => {
   res.send(`${sum}`);
 });
 
+// GET /about "temp about page"
+app.get('/about', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>About - Alumni Tracking System</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 750px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #1f2937; }
+        h1 { color: #1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; }
+        .badge { background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+        .card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-top: 20px; }
+        a { color: #2563eb; text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+      </style>
+    </head>
+    <body>
+      <span class="badge">Temporary About Page</span>
+      <h1>ℹ️ About This Project</h1>
+      <div class="card">
+        <h3>Alumni Tracking System</h3>
+        <p><strong>Course:</strong> 3rd Year Web Programming</p>
+        <p><strong>Developer:</strong> Rumeysa Aydın</p>
+        <p><strong>Technologies:</strong> Node.js, Express.js, PostgreSQL, Docker, GitHub</p>
+        <p><strong>Description:</strong> This web project aims to provide an active networking and career tracking platform connecting university graduates, students, and faculty members.</p>
+      </div>
+      <p style="margin-top: 25px;"><a href="/">← Return to Main Page</a></p>
+    </body>
+    </html>
+  `);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
