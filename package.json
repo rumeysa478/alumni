@@ -1,0 +1,21 @@
+{
+  "name": "alumni",
+  "version": "1.0.0",
+  "description": "Alumni Tracking System - 3rd Year Web Programming Course Project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "alumni",
+    "tracking",
+    "web-programming",
+    "nodejs",
+    "express"
+  ],
+  "author": "Rumeysa Aydın",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
