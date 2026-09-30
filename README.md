@@ -21,6 +21,7 @@
   - [Seçenek 1: Docker ile Hızlı Başlatma (Önerilen)](#seçenek-1-docker-ile-hızlı-başlatma-önerilen)
   - [Seçenek 2: Yerel Geliştirme Ortamı (Lokal Kurulum)](#seçenek-2-yerel-geliştirme-ortamı-lokal-kurulum)
 - [Çevresel Değişkenler (.env)](#-çevresel-değişkenler-env)
+- [Swagger & API Dokümantasyonu](#-swagger--api-dokümantasyonu)
 - [Örnek API Endpoint'leri](#-örnek-api-endpointleri)
 - [Git & GitHub Geliştirme Standartları](#-git--github-geliştirme-standartları)
 - [Proje Ekibi ve İletişim](#-proje-ekibi-ve-iletişim)
@@ -237,22 +238,42 @@ MAX_FILE_SIZE=5242880 # 5 MB
 
 ---
 
-## 🔌 Örnek API Endpoint'leri
+## 📚 Swagger & API Dokümantasyonu
 
-| Metot | Uç Nokta (Endpoint) | Açıklama | Yetki |
+Projedeki tüm uç noktalar, parametreler ve şemalar **OpenAPI 3.0 / Swagger** ile interaktif olarak dokümante edilmiştir.
+
+- **Swagger UI (İnteraktif Arayüz):** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
+- **OpenAPI JSON Şeması:** [http://localhost:5000/api/swagger.json](http://localhost:5000/api/swagger.json)
+- **Postman Koleksiyonu:** Proje kök dizinindeki [`alumni.postman_collection.json`](./alumni.postman_collection.json) dosyası tüm hazır istekleri ve otomatik test senaryolarını içerir.
+
+> [!IMPORTANT]
+> **Geliştirme Kuralı:** Projeye yeni bir rota (route) tanımlandığında veya mevcut bir rota güncellendiğinde, ilgili rota **`src/config/swagger.js`** dosyasına ve Postman koleksiyonuna mutlaka eklenmelidir.
+
+---
+
+## 🔌 API Endpoint'leri
+
+| Metot | Uç Nokta (Endpoint) | Açıklama | Yetki / Format |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Yeni kullanıcı kaydı (Öğrenci / Mezun) | Herkese Açık |
-| `POST` | `/api/auth/login` | Giriş yapma ve JWT token alma | Herkese Açık |
-| `GET` | `/api/auth/me` | Giriş yapan kullanıcının profil bilgisi | Giriş Gerekli |
-| `GET` | `/api/alumni` | Mezun listesi ve filtreleme (yıl, bölüm, şirket) | Giriş Gerekli |
-| `GET` | `/api/alumni/:id` | Belirli bir mezunun detaylı profili | Giriş Gerekli |
-| `PUT` | `/api/alumni/:id` | Mezun profilini güncelleme | Mezun / Admin |
-| `GET` | `/api/jobs` | Aktif iş ve staj ilanlarını listeleme | Giriş Gerekli |
-| `POST` | `/api/jobs` | Yeni iş/staj ilanı oluşturma | Mezun / Admin |
-| `POST` | `/api/jobs/:id/apply` | İlana başvuru yapma | Öğrenci / Mezun |
-| `GET` | `/api/events` | Yaklaşan etkinlikleri listeleme | Herkese Açık |
-| `POST` | `/api/events/:id/join` | Etkinliğe katılım bildirme (RSVP) | Giriş Gerekli |
-| `GET` | `/api/admin/stats` | Mezuniyet ve istihdam istatistikleri | Sadece Admin |
+| `GET` | `/api/swagger` | İnteraktif Swagger UI API dokümantasyonu | Herkese Açık (HTML) |
+| `GET` | `/api/swagger.json` | OpenAPI 3.0 JSON formatında API şeması | Herkese Açık (JSON) |
+| `GET` | `/api/health` | Sistem sağlık ve donanım metrikleri kontrolü | Herkese Açık (JSON) |
+| `GET` | `/api/users` | Tüm kullanıcıları listeleme | Herkese Açık (In-Memory) |
+| `POST` | `/api/users` | Yeni kullanıcı oluşturma | Form / JSON (`x-www-form-urlencoded`, `multipart/form-data`) |
+| `GET` | `/api/users/:id` | ID ile tekil kullanıcı detayını getirme | Herkese Açık |
+| `PUT` | `/api/users/:id` | ID ile kullanıcı kaydını tam güncelleme | Form / JSON |
+| `PATCH` | `/api/users/:id` | ID ile kullanıcı kaydını kısmi güncelleme | Form / JSON |
+| `DELETE` | `/api/users/:id` | ID ile kullanıcı kaydını silme | Herkese Açık |
+| `POST` | `/api/auth/register` | Yeni kullanıcı kaydı (Öğrenci / Mezun) *(Planlanan)* | Herkese Açık |
+| `POST` | `/api/auth/login` | Giriş yapma ve JWT token alma *(Planlanan)* | Herkese Açık |
+| `GET` | `/api/auth/me` | Giriş yapan kullanıcının profil bilgisi *(Planlanan)* | Giriş Gerekli |
+| `GET` | `/api/alumni` | Mezun listesi ve filtreleme (yıl, bölüm, şirket) *(Planlanan)* | Giriş Gerekli |
+| `GET` | `/api/alumni/:id` | Belirli bir mezunun detaylı profili *(Planlanan)* | Giriş Gerekli |
+| `GET` | `/api/jobs` | Aktif iş ve staj ilanlarını listeleme *(Planlanan)* | Giriş Gerekli |
+| `POST` | `/api/jobs` | Yeni iş/staj ilanı oluşturma *(Planlanan)* | Mezun / Admin |
+| `GET` | `/api/events` | Yaklaşan etkinlikleri listeleme *(Planlanan)* | Herkese Açık |
+| `GET` | `/api/admin/stats` | Mezuniyet ve istihdam istatistikleri *(Planlanan)* | Sadece Admin |
+
 
 ---
 
