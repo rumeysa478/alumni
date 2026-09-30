@@ -1,19 +1,22 @@
 {
-  "name": "alumni-backend",
+  "name": "alumni",
   "version": "1.0.0",
-  "description": "Alumni Tracking System API",
+  "description": "Alumni Tracking System - 3rd Year Web Programming Course Project",
   "type": "module",
-  "main": "src/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node --test"
   },
   "keywords": [
-    "express",
     "alumni",
-    "api"
+    "tracking",
+    "web-programming",
+    "nodejs",
+    "express"
   ],
-  "author": "",
+  "author": "Rumeysa Aydın",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",

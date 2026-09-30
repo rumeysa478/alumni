@@ -1,0 +1,74 @@
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import { fileURLToPath, pathToFileURL } from 'url';
+import apiRouter from './src/routes/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// GET / - Temporary main page (or JSON for API clients)
+app.get('/', (req, res) => {
+  if (req.accepts('html')) {
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
+  res.status(200).json({
+    message: 'Alumni Tracking System API is running',
+    healthCheck: '/api/health',
+    swaggerDocs: '/api/swagger'
+  });
+});
+
+// GET /about - Temporary about page
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'about.html'));
+});
+
+// GET /hello - Returns Hello World
+app.get('/hello', (req, res) => {
+  res.send('Hello World');
+});
+
+// GET /hello/:name - Returns Hello <Name>!
+app.get('/hello/:name', (req, res) => {
+  const { name } = req.params;
+  const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+  res.send(`Hello ${formattedName}!`);
+});
+
+// GET /sum/:number1/:number2 - Returns sum of two numbers
+app.get('/sum/:number1/:number2', (req, res) => {
+  const num1 = Number(req.params.number1);
+  const num2 = Number(req.params.number2);
+
+  if (isNaN(num1) || isNaN(num2)) {
+    return res.status(400).send('Lütfen geçerli sayılar giriniz');
+  }
+
+  const sum = num1 + num2;
+  res.send(`toplam= ${sum}`);
+});
+
+// Mount modular API Routes
+app.use('/api', apiRouter);
+
+// Start server only when executed directly (not when imported in tests)
+const isDirectExecution = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectExecution) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Alumni API server listening on http://localhost:${PORT}`);
+    console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`📚 Swagger docs: http://localhost:${PORT}/api/swagger`);
+  });
+}
+
+export default app;
