@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 700px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="/users/<%= user.id %>" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+      &larr; Kullanıcı Detayına Dön
+    </a>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+      ✏️ Kullanıcı Bilgilerini Düzenle (Update)
+    </h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      MVC View Katmanı - #<%= user.id %> numaralı kullanıcının bilgilerini güncelleyin.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-weight: 700;">Düzenleme Formu</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">ID: #<%= user.id %></div>
+    </div>
+    <div class="card-body">
+      <form action="/users/<%= user.id %>" method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="first_name">Ad</label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              class="form-control"
+              value="<%= user.first_name || '' %>"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="last_name">Soyad</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              class="form-control"
+              value="<%= user.last_name || '' %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">E-Posta Adresi *</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="form-control"
+            value="<%= user.email || '' %>"
+          >
+          <div class="form-text">Benzersiz bir e-posta adresi girilmelidir.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="role">Sistem Rolü *</label>
+            <select id="role" name="role" class="form-select" required>
+              <option value="ALUMNI" <%= user.role === 'ALUMNI' ? 'selected' : '' %>>ALUMNI (Mezun)</option>
+              <option value="STUDENT" <%= user.role === 'STUDENT' ? 'selected' : '' %>>STUDENT (Öğrenci)</option>
+              <option value="ADMIN" <%= user.role === 'ADMIN' ? 'selected' : '' %>>ADMIN (Yönetici)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="graduation_year">Mezuniyet Yılı</label>
+            <input
+              type="number"
+              id="graduation_year"
+              name="graduation_year"
+              class="form-control"
+              min="1970"
+              max="2035"
+              value="<%= user.graduation_year || '' %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="department">Bölüm / Fakülte</label>
+          <input
+            type="text"
+            id="department"
+            name="department"
+            class="form-control"
+            value="<%= user.department || '' %>"
+          >
+        </div>
+
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+            <input
+              type="checkbox"
+              id="is_verified"
+              name="is_verified"
+              value="true"
+              style="width: 1.1rem; height: 1.1rem;"
+              <%= user.is_verified ? 'checked' : '' %>
+            >
+            <span style="font-weight: 500; font-size: 0.95rem;">Doğrulanmış Kullanıcı (Verified Status)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <a href="/users/<%= user.id %>" class="btn btn-secondary">İptal</a>
+          <button type="submit" class="btn btn-primary">
+            ✓ Değişiklikleri Kaydet
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

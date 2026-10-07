@@ -1,0 +1,13 @@
+<%- include('./partials/header') %>
+
+<div class="card" style="max-width: 600px; margin: 3rem auto; text-align: center; padding: 2rem;">
+  <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚠️</div>
+  <h2 style="margin-bottom: 0.5rem; color: #1e293b;"><%= typeof title !== 'undefined' ? title : 'Bir Hata Oluştu' %></h2>
+  <p style="color: #64748b; margin-bottom: 1.5rem;"><%= typeof message !== 'undefined' ? message : 'İstediğiniz sayfa veya işlem gerçekleştirilemedi.' %></p>
+  <div>
+    <a href="/users" class="btn btn-primary">Kullanıcı Listesine Dön</a>
+    <a href="/" class="btn btn-secondary">Ana Sayfa</a>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

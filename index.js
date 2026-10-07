@@ -1,8 +1,10 @@
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
+import methodOverride from 'method-override';
 import { fileURLToPath, pathToFileURL } from 'url';
 import apiRouter from './src/routes/index.js';
+import userRoutes from './src/routes/user.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,9 +12,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// View engine setup (EJS)
+app.set('view engine', 'ejs');
+app.set('views', [
+  path.join(__dirname, 'views'),
+  path.join(__dirname, 'src', 'views')
+]);
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // GET / - Temporary main page (or JSON for API clients)
@@ -22,6 +33,7 @@ app.get('/', (req, res) => {
   }
   res.status(200).json({
     message: 'Alumni Tracking System API is running',
+    usersPage: '/users',
     healthCheck: '/api/health',
     swaggerDocs: '/api/swagger'
   });
@@ -57,7 +69,10 @@ app.get('/sum/:number1/:number2', (req, res) => {
   res.send(`toplam= ${sum}`);
 });
 
-// Mount modular API Routes
+// Mount MVC View Routes for Users at /users
+app.use('/users', userRoutes);
+
+// Mount modular API Routes at /api
 app.use('/api', apiRouter);
 
 // Start server only when executed directly (not when imported in tests)
@@ -65,7 +80,8 @@ const isDirectExecution = process.argv[1] && import.meta.url === pathToFileURL(p
 
 if (isDirectExecution) {
   app.listen(PORT, () => {
-    console.log(`🚀 Alumni API server listening on http://localhost:${PORT}`);
+    console.log(`🚀 Alumni Web & API server listening on http://localhost:${PORT}`);
+    console.log(`👥 Users (MVC View): http://localhost:${PORT}/users`);
     console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
     console.log(`📚 Swagger docs: http://localhost:${PORT}/api/swagger`);
   });

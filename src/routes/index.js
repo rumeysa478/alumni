@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import healthRoutes from './health.routes.js';
+import apiUserRoutes from './apiUser.routes.js';
 import userRoutes from './user.routes.js';
 import { swaggerDocument } from '../config/swagger.js';
 
@@ -21,7 +22,8 @@ apiRouter.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swag
 // Mount health routes at /api/health
 apiRouter.use('/health', healthRoutes);
 
-// Mount user routes at /api/users
-apiRouter.use('/users', userRoutes);
+// Mount API user routes at /api/users
+apiRouter.use('/users', apiUserRoutes);
 
+export { apiRouter, userRoutes, apiUserRoutes };
 export default apiRouter;

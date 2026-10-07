@@ -1,0 +1,143 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">🎓 Mezun ve Öğrenci Listesi</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">MVC Mimarisi - View Katmanı Üzerinden Kullanıcı Yönetimi (CRUD)</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="/users/new" class="btn btn-primary">
+      <span>➕</span> Yeni Kullanıcı Ekle
+    </a>
+    <a href="/api/users" target="_blank" class="btn btn-secondary">
+      <span>⚡</span> REST API (JSON)
+    </a>
+  </div>
+</div>
+
+<!-- Filtreleme ve Arama Kartı -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-body" style="padding: 1rem 1.5rem;">
+    <form action="/users" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 220px;">
+        <label class="form-label" for="search">İsim, E-posta veya Bölüm Ara</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="form-control"
+          placeholder="Örn: Rümeysa, Bilgisayar, info@..."
+          value="<%= filters && filters.search ? filters.search : '' %>"
+        >
+      </div>
+
+      <div style="flex: 1; min-width: 150px;">
+        <label class="form-label" for="role">Rol Filtrele</label>
+        <select id="role" name="role" class="form-select">
+          <option value="">Tümü</option>
+          <option value="ALUMNI" <%= filters && filters.role === 'ALUMNI' ? 'selected' : '' %>>ALUMNI (Mezun)</option>
+          <option value="STUDENT" <%= filters && filters.role === 'STUDENT' ? 'selected' : '' %>>STUDENT (Öğrenci)</option>
+          <option value="ADMIN" <%= filters && filters.role === 'ADMIN' ? 'selected' : '' %>>ADMIN (Yönetici)</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary">Filtrele</button>
+        <% if (filters && (filters.search || filters.role || filters.department)) { %>
+          <a href="/users" class="btn btn-secondary">Temizle</a>
+        <% } %>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Kullanıcılar Tablosu -->
+<div class="card">
+  <div class="card-header">
+    <div style="font-weight: 700; color: #1e293b;">
+      Kayıtlı Kullanıcılar (<%= users ? users.length : 0 %>)
+    </div>
+    <div style="font-size: 0.85rem; color: var(--text-muted);">
+      In-Memory Veri Deposu (Database-independent)
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <% if (users && users.length > 0) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Ad Soyad</th>
+            <th>E-Posta</th>
+            <th>Rol</th>
+            <th>Bölüm</th>
+            <th>Mezuniyet Yılı</th>
+            <th>Durum</th>
+            <th style="text-align: right;">İşlemler (CRUD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr>
+              <td style="font-weight: 700; color: #64748b;">#<%= user.id %></td>
+              <td style="font-weight: 600;">
+                <a href="/users/<%= user.id %>" style="color: #0f172a; text-decoration: none;">
+                  <%= user.first_name || '-' %> <%= user.last_name || '' %>
+                </a>
+              </td>
+              <td style="color: var(--text-muted);"><%= user.email %></td>
+              <td>
+                <% if (user.role === 'ALUMNI') { %>
+                  <span class="badge badge-alumni">ALUMNI</span>
+                <% } else if (user.role === 'STUDENT') { %>
+                  <span class="badge badge-student">STUDENT</span>
+                <% } else if (user.role === 'ADMIN') { %>
+                  <span class="badge badge-admin">ADMIN</span>
+                <% } else { %>
+                  <span class="badge"><%= user.role %></span>
+                <% } %>
+              </td>
+              <td><%= user.department || '-' %></td>
+              <td><%= user.graduation_year || '-' %></td>
+              <td>
+                <% if (user.is_verified) { %>
+                  <span class="badge badge-verified">✓ Onaylı</span>
+                <% } else { %>
+                  <span class="badge badge-unverified">Beklemede</span>
+                <% } %>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 0.35rem; align-items: center;">
+                  <!-- Detay (Read) -->
+                  <a href="/users/<%= user.id %>" class="btn btn-secondary btn-sm" title="Detay Gör">
+                    Detay
+                  </a>
+                  <!-- Düzenle (Update) -->
+                  <a href="/users/<%= user.id %>/edit" class="btn btn-primary btn-sm" title="Düzenle">
+                    Düzenle
+                  </a>
+                  <!-- Sil (Delete) -->
+                  <form action="/users/<%= user.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz? (#<%= user.id %> <%= user.first_name %>)');">
+                    <button type="submit" class="btn btn-danger btn-sm" title="Sil">
+                      Sil
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <div style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+        <h3 style="color: #334155; margin-bottom: 0.5rem;">Kullanıcı Bulunamadı</h3>
+        <p style="margin-bottom: 1.25rem;">Arama kriterlerine uygun kullanıcı bulunamadı veya henüz kayıt eklenmedi.</p>
+        <a href="/users/new" class="btn btn-primary">+ İlk Kullanıcıyı Ekle</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

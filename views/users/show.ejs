@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <a href="/users" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+        &larr; Kullanıcı Listesine Dön
+      </a>
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+        👤 <%= user.first_name %> <%= user.last_name %>
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Kullanıcı Profil Detayı (Read - R) &bull; ID: #<%= user.id %>
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem;">
+      <a href="/users/<%= user.id %>/edit" class="btn btn-primary">
+        ✏️ Bilgileri Düzenle
+      </a>
+      <form action="/users/<%= user.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu kullanıcıyı kalıcı olarak silmek istediğinize emin misiniz?');">
+        <button type="submit" class="btn btn-danger">
+          🗑️ Sil
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-weight: 700;">Profil Bilgileri</div>
+      <div>
+        <% if (user.role === 'ALUMNI') { %>
+          <span class="badge badge-alumni">ALUMNI (Mezun)</span>
+        <% } else if (user.role === 'STUDENT') { %>
+          <span class="badge badge-student">STUDENT (Öğrenci)</span>
+        <% } else if (user.role === 'ADMIN') { %>
+          <span class="badge badge-admin">ADMIN (Yönetici)</span>
+        <% } else { %>
+          <span class="badge"><%= user.role %></span>
+        <% } %>
+
+        <% if (user.is_verified) { %>
+          <span class="badge badge-verified" style="margin-left: 0.5rem;">✓ Onaylı Profil</span>
+        <% } else { %>
+          <span class="badge badge-unverified" style="margin-left: 0.5rem;">Onay Bekliyor</span>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Adı Soyadı</div>
+          <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">
+            <%= user.first_name || '-' %> <%= user.last_name || '' %>
+          </div>
+        </div>
+
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">E-Posta Adresi</div>
+          <div style="font-size: 1.05rem; font-weight: 600; color: #1e293b; margin-top: 0.2rem;">
+            <a href="mailto:<%= user.email %>" style="color: var(--primary); text-decoration: none;"><%= user.email %></a>
+          </div>
+        </div>
+
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Bölüm / Program</div>
+          <div style="font-size: 1.05rem; font-weight: 600; color: #1e293b; margin-top: 0.2rem;">
+            <%= user.department || 'Belirtilmemiş' %>
+          </div>
+        </div>
+
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Mezuniyet Yılı</div>
+          <div style="font-size: 1.05rem; font-weight: 600; color: #1e293b; margin-top: 0.2rem;">
+            <%= user.graduation_year ? user.graduation_year : 'Henüz Mezun Değil' %>
+          </div>
+        </div>
+
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Kayıt Tarihi (created_at)</div>
+          <div style="font-size: 0.95rem; color: #334155; margin-top: 0.2rem;">
+            <%= user.created_at ? new Date(user.created_at).toLocaleString('tr-TR') : '-' %>
+          </div>
+        </div>
+
+        <div>
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Son Güncelleme (updated_at)</div>
+          <div style="font-size: 0.95rem; color: #334155; margin-top: 0.2rem;">
+            <%= user.updated_at ? new Date(user.updated_at).toLocaleString('tr-TR') : 'Henüz güncellenmedi' %>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+          JSON API karşılığı: <a href="/api/users/<%= user.id %>" target="_blank" style="color: var(--primary);">/api/users/<%= user.id %></a>
+        </span>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/users" class="btn btn-secondary">Listeye Dön</a>
+          <a href="/users/<%= user.id %>/edit" class="btn btn-primary">Bilgileri Düzenle</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

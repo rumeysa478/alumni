@@ -1,0 +1,138 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 700px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="/users" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+      &larr; Kullanıcı Listesine Dön
+    </a>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+      ➕ Yeni Kullanıcı Kaydı (Create)
+    </h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      MVC View Katmanı - Form üzerinden POST /users rotasına kullanıcı kaydı ekleyin.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-weight: 700;">Kullanıcı Bilgileri</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">* Zorunlu Alanlar</div>
+    </div>
+    <div class="card-body">
+      <form action="/users" method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="first_name">Ad</label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              class="form-control"
+              placeholder="Örn: Rümeysa"
+              value="<%= typeof formData !== 'undefined' && formData.first_name ? formData.first_name : '' %>"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="last_name">Soyad</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              class="form-control"
+              placeholder="Örn: Aydın"
+              value="<%= typeof formData !== 'undefined' && formData.last_name ? formData.last_name : '' %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">E-Posta Adresi *</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="form-control"
+            placeholder="ornek@alumni.edu"
+            value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>"
+          >
+          <div class="form-text">Benzersiz bir kurumsal veya kişisel e-posta adresi giriniz.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Şifre *</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="form-control"
+            placeholder="En az 6 karakter"
+            value="<%= typeof formData !== 'undefined' && formData.password ? formData.password : '' %>"
+          >
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="role">Sistem Rolü *</label>
+            <select id="role" name="role" class="form-select" required>
+              <option value="ALUMNI" <%= typeof formData !== 'undefined' && formData.role === 'ALUMNI' ? 'selected' : '' %>>ALUMNI (Mezun)</option>
+              <option value="STUDENT" <%= typeof formData !== 'undefined' && formData.role === 'STUDENT' ? 'selected' : '' %>>STUDENT (Öğrenci)</option>
+              <option value="ADMIN" <%= typeof formData !== 'undefined' && formData.role === 'ADMIN' ? 'selected' : '' %>>ADMIN (Yönetici)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="graduation_year">Mezuniyet Yılı</label>
+            <input
+              type="number"
+              id="graduation_year"
+              name="graduation_year"
+              class="form-control"
+              placeholder="Örn: 2026"
+              min="1970"
+              max="2035"
+              value="<%= typeof formData !== 'undefined' && formData.graduation_year ? formData.graduation_year : '' %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="department">Bölüm / Fakülte</label>
+          <input
+            type="text"
+            id="department"
+            name="department"
+            class="form-control"
+            placeholder="Örn: Yönetim Bilişim Sistemleri"
+            value="<%= typeof formData !== 'undefined' && formData.department ? formData.department : '' %>"
+          >
+        </div>
+
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+            <input
+              type="checkbox"
+              id="is_verified"
+              name="is_verified"
+              value="true"
+              style="width: 1.1rem; height: 1.1rem;"
+              <%= typeof formData !== 'undefined' && formData.is_verified ? 'checked' : '' %>
+            >
+            <span style="font-weight: 500; font-size: 0.95rem;">Doğrulanmış Kullanıcı (Verified Status)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <a href="/users" class="btn btn-secondary">İptal</a>
+          <button type="submit" class="btn btn-primary">
+            ✓ Kullanıcıyı Kaydet (POST /users)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

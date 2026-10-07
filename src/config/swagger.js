@@ -1,9 +1,9 @@
 export const swaggerDocument = {
   openapi: '3.0.0',
   info: {
-    title: '🎓 Alumni Tracking System API',
+    title: '🎓 Alumni Tracking System API & Web Docs',
     version: '1.0.0',
-    description: 'Üniversite mezunları ve öğrenciler için Mezun Takip Sistemi RESTful API dokümantasyonu.',
+    description: 'Üniversite mezunları ve öğrenciler için Mezun Takip Sistemi RESTful API ve MVC Web Görünüm dokümantasyonu.',
     contact: {
       name: 'Rümeysa Aydın',
       url: 'https://github.com/rumeysa478/alumni'
@@ -12,76 +12,247 @@ export const swaggerDocument = {
   servers: [
     {
       url: 'http://localhost:5000',
-      description: 'Lokal Geliştirme Sunucusu'
+      description: 'Lokal Geliştirme Sunucusu (Varsayılan Port 5000)'
+    },
+    {
+      url: 'http://localhost:3000',
+      description: 'Alternatif Port 3000'
     }
   ],
   tags: [
     {
-      name: 'Sistem',
-      description: 'Sistem sağlığı ve çalışma durumu uç noktaları'
+      name: 'Kullanıcı Web Arayüzü (MVC Views)',
+      description: 'HTML ve EJS şablonları kullanan Web Sayfası Rotaları (CRUD)'
     },
     {
-      name: 'Kullanıcılar',
-      description: 'Kullanıcı yönetimi ve CRUD işlemleri (In-Memory)'
+      name: 'Kullanıcı REST API (JSON)',
+      description: 'İstemciler (mobil, frontend, postman) için JSON tabanlı RESTful API Rotaları (CRUD)'
+    },
+    {
+      name: 'Sistem',
+      description: 'Sistem sağlığı ve çalışma durumu uç noktaları'
     }
   ],
   paths: {
-    '/api/health': {
+    '/users': {
       get: {
-        tags: ['Sistem'],
-        summary: 'Sistem Sağlık Kontrolü',
-        description: 'Sunucunun çalışma süresi (uptime), donanım/bellek kullanımı ve ortam bilgilerini JSON formatında döner.',
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Mezun ve Öğrenci Listesi Sayfası (Read - Listings)',
+        description: 'Tüm kullanıcıların listelendiği, arama ve filtreleme destekli duyarlı HTML web sayfasını render eder.',
+        parameters: [
+          {
+            name: 'search',
+            in: 'query',
+            required: false,
+            description: 'İsim, e-posta veya bölüme göre arama terimi',
+            schema: { type: 'string', example: 'Rümeysa' }
+          },
+          {
+            name: 'role',
+            in: 'query',
+            required: false,
+            description: 'Rol filtreleme',
+            schema: { type: 'string', enum: ['ALUMNI', 'STUDENT', 'ADMIN'] }
+          }
+        ],
         responses: {
           '200': {
-            description: 'Sistem sağlıklı çalışıyor.',
+            description: 'Kullanıcı listesi HTML sayfası başarıyla render edildi.',
             content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: { type: 'string', example: 'UP' },
-                    timestamp: { type: 'string', example: '2026-09-30T07:45:00.000Z' },
-                    uptime: {
-                      type: 'object',
-                      properties: {
-                        seconds: { type: 'integer', example: 120 },
-                        formatted: { type: 'string', example: '2m 0s' }
-                      }
-                    },
-                    environment: { type: 'string', example: 'development' },
-                    system: {
-                      type: 'object',
-                      properties: {
-                        nodeVersion: { type: 'string', example: 'v25.2.1' },
-                        platform: { type: 'string', example: 'win32' },
-                        arch: { type: 'string', example: 'x64' },
-                        cpuCount: { type: 'integer', example: 16 },
-                        freeMemory: { type: 'string', example: '6800.00 MB' },
-                        totalMemory: { type: 'string', example: '16000.00 MB' },
-                        processMemory: {
-                          type: 'object',
-                          properties: {
-                            rss: { type: 'string', example: '45.10 MB' },
-                            heapTotal: { type: 'string', example: '12.50 MB' },
-                            heapUsed: { type: 'string', example: '8.20 MB' },
-                            external: { type: 'string', example: '2.40 MB' }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+              'text/html': {
+                schema: { type: 'string', example: '<!DOCTYPE html><html>...</html>' }
+              }
+            }
+          }
+        }
+      },
+      post: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Yeni Kullanıcı Oluşturma (Create - HTML Form)',
+        description: 'Web formundan gönderilen verilerle kullanıcı oluşturur ve kullanıcı listesine yönlendirir (302 Redirect).',
+        requestBody: {
+          required: true,
+          content: {
+            'application/x-www-form-urlencoded': {
+              schema: { $ref: '#/components/schemas/CreateUserInput' }
+            }
+          }
+        },
+        responses: {
+          '302': {
+            description: 'Kullanıcı başarıyla oluşturuldu ve /users sayfasına yönlendirildi.'
+          },
+          '400': {
+            description: 'Doğrulama hatası (Hata mesajıyla form yeniden render edilir).'
+          }
+        }
+      }
+    },
+    '/users/new': {
+      get: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Yeni Kullanıcı Kayıt Form Sayfası (View)',
+        description: 'Yeni mezun veya öğrenci eklemek için gereken HTML form arayüzünü render eder.',
+        responses: {
+          '200': {
+            description: 'Kullanıcı kayıt formu HTML sayfası.',
+            content: {
+              'text/html': {
+                schema: { type: 'string' }
               }
             }
           }
         }
       }
     },
+    '/users/{id}': {
+      get: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Kullanıcı Profil Detay Sayfası (Read - Detail)',
+        description: 'ID numarasına göre kullanıcının profil detaylarını içeren HTML sayfasını render eder.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Kullanıcı ID numarası',
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Kullanıcı profil sayfası.',
+            content: {
+              'text/html': { schema: { type: 'string' } }
+            }
+          },
+          '404': {
+            description: 'Kullanıcı bulunamadı sayfası.'
+          }
+        }
+      },
+      post: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Kullanıcı Bilgilerini Güncelle (Update - HTML Form)',
+        description: 'HTML formundan gönderilen güncellenmiş bilgileri kaydeder ve kullanıcı sayfasına yönlendirir.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Güncellenecek kullanıcı ID',
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/x-www-form-urlencoded': {
+              schema: { $ref: '#/components/schemas/UpdateUserInput' }
+            }
+          }
+        },
+        responses: {
+          '302': {
+            description: 'Kullanıcı başarıyla güncellendi ve detay sayfasına yönlendirildi.'
+          },
+          '400': {
+            description: 'Doğrulama hatası.'
+          },
+          '404': {
+            description: 'Kullanıcı bulunamadı.'
+          }
+        }
+      }
+    },
+    '/users/{id}/edit': {
+      get: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Kullanıcı Düzenleme Form Sayfası (View)',
+        description: 'Mevcut kullanıcının bilgileriyle doldurulmuş düzenleme formunu render eder.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Düzenlenecek kullanıcı ID',
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Düzenleme formu HTML sayfası.',
+            content: {
+              'text/html': { schema: { type: 'string' } }
+            }
+          },
+          '404': {
+            description: 'Kullanıcı bulunamadı.'
+          }
+        }
+      },
+      post: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Kullanıcı Düzenleme Formu Gönderimi (Update)',
+        description: 'Düzenleme formundan gelen verileri günceller.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '302': {
+            description: 'Kullanıcı güncellendi ve yönlendirildi.'
+          }
+        }
+      }
+    },
+    '/users/{id}/delete': {
+      post: {
+        tags: ['Kullanıcı Web Arayüzü (MVC Views)'],
+        summary: 'Kullanıcıyı Sil (Delete - Action)',
+        description: 'HTML form butonu üzerinden kullanıcıyı siler ve listeye yönlendirir.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Silinecek kullanıcı ID',
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '302': {
+            description: 'Kullanıcı başarıyla silindi ve /users sayfasına yönlendirildi.'
+          },
+          '404': {
+            description: 'Kullanıcı bulunamadı.'
+          }
+        }
+      }
+    },
     '/api/users': {
       get: {
-        tags: ['Kullanıcılar'],
-        summary: 'Kullanıcıları Listele',
-        description: 'Sistemde kayıtlı tüm kullanıcıları dizi halinde döner.',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'Tüm Kullanıcıları JSON Olarak Listele (Read)',
+        description: 'Sistemde kayıtlı kullanıcıları filtreleme parametreleriyle birlikte JSON formatında döner.',
+        parameters: [
+          {
+            name: 'search',
+            in: 'query',
+            description: 'Arama sorgusu',
+            schema: { type: 'string' }
+          },
+          {
+            name: 'role',
+            in: 'query',
+            description: 'Rol filtresi',
+            schema: { type: 'string', enum: ['ALUMNI', 'STUDENT', 'ADMIN'] }
+          }
+        ],
         responses: {
           '200': {
             description: 'Kullanıcı listesi başarıyla getirildi.',
@@ -91,7 +262,7 @@ export const swaggerDocument = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean', example: true },
-                    count: { type: 'integer', example: 2 },
+                    count: { type: 'integer', example: 3 },
                     data: {
                       type: 'array',
                       items: { $ref: '#/components/schemas/User' }
@@ -104,19 +275,19 @@ export const swaggerDocument = {
         }
       },
       post: {
-        tags: ['Kullanıcılar'],
-        summary: 'Yeni Kullanıcı Oluştur',
-        description: 'Form formatında (x-www-form-urlencoded veya multipart/form-data) ya da JSON olarak yeni kullanıcı kaydı ekler.',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'Yeni Kullanıcı Oluştur (Create - JSON / Form)',
+        description: 'JSON veya form formatında yeni kullanıcı kaydı ekler.',
         requestBody: {
           required: true,
           content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/CreateUserInput' }
+            },
             'application/x-www-form-urlencoded': {
               schema: { $ref: '#/components/schemas/CreateUserInput' }
             },
             'multipart/form-data': {
-              schema: { $ref: '#/components/schemas/CreateUserInput' }
-            },
-            'application/json': {
               schema: { $ref: '#/components/schemas/CreateUserInput' }
             }
           }
@@ -158,9 +329,9 @@ export const swaggerDocument = {
     },
     '/api/users/{id}': {
       get: {
-        tags: ['Kullanıcılar'],
-        summary: 'ID ile Kullanıcı Getir',
-        description: 'Belirtilen ID numarasına sahip kullanıcının detaylarını döner.',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'ID ile Kullanıcı Getir (Read)',
+        description: 'Belirtilen ID numarasına sahip kullanıcının detaylarını JSON döner.',
         parameters: [
           {
             name: 'id',
@@ -204,28 +375,25 @@ export const swaggerDocument = {
         }
       },
       put: {
-        tags: ['Kullanıcılar'],
-        summary: 'Kullanıcıyı Tam Güncelle (PUT)',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'Kullanıcıyı Tam Güncelle (Update - PUT)',
         description: 'Kullanıcının tüm güncellenebilir alanlarını revize eder.',
         parameters: [
           {
             name: 'id',
             in: 'path',
             required: true,
-            description: 'Güncellenecek kullanıcı ID numarası',
+            description: 'Güncellenecek kullanıcı ID',
             schema: { type: 'integer', example: 1 }
           }
         ],
         requestBody: {
           required: true,
           content: {
-            'application/x-www-form-urlencoded': {
-              schema: { $ref: '#/components/schemas/UpdateUserInput' }
-            },
-            'multipart/form-data': {
-              schema: { $ref: '#/components/schemas/UpdateUserInput' }
-            },
             'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateUserInput' }
+            },
+            'application/x-www-form-urlencoded': {
               schema: { $ref: '#/components/schemas/UpdateUserInput' }
             }
           }
@@ -261,40 +429,29 @@ export const swaggerDocument = {
                 schema: { $ref: '#/components/schemas/ErrorResponse' }
               }
             }
-          },
-          '409': {
-            description: 'E-posta başka bir kullanıcı tarafından kullanılıyor.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
           }
         }
       },
       patch: {
-        tags: ['Kullanıcılar'],
-        summary: 'Kullanıcıyı Kısmi Güncelle (PATCH)',
-        description: 'Kullanıcı kaydında sadece gönderilen alanları günceller, diğerlerini korur.',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'Kullanıcıyı Kısmi Güncelle (Update - PATCH)',
+        description: 'Yalnızca iletilen alanları günceller.',
         parameters: [
           {
             name: 'id',
             in: 'path',
             required: true,
-            description: 'Kısmi güncellenecek kullanıcı ID numarası',
+            description: 'Güncellenecek kullanıcı ID',
             schema: { type: 'integer', example: 1 }
           }
         ],
         requestBody: {
           required: true,
           content: {
-            'application/x-www-form-urlencoded': {
-              schema: { $ref: '#/components/schemas/PatchUserInput' }
-            },
-            'multipart/form-data': {
-              schema: { $ref: '#/components/schemas/PatchUserInput' }
-            },
             'application/json': {
+              schema: { $ref: '#/components/schemas/PatchUserInput' }
+            },
+            'application/x-www-form-urlencoded': {
               schema: { $ref: '#/components/schemas/PatchUserInput' }
             }
           }
@@ -315,24 +472,8 @@ export const swaggerDocument = {
               }
             }
           },
-          '400': {
-            description: 'Geçersiz veri.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          },
           '404': {
             description: 'Kullanıcı bulunamadı.',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          },
-          '409': {
-            description: 'E-posta adresi çakışması.',
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -342,15 +483,15 @@ export const swaggerDocument = {
         }
       },
       delete: {
-        tags: ['Kullanıcılar'],
-        summary: 'Kullanıcıyı Sil (DELETE)',
-        description: 'Belirtilen ID numarasına sahip kullanıcı kaydını siler.',
+        tags: ['Kullanıcı REST API (JSON)'],
+        summary: 'Kullanıcıyı Sil (Delete)',
+        description: 'Belirtilen ID numarasına sahip kullanıcıyı in-memory veri tabanından siler.',
         parameters: [
           {
             name: 'id',
             in: 'path',
             required: true,
-            description: 'Silinecek kullanıcı ID numarası',
+            description: 'Silinecek kullanıcı ID',
             schema: { type: 'integer', example: 1 }
           }
         ],
@@ -380,6 +521,29 @@ export const swaggerDocument = {
           }
         }
       }
+    },
+    '/api/health': {
+      get: {
+        tags: ['Sistem'],
+        summary: 'Sistem Sağlık Kontrolü',
+        description: 'Sunucunun çalışma süresi (uptime), donanım/bellek kullanımı ve ortam bilgilerini JSON formatında döner.',
+        responses: {
+          '200': {
+            description: 'Sistem sağlıklı çalışıyor.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'UP' },
+                    timestamp: { type: 'string', example: '2026-09-30T07:45:00.000Z' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   components: {
@@ -388,39 +552,40 @@ export const swaggerDocument = {
         type: 'object',
         properties: {
           id: { type: 'integer', example: 1 },
-          email: { type: 'string', format: 'email', example: 'rumeysa@alumni.edu' },
+          email: { type: 'string', format: 'email', example: 'rumeysa.aydin@alumni.edu' },
           first_name: { type: 'string', example: 'Rümeysa' },
           last_name: { type: 'string', example: 'Aydın' },
           role: { type: 'string', enum: ['STUDENT', 'ALUMNI', 'ADMIN'], example: 'ALUMNI' },
-          department: { type: 'string', example: 'MIS' },
-          graduation_year: { type: 'integer', nullable: true, example: 2028 },
-          is_verified: { type: 'boolean', example: false },
+          department: { type: 'string', example: 'Yönetim Bilişim Sistemleri' },
+          graduation_year: { type: 'integer', nullable: true, example: 2024 },
+          is_verified: { type: 'boolean', example: true },
           created_at: { type: 'string', format: 'date-time', example: '2026-09-30T07:35:56.824Z' },
-          updated_at: { type: 'string', format: 'date-time', nullable: true, example: '2026-09-30T07:39:50.869Z' }
+          updated_at: { type: 'string', format: 'date-time', nullable: true, example: null }
         }
       },
       CreateUserInput: {
         type: 'object',
         required: ['email', 'password'],
         properties: {
-          email: { type: 'string', format: 'email', example: 'rumeysa@alumni.edu' },
+          email: { type: 'string', format: 'email', example: 'yeni.mezun@alumni.edu' },
           password: { type: 'string', format: 'password', example: 'gucluSifre123' },
-          first_name: { type: 'string', example: 'Rümeysa' },
-          last_name: { type: 'string', example: 'Aydın' },
+          first_name: { type: 'string', example: 'Ayşe' },
+          last_name: { type: 'string', example: 'Demir' },
           role: { type: 'string', enum: ['STUDENT', 'ALUMNI', 'ADMIN'], default: 'ALUMNI', example: 'ALUMNI' },
-          department: { type: 'string', example: 'MIS' },
-          graduation_year: { type: 'integer', example: 2028 }
+          department: { type: 'string', example: 'Bilgisayar Mühendisliği' },
+          graduation_year: { type: 'integer', example: 2025 },
+          is_verified: { type: 'boolean', example: false }
         }
       },
       UpdateUserInput: {
         type: 'object',
         properties: {
-          email: { type: 'string', format: 'email', example: 'rumeysa.guncel@alumni.edu' },
-          first_name: { type: 'string', example: 'Rümeysa' },
-          last_name: { type: 'string', example: 'Aydın' },
+          email: { type: 'string', format: 'email', example: 'guncel.mezun@alumni.edu' },
+          first_name: { type: 'string', example: 'Ayşe' },
+          last_name: { type: 'string', example: 'Demir' },
           role: { type: 'string', enum: ['STUDENT', 'ALUMNI', 'ADMIN'], example: 'ALUMNI' },
           department: { type: 'string', example: 'Yazılım Mühendisliği' },
-          graduation_year: { type: 'integer', example: 2028 },
+          graduation_year: { type: 'integer', example: 2025 },
           is_verified: { type: 'boolean', example: true }
         }
       },
@@ -432,7 +597,7 @@ export const swaggerDocument = {
           last_name: { type: 'string', example: 'YeniSoyisim' },
           role: { type: 'string', enum: ['STUDENT', 'ALUMNI', 'ADMIN'], example: 'ADMIN' },
           department: { type: 'string', example: 'Veri Bilimi' },
-          graduation_year: { type: 'integer', example: 2029 },
+          graduation_year: { type: 'integer', example: 2027 },
           is_verified: { type: 'boolean', example: true }
         }
       },
@@ -447,3 +612,5 @@ export const swaggerDocument = {
     }
   }
 };
+
+export default swaggerDocument;

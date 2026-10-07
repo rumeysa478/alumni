@@ -1,525 +1,390 @@
-<<<<<<< HEAD
 # 🎓 Alumni Tracking System (Mezun Takip Sistemi)
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-68a063?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-v4+-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v15+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Git](https://img.shields.io/badge/Git-Workflow-f05032?style=for-the-badge&logo=git&logoColor=white)](https://git-scm.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-4.21-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![EJS](https://img.shields.io/badge/EJS-Views-B4CA65?style=for-the-badge&logo=ejs&logoColor=white)](https://ejs.co/)
+[![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](http://localhost:5000/api/swagger)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **Web Programlama Dersi Dönem Projesi**  
-> Üniversite mezunları, öğrenciler ve akademik/idari birimler arasındaki bağı canlı tutan, mezun profillerini, kariyer fırsatlarını ve etkinlikleri tek bir çatı altında toplayan modern web tabanlı takip ve iletişim platformu.
+> **Web Programlama Dersi Dönem Projesi** — Üniversite mezunları, mevcut öğrenciler ve akademisyenleri bir araya getiren, hem **EJS tabanlı dinamik Web Görünüm (View)** katmanına hem de **JSON tabanlı REST API** mimarisine sahip tam teşekküllü **MVC (Model-View-Controller)** web platformu.
 
 ---
 
 ## 📌 İçindekiler
-- [Proje Hakkında](#-proje-hakkında)
-- [Temel Özellikler ve Modüller](#-temel-özellikler-ve-modüller)
-- [Teknoloji Yığını (Tech Stack)](#-teknoloji-yığını-tech-stack)
-- [Sistem ve Veritabanı Mimarisi](#-sistem-ve-veritabanı-mimarisi)
-- [Ön Koşullar (Prerequisites)](#-ön-koşullar-prerequisites)
-- [Kurulum ve Çalıştırma](#-kurulum-ve-çalıştırma)
-  - [Seçenek 1: Docker ile Hızlı Başlatma (Önerilen)](#seçenek-1-docker-ile-hızlı-başlatma-önerilen)
-  - [Seçenek 2: Yerel Geliştirme Ortamı (Lokal Kurulum)](#seçenek-2-yerel-geliştirme-ortamı-lokal-kurulum)
-- [Çevresel Değişkenler (.env)](#-çevresel-değişkenler-env)
-- [Swagger & API Dokümantasyonu](#-swagger--api-dokümantasyonu)
-- [Örnek API Endpoint'leri](#-örnek-api-endpointleri)
-- [Git & GitHub Geliştirme Standartları](#-git--github-geliştirme-standartları)
-- [Proje Ekibi ve İletişim](#-proje-ekibi-ve-iletişim)
-- [Lisans](#-lisans)
+
+1. [Proje Özeti ve Temel Özellikler](#-proje-özeti-ve-temel-özellikler)
+2. [MVC Mimarisi (Model-View-Controller)](#-mvc-mimarisi-model-view-controller)
+   - [Mimari Genel Bakış](#mimari-genel-bakış)
+   - [Dizin ve Dosya Hiyerarşisi](#dizin-ve-dosya-hiyerarşisi)
+   - [Klasör ve Dosyaların Sorumlulukları](#klasör-ve-dosyaların-sorumlulukları)
+   - [İstek Yaşam Döngüsü ve Veri Akışı](#istek-yaşam-döngüsü-ve-veri-akışı)
+3. [Kullanıcı Modeli ve In-Memory CRUD](#-kullanıcı-modeli-ve-in-memory-crud)
+4. [Kontrolcüler (Controllers)](#-kontrolcüler-controllers)
+5. [View Katmanı (EJS Templates)](#-view-katmanı-ejs-templates)
+6. [Uç Noktalar ve Rotalar (Endpoints)](#-uç-noktalar-ve-rotalar-endpoints)
+7. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
+8. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
+9. [Docker Desteği](#-docker-desteği)
+10. [Geliştirici Bilgileri](#-geliştirici-bilgileri)
 
 ---
 
-## 📖 Proje Hakkında
+## 📌 Proje Özeti ve Temel Özellikler
 
-Üniversite mezunlarının kariyer yollarını takip etmek, mezun-öğrenci iş birliğini artırmak ve üniversitenin kurumsal hafızasını güçlendirmek amacıyla geliştirilen **Alumni Tracking System (Mezun Takip Sistemi)**; kullanıcı dostu, ölçeklenebilir ve güvenli bir web uygulamasıdır.
+**Alumni Tracking System**, üniversite mezunlarının kariyer yolculuklarını güncellemelerine, mevcut öğrencilerle mentörlük ve deneyim paylaşımı bağı kurmalarına, staj ve iş imkanlarını paylaşmalarına olanak tanıyan modern bir web uygulamasıdır.
 
-### 🎯 Projenin Amaçları:
-- Mezunların güncel iletişim, eğitim ve iş tecrübesi bilgilerini tek bir merkezde toplamak.
-- Öğrenciler ile mezunlar arasında mentörlük ve networking köprüsü kurmak.
-- Şirketler ve mezunlar tarafından paylaşılan iş/staj ilanlarını öğrencilere ulaştırmak.
-- Mezunlar buluşması, seminerler ve kariyer günleri gibi etkinlikleri duyurmak ve katılımları yönetmek.
-
----
-
-## ✨ Temel Özellikler ve Modüller
-
-| Modül | Açıklama |
-| :--- | :--- |
-| 🔐 **Kimlik Doğrulama & Yetkilendirme (Auth & RBAC)** | JWT tabanlı oturum yönetimi, güvenli şifreleme (bcrypt), rol bazlı erişim kontrolü (Öğrenci, Mezun, Admin, Akademisyen). |
-| 👤 **Profil Yönetimi** | Mezuniyet yılı, bölüm, unvan, şirket, lokasyon, LinkedIn/GitHub profilleri, CV yükleme ve iletişim tercihleri. |
-| 🔍 **Mezun Dizini (Alumni Directory)** | Filtreleme ve arama motoru (Bölüm, mezuniyet dönemi, sektör, çalışılan şirket veya şehre göre dinamik arama). |
-| 💼 **Kariyer & İlan Portalı** | İş ve staj ilanlarının yayınlanması, başvuru süreçleri ve başvuru takibi. |
-| 📅 **Etkinlik & Duyuru Yönetimi** | Mezunlar günü, webinar ve seminer duyuruları, RSVP / etkinlik kayıt sistemi. |
-| 🤝 **Mentörlük & Ağ Oluşturma** | Öğrencilerin mezunlardan mentörlük talep edebileceği veya iletişime geçebileceği etkileşim alanı. |
-| 📊 **Yönetici (Admin) Paneli** | Kullanıcı onay/doğrulama mekanizması, ilan ve etkinlik moderasyonu, mezun istatistikleri ve raporlama. |
+- **👤 Mezun ve Öğrenci Yönetimi:** Profil bilgileri, bölüm, mezuniyet yılı, iletişim ve rol yönetimi (STUDENT, ALUMNI, ADMIN).
+- **🖥️ İkili Arayüz Desteği:**
+  - **Sunucu Taraflı Görünüm (SSR):** EJS şablonlama motoru ile render edilen zengin ve kullanıcı dostu HTML arayüzü (`/users`).
+  - **RESTful JSON API:** Mobil ve harici istemciler için standart JSON yanıtları üreten API uç noktaları (`/api/users`).
+- **📚 İnteraktif Swagger Dokümantasyonu:** OpenAPI 3.0 standardında tüm Web ve API uç noktalarını listeleyen ve test imkanı sunan Swagger UI (`/api/swagger`).
+- **⚡ In-Memory Veri Modeli:** Harici veritabanı kurulumuna ihtiyaç duymadan tam CRUD işlemlerini destekleyen ve başlangıç örnek verileriyle (seed) gelen model mimarisi.
+- **🧪 Otomatik Test Paketi:** Node.js yerleşik test kütüphanesi (`node:test`) ile 18 adet otomatik uçtan uca test senaryosu.
 
 ---
 
-## 🛠 Teknoloji Yığını (Tech Stack)
+## 🏛️ MVC Mimarisi (Model-View-Controller)
 
-### 🔹 Backend & API
-- **Runtime:** [Node.js](https://nodejs.org/) (LTS v18 veya v20)
-- **Framework:** [Express.js](https://expressjs.com/) (Hızlı, minimalist ve modüler web framework'ü)
-- **Veritabanı Sürücüsü / ORM:** `pg` (node-postgres) veya [Prisma ORM](https://www.prisma.io/) / [Sequelize](https://sequelize.org/)
-- **Güvenlik & Doğrulama:** `jsonwebtoken` (JWT), `bcryptjs`, `cors`, `helmet`, `joi` veya `zod`
+Uygulama, yazılım mühendisliği standartlarına uygun olarak sorumlulukların net biçimde ayrıldığı **Model-View-Controller (MVC)** mimari deseniyle tasarlanmıştır.
 
-### 🔹 Veritabanı
-- **RDBMS:** [PostgreSQL](https://www.postgresql.org/) (İlişkisel veritabanı, güçlü indeksleme ve ACID desteği)
-
-### 🔹 Frontend (Arayüz)
-- **Yaklaşım Seçenekleri:** 
-  - Server-Side Rendering (SSR): **EJS** veya **Handlebars**
-  - Veya Single Page Application (SPA): **React.js** / **Vue.js**
-  - **CSS / UI:** TailwindCSS veya Bootstrap 5
-
-### 🔹 Konteynerizasyon & DevOps
-- **Docker & Docker Compose:** Backend uygulaması ve PostgreSQL veritabanının ortam bağımsız tek komutla ayağa kaldırılması.
-
-### 🔹 Takip & Sürüm Kontrolü
-- **Versiyon Kontrol:** Git
-- **İş Takibi:** GitHub Projects, Issues ve Pull Requests
-
----
-
-## 🗄 Sistem ve Veritabanı Mimarisi
-
-Sistem RESTful mimari prensiplerine uygun olarak servis katmanı ve veri erişim katmanı ayrılmış (Layered/MVC Architecture) şekilde kurgulanmıştır.
+### Mimari Genel Bakış
 
 ```mermaid
-erDiagram
-    USERS ||--o{ ALUMNI_PROFILES : "sahiptir"
-    USERS ||--o{ JOB_POSTINGS : "yayınlar"
-    USERS ||--o{ EVENT_ATTENDEES : "katılır"
-    USERS ||--o{ MENTORSHIPS : "dahildir"
-    JOB_POSTINGS ||--o{ JOB_APPLICATIONS : "alır"
-    EVENTS ||--o{ EVENT_ATTENDEES : "içerir"
-
-    USERS {
-        int id PK
-        string email
-        string password_hash
-        string role "ADMIN | ALUMNI | STUDENT"
-        boolean is_verified
-        timestamp created_at
-    }
-
-    ALUMNI_PROFILES {
-        int id PK
-        int user_id FK
-        string first_name
-        string last_name
-        string department
-        int graduation_year
-        string current_company
-        string current_title
-        string city
-        string linkedin_url
-    }
-
-    JOB_POSTINGS {
-        int id PK
-        int posted_by FK
-        string title
-        string company
-        string description
-        string location
-        string type "FULL_TIME | INTERNSHIP"
-        timestamp deadline
-    }
-
-    EVENTS {
-        int id PK
-        string title
-        string description
-        timestamp event_date
-        string location
-        int created_by FK
-    }
-=======
-# 🎓 Alumni Tracking System
-
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15%2B-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![GitHub Workflow](https://img.shields.io/badge/GitHub-Workflow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rumeysa478/alumni)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
-> **3rd Year Web Programming Course Project — An end-to-end web platform connecting university alumni, current students, and faculty.**
-
----
-
-## 📌 Project Overview
-
-The **Alumni Tracking System** is a modern web application designed to bridge the gap between university graduates, current students, and the institution. It serves as an active networking platform where alumni can track their career milestones, share job and internship opportunities, connect with other graduates, and participate in academic and social events.
-
-This project is developed as part of the **3rd Year Web Programming Course**, adhering to industry-standard software engineering practices, containerized microservices, relational database design, and collaborative Git workflows.
-
----
-
-## ✨ Key Features
-
-- **👤 Alumni Profiles & Portfolio Management:**
-  - Comprehensive academic history (faculty, department, graduation year, degree).
-  - Career journey tracking (current employer, position, industry, location, LinkedIn & GitHub profiles).
-  - Skills, certifications, and portfolio links.
-- **💼 Job & Internship Board:**
-  - Alumni and verified employers can post job and internship openings.
-  - Search, filter, and apply for open positions.
-- **🔍 Advanced Search & Directory:**
-  - Multi-criteria filtering by graduation year, department, company, sector, and location.
-  - Full-text search for finding peers and mentors.
-- **📅 Events & Announcements:**
-  - University reunions, webinars, career fairs, and departmental announcements.
-  - Event registration and RSVP tracking.
-- **🔒 Authentication & Role-Based Access Control (RBAC):**
-  - Secure authentication using JWT (JSON Web Tokens) and password hashing with `bcrypt`.
-  - Distinct permission tiers: **Admin**, **Alumni**, and **Student**.
-- **🛡️ Administrative Dashboard:**
-  - Verification and approval workflow for new alumni registrations against university records.
-  - Moderation of job posts and public announcements.
-  - Statistical insights and analytics (employment rates, industry distribution, geographic dispersion).
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technology | Purpose / Rationale |
-| :--- | :--- | :--- |
-| **Backend** | [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) | High-performance, asynchronous RESTful API architecture |
-| **Database** | [PostgreSQL](https://www.postgresql.org/) | Reliable relational database with ACID compliance and indexing |
-| **ORM / Query Builder** | Prisma / Sequelize / pg | Type-safe database queries, schema migrations, and seeding |
-| **Containerization** | [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) | Consistent, isolated development and production environments |
-| **Version Control & CI/CD** | [Git](https://git-scm.com/) & [GitHub](https://github.com/) | Branching strategy, issue tracking, code reviews, and automated workflows |
-| **Security & Auth** | JWT & Bcrypt | Stateless session management and secure credential hashing |
-| **Frontend** | HTML5, CSS3 / Tailwind CSS, Modern JavaScript | Responsive, accessible, and intuitive user interface |
-
----
-
-## 📂 System Architecture & Directory Structure
-
-```plaintext
-alumni/
-├── .github/                  # GitHub Actions CI/CD workflows & issue templates
-│   └── workflows/
-├── docker/                   # Docker configuration files
-│   ├── Dockerfile            # Application container configuration
-│   └── Dockerfile.dev        # Development container configuration
-├── src/
-│   ├── config/               # Database, environment, and third-party configs
-│   ├── controllers/          # Route handlers & request validation
-│   ├── middlewares/          # Authentication, error handling & logging middlewares
-│   ├── models/               # Database schemas & ORM entities
-│   ├── routes/               # Modular REST API routes
-│   ├── services/             # Core business logic and external integrations
-│   ├── utils/                # Helper functions, constants, and custom loggers
-│   └── server.js             # Application entry point
-├── .env.example              # Sample environment variables template
-├── .gitignore                # Git ignore rules
-├── docker-compose.yml        # Docker Compose configuration (App + PostgreSQL)
-├── package.json              # Project dependencies and npm scripts
-└── README.md                 # Project documentation
->>>>>>> origin/main
+graph TD
+    Client["Tarayıcı / API İstemcisi"] -->|HTTP İstekleri| Router["Routes Layer<br/>(user.routes.js & apiUser.routes.js)"]
+    
+    subgraph Controller Katmanı
+        Router -->|Web İstekleri /users| UserController["UserController<br/>(userController.js)"]
+        Router -->|API İstekleri /api/users| ApiUserController["ApiUserController<br/>(apiUserController.js)"]
+    end
+    
+    subgraph Model Katmanı
+        UserController -->|CRUD Veri İşlemleri| UserModel["UserModel<br/>(user.model.js)"]
+        ApiUserController -->|CRUD Veri İşlemleri| UserModel
+        UserModel -->|Bellek İçi Depolama| MemoryStore[("In-Memory User Store<br/>(users[])")]
+    end
+    
+    subgraph View Katmanı
+        UserController -->|Veri Gönderimi & Render| EJSViews["EJS View Templates<br/>(views/users/*.ejs)"]
+        EJSViews -->|HTML Yanıtı| Client
+    end
+    
+    ApiUserController -->|JSON Yanıtı| Client
 ```
 
 ---
 
-<<<<<<< HEAD
-## 📋 Ön Koşullar (Prerequisites)
+### Dizin ve Dosya Hiyerarşisi
 
-Projeyi yerel makinenizde çalıştırmadan önce sisteminizde aşağıdaki yazılımların kurulu olduğundan emin olun:
+Projenin dizin ve dosya organizasyonu aşağıda gösterilmiştir:
 
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/) (v18.x veya üzeri) ve `npm`
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Docker & Docker Compose ile çalıştırmak için)
-- [PostgreSQL](https://www.postgresql.org/) (Lokalde Docker olmadan çalıştırılacaksa)
+```plaintext
+alumni/
+├── index.js                      # Ana uygulama giriş noktası (Web + API sunucusu)
+├── package.json                  # Proje bağımlılıkları ve npm betikleri (ES Modules)
+├── package-lock.json             # Kilitlenmiş bağımlılık versiyonları
+├── Dockerfile                    # Docker imajı yapılandırma dosyası
+├── docker-compose.yml            # Docker Compose servis tanımı
+├── README.md                     # Kapsamlı proje ve mimari dokümantasyonu
+│
+├── src/                          # Kaynak kod kök dizini
+│   ├── app.js                    # Express app yapılandırması (Middleware'ler, rotalar)
+│   ├── server.js                 # Sunucu dinleme ve graceful shutdown yönetimi
+│   │
+│   ├── config/                   # Yapılandırma katmanı
+│   │   ├── environment.js        # Port ve çalışma ortamı değişkenleri
+│   │   └── swagger.js            # OpenAPI 3.0 dokümantasyon şeması (Web & API rotaları)
+│   │
+│   ├── models/                   # MODEL KATMANI (Veri ve İş Mantığı)
+│   │   └── user.model.js         # In-memory User modeli ve tam CRUD fonksiyonları
+│   │
+│   ├── controllers/              # CONTROLLER KATMANI (İstek/Yanıt Yöneticileri)
+│   │   ├── userController.js     # Web Görünüm Kontrolcüsü (EJS render eden CRUD)
+│   │   ├── apiUserController.js  # REST API Kontrolcüsü (JSON dönen CRUD)
+│   │   ├── user.controller.js    # Geriye dönük uyumluluk sarmalayıcısı
+│   │   └── health.controller.js  # Sistem sağlık kontrolü kontrolcüsü
+│   │
+│   └── routes/                   # ROTA KATMANI (URL Eşleştirmeleri)
+│       ├── index.js              # API rotaları toplayıcısı ve Swagger mount
+│       ├── user.routes.js        # /users Web Görünüm rotaları
+│       ├── apiUser.routes.js     # /api/users REST API rotaları
+│       └── health.routes.js      # /api/health sistem sağlık rotaları
+│
+├── views/                        # VIEW KATMANI (EJS Şablonları)
+│   ├── error.ejs                 # Genel hata ve 404 sayfası
+│   ├── partials/                 # Yeniden kullanılabilir parçalı şablonlar
+│   │   ├── header.ejs            # HTML başlık, navigasyon çubuğu ve modern CSS stilleri
+│   │   └── footer.ejs            # Sayfa altlığı ve telif/bağlantı alanı
+│   └── users/                    # Kullanıcı Yönetimi Görünümleri
+│       ├── index.ejs             # [R] Kullanıcı listeleme, arama ve filtreleme tablosu
+│       ├── new.ejs               # [C] Yeni kullanıcı oluşturma formu
+│       ├── show.ejs              # [R] Tekil kullanıcı detay profil sayfası
+│       └── edit.ejs              # [U] Kullanıcı bilgileri düzenleme formu
+│
+├── public/                       # Statik Web Varlıkları
+│   ├── index.html                # Hoş geldiniz ana sayfası ve bağlantı dizini
+│   └── about.html                # Proje ve teknoloji yığını hakkında sayfası
+│
+└── test/                         # Otomatik Test Paketi
+    └── index.test.js             # node:test ile yazılmış 18 adet uçtan uca test
+```
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma
+### Klasör ve Dosyaların Sorumlulukları
 
-Projeyi klonlayarak başlayın:
+| Katman / Dizin | Dosya Adı | Rol ve Sorumluluk (Single Responsibility) |
+| :--- | :--- | :--- |
+| **Model** | `src/models/user.model.js` | Veritabanı bağımsız bellek içi veri deposunu yönetir. E-posta format ve benzersizlik kontrolü, otomatik ID üretimi, zaman damgaları (`created_at`, `updated_at`), filtreleme/arama ve CRUD (`getAll`, `getById`, `getByEmail`, `create`, `update`, `patch`, `delete`) işlevlerini gerçekleştirir. |
+| **Controller (Web)** | `src/controllers/userController.js` | Web arayüzü isteklerini karşılar. Modelden veriyi alır, EJS şablonlarını (`render`) çalıştırır, form işlemlerinde yönlendirme (`redirect`) yapar. |
+| **Controller (API)** | `src/controllers/apiUserController.js` | Harici istemciler ve API istekleri için HTTP durum kodları (`200 OK`, `201 Created`, `400 Bad Request`, `404 Not Found`, `409 Conflict`) ile biçimlendirilmiş JSON yanıtları döner. |
+| **View (EJS)** | `views/users/*.ejs` | Kullanıcının tarayıcıda gördüğü HTML arayüzüdür. Model verisini görselleştirir, kullanıcıdan form girdilerini alır ve aksiyon butonları (Detay, Düzenle, Sil) sunar. |
+| **View Partials** | `views/partials/` | `header.ejs` navigasyon ve ortak responsive stilleri, `footer.ejs` alt bilgi ve hızlı bağlantıları içerir. Tüm sayfalarda kod tekrarını önler. |
+| **Routes** | `src/routes/user.routes.js` | `/users` altındaki Web isteklerini (GET, POST, PUT, DELETE) `UserController` fonksiyonlarına yönlendirir. |
+| **Routes** | `src/routes/apiUser.routes.js` | `/api/users` altındaki REST API isteklerini `ApiUserController` fonksiyonlarına yönlendirir. |
+| **Config** | `src/config/swagger.js` | Hem `/users` web rotalarını hem de `/api/users` API rotalarını kapsayan OpenAPI 3.0 dokümantasyon şemasını barındırır. |
+| **Entry Point** | `index.js` | EJS motorunu, middleware'leri (`express.json`, `urlencoded`, `methodOverride`, `static`), rotaları bağlar ve sunucuyu başlatır. |
+
+---
+
+### İstek Yaşam Döngüsü ve Veri Akışı
+
+1. **Web Kullanıcısı (Tarayıcı Akışı):**
+   - Kullanıcı tarayıcıda `GET /users` adresine gider.
+   - `index.js` isteği `src/routes/user.routes.js` rotasına iletir.
+   - Rota, `UserController.listUsers` fonksiyonunu tetikler.
+   - `UserController`, `userModel.getAll()` çağrısı yaparak modelden güncel kullanıcı listesini alır.
+   - Kontrolcü, veriyi `views/users/index.ejs` şablonuna aktarır ve HTML oluşturup istemciye döner.
+
+2. **Web Formu ile Kullanıcı Ekleme (Create Akışı):**
+   - Kullanıcı `/users/new` sayfasındaki formu doldurup gönderir (`POST /users`).
+   - `UserController.createUser` form verisini (`req.body`) alır ve `userModel.create(userData)` fonksiyonuna gönderir.
+   - Model veriyi doğrular, ID ve zaman damgası atar, listeye ekler.
+   - Kontrolcü başarılı ekleme sonrası tarayıcıyı `302 Redirect` ile `/users` sayfasına yönlendirir.
+
+3. **REST API İstemcisi Akışı:**
+   - İstemci `POST /api/users` adresine JSON gövdesiyle istek atar.
+   - Rota isteği `ApiUserController.createUser` fonksiyonuna ulaştırır.
+   - Kontrolcü modeli çağırır ve istemciye `201 Created` durum koduyla oluşturulan nesneyi JSON olarak döner.
+
+---
+
+## 📦 Kullanıcı Modeli ve In-Memory CRUD
+
+`src/models/user.model.js` dosyası herhangi bir harici veritabanına bağlı olmaksızın çalışan saf JavaScript sınıfıdır. Başlangıçta sistemde 3 adet gerçekçi örnek kullanıcı (Rümeysa Aydın, Ahmet Yılmaz, Zeynep Kaya) ile tohumlanır (seed).
+
+### Model Şeması
+
+```javascript
+{
+  id: 1,                                       // Otomatik artan tekil sayısal kimlik
+  first_name: "Rümeysa",                       // Kullanıcı adı
+  last_name: "Aydın",                          // Kullanıcı soyadı
+  email: "rumeysa.aydin@alumni.edu",           // Benzersiz e-posta
+  password: "password123",                     // Şifre
+  role: "ALUMNI",                              // Rol: 'STUDENT' | 'ALUMNI' | 'ADMIN'
+  department: "Yönetim Bilişim Sistemleri",   // Bölüm / Program
+  graduation_year: 2024,                       // Mezuniyet yılı
+  is_verified: true,                           // Doğrulanma durumu
+  created_at: "2026-09-30T07:35:56.824Z",      // Oluşturulma zamanı
+  updated_at: null                             // Son güncelleme zamanı
+}
+```
+
+### Model CRUD Metotları
+
+- `getAll({ search, role, department })`: Kullanıcıları arama ve filtreleme kriterlerine göre döndürür.
+- `getById(id)`: Sayısal ID'ye göre tekil kullanıcı getirir.
+- `getByEmail(email)`: E-posta adresiyle kullanıcı bulur (çift kayıtları engeller).
+- `create(userData)`: E-posta ve rol doğrulaması yaparak yeni kayıt oluşturur.
+- `update(id, updateData)`: Kullanıcı bilgilerini bütünüyle günceller (`updated_at` ekler).
+- `patch(id, partialData)`: Sadece iletilen alanları günceller.
+- `delete(id)`: Kullanıcı kaydını bellekten siler.
+- `reset()`: Test senaryoları için veriyi başlangıç durumuna döndürür.
+
+---
+
+## 🎮 Kontrolcüler (Controllers)
+
+İki ayrı kullanım amacına hizmet eden iki bağımsız kontrolcü geliştirilmiştir:
+
+### 1. `UserController` (`src/controllers/userController.js`)
+Tarayıcı tabanlı kullanıcı etkileşimini ve EJS görünümlerini yönetir:
+- `listUsers`: Kullanıcı listesini (`views/users/index.ejs`) arama ve filtre seçenekleriyle render eder.
+- `showUser`: Tekil profil detay sayfasını (`views/users/show.ejs`) render eder.
+- `renderCreateForm`: Yeni kayıt formunu (`views/users/new.ejs`) render eder.
+- `createUser`: Formdan gelen `POST /users` isteğini işler, kullanıcıyı ekler ve yönlendirir.
+- `renderEditForm`: Düzenleme formunu (`views/users/edit.ejs`) mevcut verilerle dolu olarak render eder.
+- `updateUser`: `POST /users/:id` form isteğiyle kullanıcıyı günceller ve detay sayfasına yönlendirir.
+- `deleteUser`: `POST /users/:id/delete` form isteğiyle kullanıcıyı siler ve listeye yönlendirir.
+
+### 2. `ApiUserController` (`src/controllers/apiUserController.js`)
+Programatik istemcilere saf JSON yanıtları üretir:
+- `getUsers`: `200 OK` & `{ success: true, count, data: [...] }`
+- `getUserById`: `200 OK` & `{ success: true, data: user }` veya `404 Not Found`
+- `createUser`: `201 Created` & `{ success: true, message, data: newUser }` veya `400/409`
+- `updateUser`: `200 OK` (tam güncelleme - PUT) veya `404/400`
+- `patchUser`: `200 OK` (kısmi güncelleme - PATCH) veya `404/400`
+- `deleteUser`: `200 OK` (silme - DELETE) & `{ success: true, message, data: deletedUser }`
+
+---
+
+## 🎨 View Katmanı (EJS Templates)
+
+Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağımlılığı gerektirmeyen gömülü stillerle hazırlanmıştır:
+
+- **Navigasyon ve Header (`views/partials/header.ejs`):** Sabit üst menü, marka simgesi, sayfa bağlantıları ve "+ Yeni Kullanıcı" hızlı butonu.
+- **Kullanıcı Listesi (`views/users/index.ejs` - R):**
+  - İsim, e-posta veya bölüme göre canlı arama alanı.
+  - Rol filtresi (ALUMNI, STUDENT, ADMIN).
+  - Kullanıcı kartları / tablosu, rol rozetleri, onay durumu rozetleri.
+  - "Detay", "Düzenle" ve JavaScript onay pencereli "Sil" butonları.
+- **Yeni Kullanıcı Formu (`views/users/new.ejs` - C):** Ad, soyad, e-posta, şifre, rol, bölüm, mezuniyet yılı ve onay durumu alanları.
+- **Kullanıcı Detay Sayfası (`views/users/show.ejs` - R):** Kullanıcının tüm kayıt bilgilerini, tarih damgalarını ve ilgili JSON API bağlantısını gösteren profil kartı.
+- **Kullanıcı Düzenleme Formu (`views/users/edit.ejs` - U):** Mevcut verileri otomatik yüklenmiş form üzerinden güncelleme imkanı.
+- **Hata Sayfası (`views/error.ejs`):** 404 ve 500 durumlarında kullanıcı dostu geri dönüş arayüzü.
+
+---
+
+## 🔌 Uç Noktalar ve Rotalar (Endpoints)
+
+### 🌐 Web Görünüm Rotaları (MVC View Layer)
+
+| HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/users` | Tüm kullanıcıların listesi, arama ve filtreleme | View (`users/index.ejs`) |
+| `GET` | `/users/new` | Yeni kullanıcı oluşturma formu | View (`users/new.ejs`) |
+| `POST` | `/users` | Yeni kullanıcı oluşturma form gönderimi (C) | Controller -> Redirect `/users` |
+| `GET` | `/users/:id` | Tekil kullanıcı profil detay sayfası (R) | View (`users/show.ejs`) |
+| `GET` | `/users/:id/edit` | Kullanıcı bilgileri düzenleme formu | View (`users/edit.ejs`) |
+| `POST` | `/users/:id` | Kullanıcı bilgilerini güncelleme (U) | Controller -> Redirect `/users/:id` |
+| `POST` | `/users/:id/delete` | Kullanıcıyı silme işlemi (D) | Controller -> Redirect `/users` |
+
+### ⚡ REST API Rotaları (JSON API Layer)
+
+| HTTP Metodu | Rota | Açıklama | Yanıt Tipi |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/users` | Tüm kullanıcıları JSON formatında listele | `200 OK` (JSON) |
+| `POST` | `/api/users` | Yeni kullanıcı oluştur (JSON / Form-data) | `201 Created` (JSON) |
+| `GET` | `/api/users/:id` | ID ile tekil kullanıcı detayını getir | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/users/:id` | Kullanıcı kaydını tam güncelle | `200 OK` / `404 Not Found` |
+| `PATCH` | `/api/users/:id` | Kullanıcı kaydını kısmi güncelle | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/users/:id` | Kullanıcı kaydını sil | `200 OK` / `404 Not Found` |
+| `GET` | `/api/health` | Sunucu sağlık ve sistem metrikleri | `200 OK` (JSON) |
+
+### 📄 Genel ve Statik Rotalar
+
+| HTTP Metodu | Rota | Açıklama |
+| :--- | :--- | :--- |
+| `GET` | `/` | Hoş geldiniz ana sayfası (`public/index.html`) veya API JSON |
+| `GET` | `/about` | Proje ve teknoloji yığını sayfası (`public/about.html`) |
+| `GET` | `/hello` | "Hello World" selamlama yanıtı |
+| `GET` | `/hello/:name` | Dinamik isim selamlama yanıtı (`Hello <Name>!`) |
+| `GET` | `/sum/:num1/:num2`| İki sayının toplamını hesaplayan uç nokta |
+
+---
+
+## 📚 Swagger & OpenAPI Dokümantasyonu
+
+Projede yer alan hem **Web Görünüm (`/users`)** rotaları hem de **REST API (`/api/users`)** rotaları OpenAPI 3.0 standardında eksiksiz biçimde Swagger UI ile belgelenmiştir.
+
+- **Swagger UI Arayüzü:** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
+- **OpenAPI JSON Şeması:** [http://localhost:5000/api/swagger.json](http://localhost:5000/api/swagger.json)
+
+Swagger arayüzü üzerinden:
+- `/users` ve altındaki tüm form ve görünüm rotalarının parametrelerini inceleyebilirsiniz.
+- `/api/users` altındaki CRUD uç noktalarını tarayıcı üzerinden parametre girerek doğrudan test edebilirsiniz (`Try it out`).
+- `User`, `CreateUserInput`, `UpdateUserInput`, `PatchUserInput` ve `ErrorResponse` şemalarını detaylı inceleyebilirsiniz.
+
+---
+
+## 🚀 Kurulum, Çalıştırma ve Testler
+
+### Ön Koşullar
+- [Node.js](https://nodejs.org/) (v18 veya üzeri)
+- [npm](https://www.npmjs.com/) (veya yarn/pnpm)
+- [Git](https://git-scm.com/)
+
+### 1. Depoyu Klonlayın
 ```bash
 git clone https://github.com/rumeysa478/alumni.git
 cd alumni
 ```
 
-### Seçenek 1: Docker ile Hızlı Başlatma (Önerilen)
+### 2. Bağımlılıkları Yükleyin
+```bash
+npm install
+```
 
-Docker kurulu ise, veritabanı veya Node ortamı kurulumuyla uğraşmadan tek komutla tüm sistemi ayağa kaldırabilirsiniz:
+### 3. Uygulamayı Başlatın
+```bash
+# Üretim / Normal Başlatma
+npm start
 
-1. **Çevresel değişkenleri hazırlayın:**
-   ```bash
-   cp .env.example .env
-   ```
-2. **Konteynerleri derleyin ve başlatın:**
-   ```bash
-   docker compose up --build
-   ```
-3. Uygulama hazır!
-   - Web / API: `http://localhost:5000`
-   - PostgreSQL Portu: `5432`
+# veya Geliştirici Modunda Başlatma (nodemon ile otomatik yeniden yükleme)
+npm run dev
+```
 
-Durdurmak için:
-=======
-## ⚡ Quick Start Guide
+Sunucu varsayılan olarak **5000** portunda dinlemeye başlayacaktır:
+- 👥 **Kullanıcı Web Arayüzü (MVC View):** [http://localhost:5000/users](http://localhost:5000/users)
+- ➕ **Yeni Kullanıcı Ekleme Formu:** [http://localhost:5000/users/new](http://localhost:5000/users/new)
+- 📚 **Swagger UI Dokümantasyonu:** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
+- ⚡ **REST API JSON Uç Noktası:** [http://localhost:5000/api/users](http://localhost:5000/api/users)
+- 🏥 **Sağlık Kontrolü:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+- 🏠 **Ana Sayfa:** [http://localhost:5000/](http://localhost:5000/)
 
-### Prerequisites
+### 4. Otomatik Testleri Çalıştırın
+Projede Node.js'in yerleşik test koşucusu (`node:test`) ile hazırlanmış 18 adet otomatik uçtan uca test bulunmaktadır:
 
-Ensure you have the following installed on your machine:
-- [Node.js](https://nodejs.org/) (v18.x or higher)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [Docker](https://www.docker.com/get-started) & [Docker Compose](https://docs.docker.com/compose/) (Recommended)
-- [Git](https://git-scm.com/)
+```bash
+npm test
+```
+
+Test çıktısı:
+```text
+✔ GET / returns temporary home page HTML and status 200
+✔ GET /about returns about page HTML and status 200
+✔ GET /hello returns Hello World and status 200
+✔ GET /hello/:name returns Hello <Name>! and status 200
+✔ GET /sum/:number1/:number2 returns toplam= <sum> and status 200
+✔ GET /users returns user listings HTML and status 200 (Read - R)
+✔ GET /users/new returns create user form HTML and status 200
+✔ POST /users creates new user via form and redirects (Create - C)
+✔ GET /users/:id returns user detail HTML (Read - R)
+✔ GET /users/:id/edit returns edit form HTML
+✔ POST /users/:id updates user via form and redirects (Update - U)
+✔ POST /users/:id/delete removes user and redirects (Delete - D)
+✔ GET /api/users returns JSON users list and 200 OK
+✔ POST /api/users creates user and returns 201 Created
+✔ GET /api/users/:id returns user by id
+✔ PUT /api/users/:id updates user
+✔ DELETE /api/users/:id removes user
+✔ GET /api/swagger.json returns OpenAPI spec
+ℹ tests 18
+ℹ pass 18
+ℹ fail 0
+```
 
 ---
 
-### Option 1: Running with Docker (Recommended) 🐳
+## 🐳 Docker Desteği
 
-Run the entire stack (Node.js API + PostgreSQL) in isolated containers with a single command:
+Uygulamayı Docker ile izole bir konteyner ortamında çalıştırmak için:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/rumeysa478/alumni.git
-   cd alumni
-   ```
-
-2. **Configure environment variables:**
-   ```bash
-   cp .env.example .env
-   ```
-
-3. **Build and start services:**
-   ```bash
-   docker compose up --build
-   ```
-
-4. **Access the application:**
-   - Web App / API: `http://localhost:3000`
-   - PostgreSQL Database: `localhost:5432`
-
-To stop the containers:
->>>>>>> origin/main
 ```bash
+# Docker imajını derleyip ayağa kaldırın
+docker compose up --build
+
+# Konteynerleri durdurmak için
 docker compose down
 ```
 
 ---
 
-<<<<<<< HEAD
-### Seçenek 2: Yerel Geliştirme Ortamı (Lokal Kurulum)
+## 👥 Geliştirici Bilgileri
 
-1. **Bağımlılıkları yükleyin:**
-=======
-### Option 2: Local Manual Setup 💻
-
-1. **Install dependencies:**
->>>>>>> origin/main
-   ```bash
-   npm install
-   ```
-
-<<<<<<< HEAD
-2. **Çevresel değişkenleri yapılandırın:**
-   ```bash
-   cp .env.example .env
-   ```
-   `.env` dosyasını açıp yerel PostgreSQL kullanıcı adı, şifre ve port bilgilerinizi girin.
-
-3. **Veritabanı tablolarını ve tohum verileri oluşturun:**
-   ```bash
-   npm run db:migrate
-   npm run db:seed
-   ```
-
-4. **Uygulamayı geliştirici modunda başlatın:**
-   ```bash
-   npm run dev
-   ```
-   Uygulama `http://localhost:5000` adresinde çalışacaktır.
-
----
-
-## ⚙️ Çevresel Değişkenler (.env)
-
-Kök dizinde bir `.env` dosyası oluşturup aşağıdaki değişkenleri projenize göre düzenleyin:
-
-```env
-# Sunucu Ayarları
-NODE_ENV=development
-PORT=5000
-
-# PostgreSQL Bağlantı Bilgileri
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_secure_password
-DB_NAME=alumni_db
-
-# Docker İçin Bağlantı URL'i (Opsiyonel)
-DATABASE_URL=postgresql://postgres:your_secure_password@postgres_db:5432/alumni_db
-
-# Güvenlik & JWT Ayarları
-JWT_SECRET=super_secret_jwt_key_change_in_production
-JWT_EXPIRES_IN=7d
-
-# Dosya Yükleme (CV / Profil Fotoğrafı)
-UPLOAD_DIR=./uploads
-MAX_FILE_SIZE=5242880 # 5 MB
-```
-
----
-
-## 📚 Swagger & API Dokümantasyonu
-
-Projedeki tüm uç noktalar, parametreler ve şemalar **OpenAPI 3.0 / Swagger** ile interaktif olarak dokümante edilmiştir.
-
-- **Swagger UI (İnteraktif Arayüz):** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
-- **OpenAPI JSON Şeması:** [http://localhost:5000/api/swagger.json](http://localhost:5000/api/swagger.json)
-- **Postman Koleksiyonu:** Proje kök dizinindeki [`alumni.postman_collection.json`](./alumni.postman_collection.json) dosyası tüm hazır istekleri ve otomatik test senaryolarını içerir.
-
-> [!IMPORTANT]
-> **Geliştirme Kuralı:** Projeye yeni bir rota (route) tanımlandığında veya mevcut bir rota güncellendiğinde, ilgili rota **`src/config/swagger.js`** dosyasına ve Postman koleksiyonuna mutlaka eklenmelidir.
-
----
-
-## 🔌 API Endpoint'leri
-
-| Metot | Uç Nokta (Endpoint) | Açıklama | Yetki / Format |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/swagger` | İnteraktif Swagger UI API dokümantasyonu | Herkese Açık (HTML) |
-| `GET` | `/api/swagger.json` | OpenAPI 3.0 JSON formatında API şeması | Herkese Açık (JSON) |
-| `GET` | `/api/health` | Sistem sağlık ve donanım metrikleri kontrolü | Herkese Açık (JSON) |
-| `GET` | `/api/users` | Tüm kullanıcıları listeleme | Herkese Açık (In-Memory) |
-| `POST` | `/api/users` | Yeni kullanıcı oluşturma | Form / JSON (`x-www-form-urlencoded`, `multipart/form-data`) |
-| `GET` | `/api/users/:id` | ID ile tekil kullanıcı detayını getirme | Herkese Açık |
-| `PUT` | `/api/users/:id` | ID ile kullanıcı kaydını tam güncelleme | Form / JSON |
-| `PATCH` | `/api/users/:id` | ID ile kullanıcı kaydını kısmi güncelleme | Form / JSON |
-| `DELETE` | `/api/users/:id` | ID ile kullanıcı kaydını silme | Herkese Açık |
-| `POST` | `/api/auth/register` | Yeni kullanıcı kaydı (Öğrenci / Mezun) *(Planlanan)* | Herkese Açık |
-| `POST` | `/api/auth/login` | Giriş yapma ve JWT token alma *(Planlanan)* | Herkese Açık |
-| `GET` | `/api/auth/me` | Giriş yapan kullanıcının profil bilgisi *(Planlanan)* | Giriş Gerekli |
-| `GET` | `/api/alumni` | Mezun listesi ve filtreleme (yıl, bölüm, şirket) *(Planlanan)* | Giriş Gerekli |
-| `GET` | `/api/alumni/:id` | Belirli bir mezunun detaylı profili *(Planlanan)* | Giriş Gerekli |
-| `GET` | `/api/jobs` | Aktif iş ve staj ilanlarını listeleme *(Planlanan)* | Giriş Gerekli |
-| `POST` | `/api/jobs` | Yeni iş/staj ilanı oluşturma *(Planlanan)* | Mezun / Admin |
-| `GET` | `/api/events` | Yaklaşan etkinlikleri listeleme *(Planlanan)* | Herkese Açık |
-| `GET` | `/api/admin/stats` | Mezuniyet ve istihdam istatistikleri *(Planlanan)* | Sadece Admin |
-
-
----
-
-## 🌿 Git & GitHub Geliştirme Standartları
-
-Takım çalışmasını düzenli ve izlenebilir tutmak için aşağıdaki standartlar uygulanır:
-
-### Dal (Branch) Stratejisi
-- `main`: Canlıya/teslime hazır stabil kod tabanı.
-- `develop`: Geliştirme aşamasındaki ana dal.
-- `feature/<özellik-adı>`: Yeni eklenecek özellikler (örn: `feature/alumni-search-filter`).
-- `bugfix/<hata-adı>`: Hata düzeltmeleri (örn: `bugfix/jwt-expiration-fix`).
-
-### Commit Mesaj Standartları (Conventional Commits)
-- `feat:` Yeni bir özellik eklendiğinde (örn: `feat: add postgres connection pool`)
-- `fix:` Bir hata düzeltildiğinde (örn: `fix: resolve auth middleware token leak`)
-- `docs:` Yalnızca dokümantasyon değişikliğinde (örn: `docs: update readme with docker instructions`)
-- `refactor:` Kodun işlevini değiştirmeden yapılan düzenlemelerde (örn: `refactor: modularize routes`)
-- `chore:` Yapılandırma veya bağımlılık güncellemelerinde (örn: `chore: add docker-compose file`)
-
-### GitHub Proje Yönetimi
-- **Issues:** Geliştirilecek her modül veya giderilecek hata bir Issue olarak açılır.
-- **Pull Requests (PR):** Geliştirilen dallar `develop` dalına birleştirilmeden önce PR açılır ve kod incelemesi (Code Review) yapılır.
-- **Projects / Kanban:** Görevler *Todo*, *In Progress*, *Done* sütunlarında takip edilir.
-
----
-
-## 👥 Proje Ekibi ve İletişim
-
-Bu proje, **Web Programlama** dersi kapsamında geliştirilmiştir.
-
-| İsim Soyisim | Öğrenci Numarası | Rol / Görev | İletişim |
-| :--- | :--- | :--- | :--- |
-| **Rümeysa Aydın** | *(Öğrenci No)* | Backend & DevOps | [GitHub](https://github.com/rumeysa478) |
-| *(Ekip Arkadaşı)* | *(Öğrenci No)* | Frontend / UI-UX | [GitHub](https://github.com) |
-
-- **Ders:** Web Programlama / Web Programming
-- **Dönem:** 2024 - 2025 Akademik Yılı
-- **Danışman / Öğretim Görevlisi:** *(Hoca Adı Soyadı)*
-
----
-
-## 📄 Lisans
-
-Bu proje akademik ve eğitim amaçlı geliştirilmiş olup [MIT Lisansı](LICENSE) altında korunmaktadır.
-=======
-2. **Create and configure `.env`:**
-   ```env
-   PORT=3000
-   NODE_ENV=development
-   DATABASE_URL=postgresql://postgres:password@localhost:5432/alumni_db
-   JWT_SECRET=your_jwt_super_secret_key
-   JWT_EXPIRES_IN=7d
-   ```
-
-3. **Run database migrations:**
-   ```bash
-   npx prisma migrate dev  # or your respective ORM migration command
-   ```
-
-4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🌿 Git & GitHub Collaboration Guidelines
-
-To maintain code quality and a clear commit history, team members should adhere to the following standards:
-
-### Branch Strategy
-- `main`: Production-ready, stable code only. Direct commits to `main` are restricted.
-- `develop`: Integration branch for ongoing development.
-- `feature/<feature-name>`: Feature branches branched off `develop` (e.g., `feature/auth-jwt`, `feature/alumni-search`).
-- `bugfix/<bug-name>`: Bug fixes (e.g., `bugfix/profile-update-error`).
-
-### Commit Message Convention (Conventional Commits)
-Follow semantic commit messages:
-- `feat:` A new feature (e.g., `feat: implement alumni directory search filter`)
-- `fix:` A bug fix (e.g., `fix: correct token expiry handling`)
-- `docs:` Documentation updates only (e.g., `docs: update api endpoints table`)
-- `refactor:` Code restructuring without changing functionality
-- `test:` Adding or updating unit/integration tests
-- `chore:` Maintenance tasks, dependency updates, build configurations
-
-### Pull Request (PR) Workflow
-1. Create a feature branch from `develop`.
-2. Commit your changes following the commit guidelines.
-3. Open a Pull Request into `develop`.
-4. Request at least one peer code review before merging.
-
----
-
-## 🗺️ Project Milestones & Roadmap
-
-- [x] **Milestone 1:** Project requirements definition & architectural design
-- [ ] **Milestone 2:** PostgreSQL database schema design & E-R diagram
-- [ ] **Milestone 3:** Docker & Docker Compose setup
-- [ ] **Milestone 4:** Core REST API & JWT-based authentication
-- [ ] **Milestone 5:** Alumni profiles, search/filter, and job board modules
-- [ ] **Milestone 6:** Admin verification panel & system analytics
-- [ ] **Milestone 7:** Frontend integration & UI/UX testing
-- [ ] **Milestone 8:** Final testing, deployment, and presentation
-
----
-
-## 👥 Contributors
-
-- **Rumeysa Aydın** — *Developer / Project Lead* — [@rumeysa478](https://github.com/rumeysa478)
-
----
-
-## 📄 License
-
-This project is developed for educational purposes under the **Web Programming** course and is licensed under the [MIT License](LICENSE).
->>>>>>> origin/main
+- **Geliştirici:** Rümeysa Aydın ([@rumeysa478](https://github.com/rumeysa478))
+- **Ders:** Web Programlama / Web Programming (3. Sınıf)
+- **GitHub Deposu:** [https://github.com/rumeysa478/alumni](https://github.com/rumeysa478/alumni)
+- **Lisans:** [MIT Lisansı](https://opensource.org/licenses/MIT)

@@ -1,33 +1,41 @@
-import { Router } from 'express';
-import multer from 'multer';
-import {
-  createUser,
-  getUsers,
-  getUserById,
-  updateUser,
-  patchUser,
-  deleteUser
-} from '../controllers/user.controller.js';
+/**
+ * @file src/routes/user.routes.js
+ * @description Web View Katmanı Kullanıcı Rotaları (UserController ile eşleşen MVC rotaları)
+ */
 
-const upload = multer();
+import { Router } from 'express';
+import UserController from '../controllers/userController.js';
+
 const router = Router();
 
-// POST /api/users - Form-data, x-www-form-urlencoded ve JSON desteği
-router.post('/', upload.none(), createUser);
+// GET /users - Tüm kullanıcıları listeleme görünümü (Read - Listings)
+router.get('/', UserController.listUsers);
 
-// GET /api/users - Eklenen kullanıcıları listeleme
-router.get('/', getUsers);
+// GET /users/new - Yeni kullanıcı ekleme formu
+router.get('/new', UserController.renderCreateForm);
 
-// GET /api/users/:id - Tekil kullanıcı getirme (ID ile çağırma)
-router.get('/:id', getUserById);
+// POST /users - Yeni kullanıcı oluşturma işlemi (Create - C)
+router.post('/', UserController.createUser);
 
-// PUT /api/users/:id - Kullanıcı kaydını tam güncelleme (Form veya JSON)
-router.put('/:id', upload.none(), updateUser);
+// GET /users/:id - Tekil kullanıcı profil detay görünümü (Read)
+router.get('/:id', UserController.showUser);
 
-// PATCH /api/users/:id - Kullanıcı kaydını kısmi güncelleme (Form veya JSON)
-router.patch('/:id', upload.none(), patchUser);
+// GET /users/:id/edit - Kullanıcı düzenleme formu görünümü
+router.get('/:id/edit', UserController.renderEditForm);
 
-// DELETE /api/users/:id - Kullanıcı kaydını silme
-router.delete('/:id', deleteUser);
+// POST /users/:id - Kullanıcı güncelleme işlemi (Update - U)
+router.post('/:id', UserController.updateUser);
+
+// POST /users/:id/edit - Alternatif form güncelleme rotası
+router.post('/:id/edit', UserController.updateUser);
+
+// PUT /users/:id - REST/Method-override destekli güncelleme
+router.put('/:id', UserController.updateUser);
+
+// POST /users/:id/delete - Kullanıcı silme işlemi (Delete - D)
+router.post('/:id/delete', UserController.deleteUser);
+
+// DELETE /users/:id - REST/Method-override destekli silme
+router.delete('/:id', UserController.deleteUser);
 
 export default router;
