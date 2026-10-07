@@ -1,0 +1,164 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">📢 Duyurular ve Etkinlikler</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">MVC Mimarisi - Duyuru Yönetim Arayüzü (In-Memory CRUD)</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="/announcements/new" class="btn btn-primary" style="background-color: #7c3aed;">
+      <span>➕</span> Yeni Duyuru Ekle
+    </a>
+    <a href="/api/announcements" target="_blank" class="btn btn-secondary">
+      <span>⚡</span> REST API (JSON)
+    </a>
+  </div>
+</div>
+
+<!-- Arama ve Filtreleme Kartı -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-body" style="padding: 1rem 1.5rem;">
+    <form action="/announcements" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 220px;">
+        <label class="form-label" for="search">Başlık, İçerik veya Yazar Ara</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="form-control"
+          placeholder="Örn: Mezunlar günü, Staj, Rektörlük..."
+          value="<%= filters && filters.search ? filters.search : '' %>"
+        >
+      </div>
+
+      <div style="flex: 1; min-width: 140px;">
+        <label class="form-label" for="category">Kategori</label>
+        <select id="category" name="category" class="form-select">
+          <option value="">Tümü</option>
+          <option value="EVENT" <%= filters && filters.category === 'EVENT' ? 'selected' : '' %>>EVENT (Etkinlik)</option>
+          <option value="CAREER" <%= filters && filters.category === 'CAREER' ? 'selected' : '' %>>CAREER (Kariyer/İş)</option>
+          <option value="ACADEMIC" <%= filters && filters.category === 'ACADEMIC' ? 'selected' : '' %>>ACADEMIC (Akademik)</option>
+          <option value="GENERAL" <%= filters && filters.category === 'GENERAL' ? 'selected' : '' %>>GENERAL (Genel)</option>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 140px;">
+        <label class="form-label" for="target_audience">Hedef Kitle</label>
+        <select id="target_audience" name="target_audience" class="form-select">
+          <option value="">Tümü</option>
+          <option value="ALL" <%= filters && filters.target_audience === 'ALL' ? 'selected' : '' %>>Herkes (ALL)</option>
+          <option value="ALUMNI" <%= filters && filters.target_audience === 'ALUMNI' ? 'selected' : '' %>>Yalnızca Mezunlar</option>
+          <option value="STUDENT" <%= filters && filters.target_audience === 'STUDENT' ? 'selected' : '' %>>Yalnızca Öğrenciler</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary" style="background-color: #7c3aed;">Filtrele</button>
+        <% if (filters && (filters.search || filters.category || filters.target_audience)) { %>
+          <a href="/announcements" class="btn btn-secondary">Temizle</a>
+        <% } %>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Duyuru Listesi Kartı -->
+<div class="card">
+  <div class="card-header">
+    <div style="font-weight: 700; color: #1e293b;">
+      Aktif ve Yayınlanmış Duyurular (<%= announcements ? announcements.length : 0 %>)
+    </div>
+    <div style="font-size: 0.85rem; color: var(--text-muted);">
+      In-Memory Duyuru Deposu
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <% if (announcements && announcements.length > 0) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Başlık</th>
+            <th>Kategori</th>
+            <th>Hedef Kitle</th>
+            <th>Yazar</th>
+            <th>Tarih</th>
+            <th>Durum</th>
+            <th style="text-align: right;">İşlemler (CRUD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% announcements.forEach(item => { %>
+            <tr>
+              <td style="font-weight: 700; color: #64748b;">#<%= item.id %></td>
+              <td style="font-weight: 600; max-width: 280px;">
+                <a href="/announcements/<%= item.id %>" style="color: #0f172a; text-decoration: none;">
+                  <%= item.title %>
+                </a>
+              </td>
+              <td>
+                <% if (item.category === 'EVENT') { %>
+                  <span class="badge badge-event">🎉 Etkinlik</span>
+                <% } else if (item.category === 'CAREER') { %>
+                  <span class="badge badge-career">💼 Kariyer</span>
+                <% } else if (item.category === 'ACADEMIC') { %>
+                  <span class="badge badge-academic">📚 Akademik</span>
+                <% } else { %>
+                  <span class="badge badge-general">📢 Genel</span>
+                <% } %>
+              </td>
+              <td>
+                <% if (item.target_audience === 'ALUMNI') { %>
+                  <span class="badge badge-alumni">Mezunlar</span>
+                <% } else if (item.target_audience === 'STUDENT') { %>
+                  <span class="badge badge-student">Öğrenciler</span>
+                <% } else { %>
+                  <span class="badge badge-verified">Herkes</span>
+                <% } %>
+              </td>
+              <td style="color: var(--text-muted); font-size: 0.88rem;"><%= item.author || '-' %></td>
+              <td style="color: var(--text-muted); font-size: 0.85rem;">
+                <%= item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR') : '-' %>
+              </td>
+              <td>
+                <% if (item.is_active) { %>
+                  <span class="badge badge-active">Yayında</span>
+                <% } else { %>
+                  <span class="badge badge-inactive">Taslak</span>
+                <% } %>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 0.35rem; align-items: center;">
+                  <!-- Detay (Read) -->
+                  <a href="/announcements/<%= item.id %>" class="btn btn-secondary btn-sm" title="Detay">
+                    Detay
+                  </a>
+                  <!-- Düzenle (Update) -->
+                  <a href="/announcements/<%= item.id %>/edit" class="btn btn-primary btn-sm" style="background-color: #7c3aed;" title="Düzenle">
+                    Düzenle
+                  </a>
+                  <!-- Sil (Delete) -->
+                  <form action="/announcements/<%= item.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu duyuruyu silmek istediğinize emin misiniz? (#<%= item.id %> <%= item.title %>)');">
+                    <button type="submit" class="btn btn-danger btn-sm" title="Sil">
+                      Sil
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <div style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📢</div>
+        <h3 style="color: #334155; margin-bottom: 0.5rem;">Duyuru Bulunamadı</h3>
+        <p style="margin-bottom: 1.25rem;">Arama kriterlerine uygun duyuru bulunamadı veya henüz eklenmedi.</p>
+        <a href="/announcements/new" class="btn btn-primary" style="background-color: #7c3aed;">+ İlk Duyuruyu Ekle</a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -5,6 +5,7 @@ import methodOverride from 'method-override';
 import { fileURLToPath } from 'url';
 import apiRouter from './routes/index.js';
 import userRoutes from './routes/user.routes.js';
+import announcementRoutes from './routes/announcement.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Alumni Tracking System API is running',
     usersPage: '/users',
+    announcementsPage: '/announcements',
     healthCheck: '/api/health',
     swaggerDocs: '/api/swagger'
   });
@@ -41,6 +43,9 @@ app.get('/', (req, res) => {
 
 // Mount MVC View Routes for Users at /users
 app.use('/users', userRoutes);
+
+// Mount MVC View Routes for Announcements at /announcements
+app.use('/announcements', announcementRoutes);
 
 // API Routes
 app.use('/api', apiRouter);

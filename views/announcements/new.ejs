@@ -1,0 +1,106 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 750px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="/announcements" style="color: #7c3aed; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+      &larr; Duyuru Listesine Dön
+    </a>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+      ➕ Yeni Duyuru Oluştur (Create)
+    </h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      MVC View Katmanı - Mezun ve öğrenciler için yeni bir etkinlik, kariyer veya akademik duyuru yayınlayın.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-weight: 700;">Duyuru Bilgileri</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">* Zorunlu Alanlar</div>
+    </div>
+    <div class="card-body">
+      <form action="/announcements" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="title">Duyuru Başlığı *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            class="form-control"
+            placeholder="Örn: 2026 Bahar Mezunlar Günü Buluşması"
+            value="<%= typeof formData !== 'undefined' && formData.title ? formData.title : '' %>"
+          >
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="category">Kategori *</label>
+            <select id="category" name="category" class="form-select" required>
+              <option value="EVENT" <%= typeof formData !== 'undefined' && formData.category === 'EVENT' ? 'selected' : '' %>>EVENT (Etkinlik)</option>
+              <option value="CAREER" <%= typeof formData !== 'undefined' && formData.category === 'CAREER' ? 'selected' : '' %>>CAREER (Kariyer / Staj)</option>
+              <option value="ACADEMIC" <%= typeof formData !== 'undefined' && formData.category === 'ACADEMIC' ? 'selected' : '' %>>ACADEMIC (Akademik)</option>
+              <option value="GENERAL" <%= typeof formData !== 'undefined' && formData.category === 'GENERAL' ? 'selected' : '' %>>GENERAL (Genel)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="target_audience">Hedef Kitle *</label>
+            <select id="target_audience" name="target_audience" class="form-select" required>
+              <option value="ALL" <%= typeof formData !== 'undefined' && formData.target_audience === 'ALL' ? 'selected' : '' %>>Herkes (ALL)</option>
+              <option value="ALUMNI" <%= typeof formData !== 'undefined' && formData.target_audience === 'ALUMNI' ? 'selected' : '' %>>Yalnızca Mezunlar</option>
+              <option value="STUDENT" <%= typeof formData !== 'undefined' && formData.target_audience === 'STUDENT' ? 'selected' : '' %>>Yalnızca Öğrenciler</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="author">Yayınlayan / Yazar</label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            class="form-control"
+            placeholder="Örn: Kariyer Merkezi, Mezunlar Derneği, Rektörlük"
+            value="<%= typeof formData !== 'undefined' && formData.author ? formData.author : '' %>"
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="content">Duyuru İçeriği *</label>
+          <textarea
+            id="content"
+            name="content"
+            rows="6"
+            required
+            class="form-control"
+            placeholder="Duyuru metni, detaylar, katılım koşulları veya başvuru bağlantıları..."
+          ><%= typeof formData !== 'undefined' && formData.content ? formData.content : '' %></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+            <input
+              type="checkbox"
+              id="is_active"
+              name="is_active"
+              value="true"
+              style="width: 1.1rem; height: 1.1rem;"
+              <%= typeof formData === 'undefined' || formData.is_active !== false ? 'checked' : '' %>
+            >
+            <span style="font-weight: 500; font-size: 0.95rem;">Hemen Yayına Al (Aktif Duyuru)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <a href="/announcements" class="btn btn-secondary">İptal</a>
+          <button type="submit" class="btn btn-primary" style="background-color: #7c3aed;">
+            ✓ Duyuruyu Yayınla (POST /announcements)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

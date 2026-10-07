@@ -94,14 +94,17 @@ alumni/
 │   │
 │   ├── config/                   # Yapılandırma katmanı
 │   │   ├── environment.js        # Port ve çalışma ortamı değişkenleri
-│   │   └── swagger.js            # OpenAPI 3.0 dokümantasyon şeması (Web & API rotaları)
+│   │   └── swagger.js            # OpenAPI 3.0 dokümantasyon şeması (Kullanıcı & Duyuru rotaları)
 │   │
 │   ├── models/                   # MODEL KATMANI (Veri ve İş Mantığı)
-│   │   └── user.model.js         # In-memory User modeli ve tam CRUD fonksiyonları
+│   │   ├── user.model.js         # In-memory User modeli ve tam CRUD fonksiyonları
+│   │   └── announcement.model.js # In-memory Announcement modeli ve tam CRUD fonksiyonları
 │   │
 │   ├── controllers/              # CONTROLLER KATMANI (İstek/Yanıt Yöneticileri)
-│   │   ├── userController.js     # Web Görünüm Kontrolcüsü (EJS render eden CRUD)
-│   │   ├── apiUserController.js  # REST API Kontrolcüsü (JSON dönen CRUD)
+│   │   ├── userController.js     # Kullanıcı Web Görünüm Kontrolcüsü (EJS render)
+│   │   ├── apiUserController.js  # Kullanıcı REST API Kontrolcüsü (JSON yanıt)
+│   │   ├── announcementController.js    # Duyuru Web Görünüm Kontrolcüsü (EJS render)
+│   │   ├── apiAnnouncementController.js # Duyuru REST API Kontrolcüsü (JSON yanıt)
 │   │   ├── user.controller.js    # Geriye dönük uyumluluk sarmalayıcısı
 │   │   └── health.controller.js  # Sistem sağlık kontrolü kontrolcüsü
 │   │
@@ -109,6 +112,8 @@ alumni/
 │       ├── index.js              # API rotaları toplayıcısı ve Swagger mount
 │       ├── user.routes.js        # /users Web Görünüm rotaları
 │       ├── apiUser.routes.js     # /api/users REST API rotaları
+│       ├── announcement.routes.js    # /announcements Web Görünüm rotaları
+│       ├── apiAnnouncement.routes.js # /api/announcements REST API rotaları
 │       └── health.routes.js      # /api/health sistem sağlık rotaları
 │
 ├── views/                        # VIEW KATMANI (EJS Şablonları)
@@ -116,18 +121,23 @@ alumni/
 │   ├── partials/                 # Yeniden kullanılabilir parçalı şablonlar
 │   │   ├── header.ejs            # HTML başlık, navigasyon çubuğu ve modern CSS stilleri
 │   │   └── footer.ejs            # Sayfa altlığı ve telif/bağlantı alanı
-│   └── users/                    # Kullanıcı Yönetimi Görünümleri
-│       ├── index.ejs             # [R] Kullanıcı listeleme, arama ve filtreleme tablosu
-│       ├── new.ejs               # [C] Yeni kullanıcı oluşturma formu
-│       ├── show.ejs              # [R] Tekil kullanıcı detay profil sayfası
-│       └── edit.ejs              # [U] Kullanıcı bilgileri düzenleme formu
+│   ├── users/                    # Kullanıcı Yönetimi Görünümleri
+│   │   ├── index.ejs             # [R] Kullanıcı listeleme, arama ve filtreleme tablosu
+│   │   ├── new.ejs               # [C] Yeni kullanıcı oluşturma formu
+│   │   ├── show.ejs              # [R] Tekil kullanıcı detay profil sayfası
+│   │   └── edit.ejs              # [U] Kullanıcı bilgileri düzenleme formu
+│   └── announcements/            # Duyuru Yönetimi Görünümleri
+│       ├── index.ejs             # [R] Duyuru listeleme, arama ve kategori filtreleme
+│       ├── new.ejs               # [C] Yeni duyuru oluşturma formu
+│       ├── show.ejs              # [R] Tekil duyuru detay sayfası
+│       └── edit.ejs              # [U] Duyuru bilgileri düzenleme formu
 │
 ├── public/                       # Statik Web Varlıkları
 │   ├── index.html                # Hoş geldiniz ana sayfası ve bağlantı dizini
 │   └── about.html                # Proje ve teknoloji yığını hakkında sayfası
 │
 └── test/                         # Otomatik Test Paketi
-    └── index.test.js             # node:test ile yazılmış 18 adet uçtan uca test
+    └── index.test.js             # node:test ile yazılmış 30 adet uçtan uca test
 ```
 
 ---
@@ -251,6 +261,7 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 
 ### 🌐 Web Görünüm Rotaları (MVC View Layer)
 
+#### Kullanıcı Yönetimi
 | HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/users` | Tüm kullanıcıların listesi, arama ve filtreleme | View (`users/index.ejs`) |
@@ -260,6 +271,17 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `GET` | `/users/:id/edit` | Kullanıcı bilgileri düzenleme formu | View (`users/edit.ejs`) |
 | `POST` | `/users/:id` | Kullanıcı bilgilerini güncelleme (U) | Controller -> Redirect `/users/:id` |
 | `POST` | `/users/:id/delete` | Kullanıcıyı silme işlemi (D) | Controller -> Redirect `/users` |
+
+#### Duyuru Yönetimi
+| HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/announcements` | Tüm duyuruların listesi, arama ve kategori filtresi | View (`announcements/index.ejs`) |
+| `GET` | `/announcements/new` | Yeni duyuru oluşturma formu | View (`announcements/new.ejs`) |
+| `POST` | `/announcements` | Yeni duyuru ekleme form gönderimi (C) | Controller -> Redirect `/announcements` |
+| `GET` | `/announcements/:id` | Tekil duyuru detay sayfası (R) | View (`announcements/show.ejs`) |
+| `GET` | `/announcements/:id/edit` | Duyuru bilgileri düzenleme formu | View (`announcements/edit.ejs`) |
+| `POST` | `/announcements/:id` | Duyuru bilgilerini güncelleme (U) | Controller -> Redirect `/announcements/:id` |
+| `POST` | `/announcements/:id/delete` | Duyuruyu silme işlemi (D) | Controller -> Redirect `/announcements` |
 
 ### ⚡ REST API Rotaları (JSON API Layer)
 
@@ -271,6 +293,12 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `PUT` | `/api/users/:id` | Kullanıcı kaydını tam güncelle | `200 OK` / `404 Not Found` |
 | `PATCH` | `/api/users/:id` | Kullanıcı kaydını kısmi güncelle | `200 OK` / `404 Not Found` |
 | `DELETE` | `/api/users/:id` | Kullanıcı kaydını sil | `200 OK` / `404 Not Found` |
+| `GET` | `/api/announcements` | Tüm duyuruları JSON formatında listele | `200 OK` (JSON) |
+| `POST` | `/api/announcements` | Yeni duyuru oluştur (JSON / Form-data) | `201 Created` (JSON) |
+| `GET` | `/api/announcements/:id` | ID ile tekil duyuru detayını getir | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/announcements/:id` | Duyuru kaydını tam güncelle | `200 OK` / `404 Not Found` |
+| `PATCH` | `/api/announcements/:id` | Duyuru kaydını kısmi güncelle | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/announcements/:id` | Duyuru kaydını sil | `200 OK` / `404 Not Found` |
 | `GET` | `/api/health` | Sunucu sağlık ve sistem metrikleri | `200 OK` (JSON) |
 
 ### 📄 Genel ve Statik Rotalar
@@ -287,15 +315,10 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 
 ## 📚 Swagger & OpenAPI Dokümantasyonu
 
-Projede yer alan hem **Web Görünüm (`/users`)** rotaları hem de **REST API (`/api/users`)** rotaları OpenAPI 3.0 standardında eksiksiz biçimde Swagger UI ile belgelenmiştir.
+Projede yer alan hem **Web Görünüm (`/users`, `/announcements`)** rotaları hem de **REST API (`/api/users`, `/api/announcements`)** rotaları OpenAPI 3.0 standardında eksiksiz biçimde Swagger UI ile belgelenmiştir.
 
 - **Swagger UI Arayüzü:** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
 - **OpenAPI JSON Şeması:** [http://localhost:5000/api/swagger.json](http://localhost:5000/api/swagger.json)
-
-Swagger arayüzü üzerinden:
-- `/users` ve altındaki tüm form ve görünüm rotalarının parametrelerini inceleyebilirsiniz.
-- `/api/users` altındaki CRUD uç noktalarını tarayıcı üzerinden parametre girerek doğrudan test edebilirsiniz (`Try it out`).
-- `User`, `CreateUserInput`, `UpdateUserInput`, `PatchUserInput` ve `ErrorResponse` şemalarını detaylı inceleyebilirsiniz.
 
 ---
 
@@ -327,15 +350,17 @@ npm run dev
 ```
 
 Sunucu varsayılan olarak **5000** portunda dinlemeye başlayacaktır:
-- 👥 **Kullanıcı Web Arayüzü (MVC View):** [http://localhost:5000/users](http://localhost:5000/users)
-- ➕ **Yeni Kullanıcı Ekleme Formu:** [http://localhost:5000/users/new](http://localhost:5000/users/new)
+- 👥 **Kullanıcı Web Arayüzü:** [http://localhost:5000/users](http://localhost:5000/users)
+- 📢 **Duyuru Yönetim Arayüzü:** [http://localhost:5000/announcements](http://localhost:5000/announcements)
+- ➕ **Yeni Duyuru Ekleme:** [http://localhost:5000/announcements/new](http://localhost:5000/announcements/new)
 - 📚 **Swagger UI Dokümantasyonu:** [http://localhost:5000/api/swagger](http://localhost:5000/api/swagger)
-- ⚡ **REST API JSON Uç Noktası:** [http://localhost:5000/api/users](http://localhost:5000/api/users)
+- ⚡ **Kullanıcı REST API:** [http://localhost:5000/api/users](http://localhost:5000/api/users)
+- ⚡ **Duyuru REST API:** [http://localhost:5000/api/announcements](http://localhost:5000/api/announcements)
 - 🏥 **Sağlık Kontrolü:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
 - 🏠 **Ana Sayfa:** [http://localhost:5000/](http://localhost:5000/)
 
 ### 4. Otomatik Testleri Çalıştırın
-Projede Node.js'in yerleşik test koşucusu (`node:test`) ile hazırlanmış 18 adet otomatik uçtan uca test bulunmaktadır:
+Projede Node.js'in yerleşik test koşucusu (`node:test`) ile hazırlanmış **30 adet** otomatik uçtan uca test bulunmaktadır:
 
 ```bash
 npm test
@@ -343,26 +368,9 @@ npm test
 
 Test çıktısı:
 ```text
-✔ GET / returns temporary home page HTML and status 200
-✔ GET /about returns about page HTML and status 200
-✔ GET /hello returns Hello World and status 200
-✔ GET /hello/:name returns Hello <Name>! and status 200
-✔ GET /sum/:number1/:number2 returns toplam= <sum> and status 200
-✔ GET /users returns user listings HTML and status 200 (Read - R)
-✔ GET /users/new returns create user form HTML and status 200
-✔ POST /users creates new user via form and redirects (Create - C)
-✔ GET /users/:id returns user detail HTML (Read - R)
-✔ GET /users/:id/edit returns edit form HTML
-✔ POST /users/:id updates user via form and redirects (Update - U)
-✔ POST /users/:id/delete removes user and redirects (Delete - D)
-✔ GET /api/users returns JSON users list and 200 OK
-✔ POST /api/users creates user and returns 201 Created
-✔ GET /api/users/:id returns user by id
-✔ PUT /api/users/:id updates user
-✔ DELETE /api/users/:id removes user
-✔ GET /api/swagger.json returns OpenAPI spec
-ℹ tests 18
-ℹ pass 18
+✔ 30 test başarıyla geçti (30 passed, 0 failed)
+ℹ tests 30
+ℹ pass 30
 ℹ fail 0
 ```
 

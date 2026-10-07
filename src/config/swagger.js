@@ -29,6 +29,14 @@ export const swaggerDocument = {
       description: 'İstemciler (mobil, frontend, postman) için JSON tabanlı RESTful API Rotaları (CRUD)'
     },
     {
+      name: 'Duyurular Web Arayüzü (MVC Views)',
+      description: 'Duyurular için HTML/EJS Web Sayfası Yönetim Arayüzü (CRUD)'
+    },
+    {
+      name: 'Duyurular REST API (JSON)',
+      description: 'Duyurular için JSON tabanlı RESTful API Uç Noktaları (CRUD)'
+    },
+    {
       name: 'Sistem',
       description: 'Sistem sağlığı ve çalışma durumu uç noktaları'
     }
@@ -522,6 +530,329 @@ export const swaggerDocument = {
         }
       }
     },
+    '/announcements': {
+      get: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuruları Listeleme Sayfası (MVC View - Read)',
+        description: 'Tüm duyuruları arama ve filtreleme seçenekleriyle HTML formatında listeler.',
+        parameters: [
+          {
+            name: 'search',
+            in: 'query',
+            description: 'Başlık, içerik veya yazara göre arama',
+            schema: { type: 'string' }
+          },
+          {
+            name: 'category',
+            in: 'query',
+            description: 'Duyuru kategorisi',
+            schema: { type: 'string', enum: ['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'] }
+          },
+          {
+            name: 'target_audience',
+            in: 'query',
+            description: 'Hedef kitle',
+            schema: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'] }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Duyuru listesi HTML sayfası.',
+            content: { 'text/html': { schema: { type: 'string' } } }
+          }
+        }
+      },
+      post: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Yeni Duyuru Oluşturma (Create - HTML Form)',
+        description: 'Web formundan gelen verilerle yeni duyuru oluşturup yönlendirir.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/x-www-form-urlencoded': {
+              schema: { $ref: '#/components/schemas/CreateAnnouncementInput' }
+            }
+          }
+        },
+        responses: {
+          '302': { description: 'Duyuru oluşturuldu ve /announcements sayfasına yönlendirildi.' },
+          '400': { description: 'Doğrulama hatası.' }
+        }
+      }
+    },
+    '/announcements/new': {
+      get: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Yeni Duyuru Ekleme Form Sayfası (View)',
+        description: 'Duyuru ekleme formunu render eder.',
+        responses: {
+          '200': {
+            description: 'Duyuru formu HTML sayfası.',
+            content: { 'text/html': { schema: { type: 'string' } } }
+          }
+        }
+      }
+    },
+    '/announcements/{id}': {
+      get: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuru Detay Sayfası (Read - Detail)',
+        description: 'ID numarasına göre duyuru detay sayfasını render eder.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Duyuru detay sayfası HTML.',
+            content: { 'text/html': { schema: { type: 'string' } } }
+          },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      },
+      post: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuru Güncelleme (Update - HTML Form)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/x-www-form-urlencoded': {
+              schema: { $ref: '#/components/schemas/UpdateAnnouncementInput' }
+            }
+          }
+        },
+        responses: {
+          '302': { description: 'Duyuru güncellendi ve yönlendirildi.' }
+        }
+      }
+    },
+    '/announcements/{id}/edit': {
+      get: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuru Düzenleme Form Sayfası (View)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': { description: 'Duyuru düzenleme formu HTML.' },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      },
+      post: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuru Düzenleme Formu Gönderimi (Update)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '302': { description: 'Duyuru güncellendi ve yönlendirildi.' }
+        }
+      }
+    },
+    '/announcements/{id}/delete': {
+      post: {
+        tags: ['Duyurular Web Arayüzü (MVC Views)'],
+        summary: 'Duyuruyu Sil (Delete - Action)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '302': { description: 'Duyuru silindi ve yönlendirildi.' },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      }
+    },
+    '/api/announcements': {
+      get: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'Tüm Duyuruları JSON Olarak Listele (Read)',
+        description: 'Duyuruları filtreleme kriterleriyle birlikte JSON listesi olarak döner.',
+        parameters: [
+          {
+            name: 'search',
+            in: 'query',
+            schema: { type: 'string' }
+          },
+          {
+            name: 'category',
+            in: 'query',
+            schema: { type: 'string', enum: ['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'] }
+          },
+          {
+            name: 'target_audience',
+            in: 'query',
+            schema: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'] }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Duyuru listesi başarıyla getirildi.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    count: { type: 'integer', example: 3 },
+                    data: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/Announcement' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      post: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'Yeni Duyuru Oluştur (Create - JSON)',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/CreateAnnouncementInput' }
+            },
+            'application/x-www-form-urlencoded': {
+              schema: { $ref: '#/components/schemas/CreateAnnouncementInput' }
+            }
+          }
+        },
+        responses: {
+          '201': {
+            description: 'Duyuru oluşturuldu.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    message: { type: 'string', example: 'Duyuru başarıyla oluşturuldu (In-Memory).' },
+                    data: { $ref: '#/components/schemas/Announcement' }
+                  }
+                }
+              }
+            }
+          },
+          '400': { description: 'Zorunlu alanlar eksik veya geçersiz.' }
+        }
+      }
+    },
+    '/api/announcements/{id}': {
+      get: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'ID ile Duyuru Getir (Read)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Duyuru bulundu.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { $ref: '#/components/schemas/Announcement' }
+                  }
+                }
+              }
+            }
+          },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      },
+      put: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'Duyuruyu Tam Güncelle (Update - PUT)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateAnnouncementInput' }
+            }
+          }
+        },
+        responses: {
+          '200': { description: 'Duyuru güncellendi.' },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      },
+      patch: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'Duyuruyu Kısmi Güncelle (Update - PATCH)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': { description: 'Duyuru kısmi güncellendi.' },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      },
+      delete: {
+        tags: ['Duyurular REST API (JSON)'],
+        summary: 'Duyuruyu Sil (Delete)',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          '200': { description: 'Duyuru başarıyla silindi.' },
+          '404': { description: 'Duyuru bulunamadı.' }
+        }
+      }
+    },
     '/api/health': {
       get: {
         tags: ['Sistem'],
@@ -599,6 +930,43 @@ export const swaggerDocument = {
           department: { type: 'string', example: 'Veri Bilimi' },
           graduation_year: { type: 'integer', example: 2027 },
           is_verified: { type: 'boolean', example: true }
+        }
+      },
+      Announcement: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1 },
+          title: { type: 'string', example: '🎓 2026 Mezunlar Günü Buluşması' },
+          content: { type: 'string', example: 'Geleneksel mezunlar günü etkinliğimiz kampüste gerçekleşecektir.' },
+          category: { type: 'string', enum: ['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'], example: 'EVENT' },
+          author: { type: 'string', example: 'Mezunlar Derneği' },
+          target_audience: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'], example: 'ALL' },
+          is_active: { type: 'boolean', example: true },
+          created_at: { type: 'string', format: 'date-time', example: '2026-10-01T10:00:00.000Z' },
+          updated_at: { type: 'string', format: 'date-time', nullable: true, example: null }
+        }
+      },
+      CreateAnnouncementInput: {
+        type: 'object',
+        required: ['title', 'content'],
+        properties: {
+          title: { type: 'string', example: 'Yeni Etkinlik Duyurusu' },
+          content: { type: 'string', example: 'Etkinlik detayları ve başvuru formu...' },
+          category: { type: 'string', enum: ['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'], default: 'GENERAL', example: 'EVENT' },
+          author: { type: 'string', example: 'Kariyer Merkezi' },
+          target_audience: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'], default: 'ALL', example: 'ALL' },
+          is_active: { type: 'boolean', default: true, example: true }
+        }
+      },
+      UpdateAnnouncementInput: {
+        type: 'object',
+        properties: {
+          title: { type: 'string', example: 'Güncellenmiş Duyuru Başlığı' },
+          content: { type: 'string', example: 'Güncellenmiş duyuru içeriği...' },
+          category: { type: 'string', enum: ['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'], example: 'CAREER' },
+          author: { type: 'string', example: 'Kariyer Merkezi' },
+          target_audience: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'], example: 'STUDENT' },
+          is_active: { type: 'boolean', example: true }
         }
       },
       ErrorResponse: {

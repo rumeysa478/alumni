@@ -5,6 +5,7 @@ import methodOverride from 'method-override';
 import { fileURLToPath, pathToFileURL } from 'url';
 import apiRouter from './src/routes/index.js';
 import userRoutes from './src/routes/user.routes.js';
+import announcementRoutes from './src/routes/announcement.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Alumni Tracking System API is running',
     usersPage: '/users',
+    announcementsPage: '/announcements',
     healthCheck: '/api/health',
     swaggerDocs: '/api/swagger'
   });
@@ -72,6 +74,9 @@ app.get('/sum/:number1/:number2', (req, res) => {
 // Mount MVC View Routes for Users at /users
 app.use('/users', userRoutes);
 
+// Mount MVC View Routes for Announcements at /announcements
+app.use('/announcements', announcementRoutes);
+
 // Mount modular API Routes at /api
 app.use('/api', apiRouter);
 
@@ -82,6 +87,7 @@ if (isDirectExecution) {
   app.listen(PORT, () => {
     console.log(`🚀 Alumni Web & API server listening on http://localhost:${PORT}`);
     console.log(`👥 Users (MVC View): http://localhost:${PORT}/users`);
+    console.log(`📢 Announcements (MVC View): http://localhost:${PORT}/announcements`);
     console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
     console.log(`📚 Swagger docs: http://localhost:${PORT}/api/swagger`);
   });

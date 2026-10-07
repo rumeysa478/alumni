@@ -3,6 +3,8 @@ import swaggerUi from 'swagger-ui-express';
 import healthRoutes from './health.routes.js';
 import apiUserRoutes from './apiUser.routes.js';
 import userRoutes from './user.routes.js';
+import apiAnnouncementRoutes from './apiAnnouncement.routes.js';
+import announcementRoutes from './announcement.routes.js';
 import { swaggerDocument } from '../config/swagger.js';
 
 const apiRouter = Router();
@@ -25,5 +27,8 @@ apiRouter.use('/health', healthRoutes);
 // Mount API user routes at /api/users
 apiRouter.use('/users', apiUserRoutes);
 
-export { apiRouter, userRoutes, apiUserRoutes };
+// Mount API announcement routes at /api/announcements
+apiRouter.use('/announcements', apiAnnouncementRoutes);
+
+export { apiRouter, userRoutes, apiUserRoutes, announcementRoutes, apiAnnouncementRoutes };
 export default apiRouter;

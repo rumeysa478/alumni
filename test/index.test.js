@@ -357,7 +357,7 @@ test('DELETE /api/users/:id removes user', async () => {
 // SWAGGER DOCS TESTS
 // ==========================================
 
-test('GET /api/swagger.json returns OpenAPI spec', async () => {
+test('GET /api/swagger.json returns OpenAPI spec with users and announcements', async () => {
   const server = app.listen(0);
   const { port } = server.address();
 
@@ -368,7 +368,266 @@ test('GET /api/swagger.json returns OpenAPI spec', async () => {
     assert.strictEqual(body.openapi, '3.0.0');
     assert.ok(body.paths['/users']);
     assert.ok(body.paths['/api/users']);
+    assert.ok(body.paths['/announcements']);
+    assert.ok(body.paths['/api/announcements']);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
 });
+
+// ==========================================
+// ANNOUNCEMENT MVC VIEW TESTS (/announcements)
+// ==========================================
+
+test('GET /announcements returns announcements list HTML and status 200 (Read - R)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/announcements`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.text();
+    assert.ok(body.includes('Duyurular ve Etkinlikler'));
+    assert.ok(body.includes('Mezunlar Günü'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /announcements/new returns create announcement form HTML', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/announcements/new`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.text();
+    assert.ok(body.includes('Yeni Duyuru Oluştur'));
+    assert.ok(body.includes('form action="/announcements" method="POST"'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /announcements creates announcement via form and redirects (Create - C)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const formData = new URLSearchParams({
+      title: 'Test Web Duyurusu',
+      content: 'Bu bir test duyuru metnidir.',
+      category: 'EVENT',
+      author: 'Test Kulübü',
+      target_audience: 'ALL',
+      is_active: 'on'
+    });
+
+    const res = await fetch(`http://127.0.0.1:${port}/announcements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString(),
+      redirect: 'manual'
+    });
+
+    assert.strictEqual(res.status, 302);
+    assert.ok(res.headers.get('location').includes('/announcements'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /announcements/:id returns announcement detail HTML (Read - R)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/announcements/1`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.text();
+    assert.ok(body.includes('Duyuru Detayı'));
+    assert.ok(body.includes('Mezunlar Günü'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /announcements/:id/edit returns edit form HTML', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/announcements/1/edit`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.text();
+    assert.ok(body.includes('Duyuru Bilgilerini Düzenle'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /announcements/:id updates announcement via form and redirects (Update - U)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const formData = new URLSearchParams({
+      title: '2026 Mezunlar Günü (Güncellendi)',
+      content: 'Güncel saat bilgisi eklenmiştir.',
+      category: 'EVENT',
+      author: 'Mezunlar Derneği'
+    });
+
+    const res = await fetch(`http://127.0.0.1:${port}/announcements/1`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString(),
+      redirect: 'manual'
+    });
+
+    assert.strictEqual(res.status, 302);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /announcements/:id/delete removes announcement and redirects (Delete - D)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const createRes = await fetch(`http://127.0.0.1:${port}/api/announcements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Silinecek Duyuru',
+        content: 'Silinecek içerik',
+        category: 'GENERAL'
+      })
+    });
+    const created = await createRes.json();
+    const deleteId = created.data.id;
+
+    const res = await fetch(`http://127.0.0.1:${port}/announcements/${deleteId}/delete`, {
+      method: 'POST',
+      redirect: 'manual'
+    });
+
+    assert.strictEqual(res.status, 302);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+// ==========================================
+// ANNOUNCEMENT REST API TESTS (/api/announcements)
+// ==========================================
+
+test('GET /api/announcements returns JSON list and 200 OK', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/announcements`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.ok(Array.isArray(body.data));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /api/announcements creates announcement and returns 201 Created', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/announcements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'API ile Eklenen Duyuru',
+        content: 'Bu duyuru REST API üzerinden oluşturulmuştur.',
+        category: 'CAREER',
+        author: 'API Test',
+        target_audience: 'STUDENT'
+      })
+    });
+
+    assert.strictEqual(res.status, 201);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.data.title, 'API ile Eklenen Duyuru');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /api/announcements/:id returns announcement by ID', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/announcements/1`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.data.id, 1);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('PUT /api/announcements/:id updates announcement', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/announcements/1`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: '2026 Mezunlar Günü (API PUT Güncellendi)',
+        content: 'Yeni içerik detayı...',
+        category: 'EVENT'
+      })
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('DELETE /api/announcements/:id removes announcement', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const createRes = await fetch(`http://127.0.0.1:${port}/api/announcements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'API Silinecek Duyuru',
+        content: 'Silinecek içerik',
+        category: 'GENERAL'
+      })
+    });
+    const created = await createRes.json();
+    const deleteId = created.data.id;
+
+    const res = await fetch(`http://127.0.0.1:${port}/api/announcements/${deleteId}`, {
+      method: 'DELETE'
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+

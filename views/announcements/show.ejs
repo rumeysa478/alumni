@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <a href="/announcements" style="color: #7c3aed; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+        &larr; Duyuru Listesine Dön
+      </a>
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+        <%= announcement.title %>
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Duyuru Detayı (Read - R) &bull; ID: #<%= announcement.id %>
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem;">
+      <a href="/announcements/<%= announcement.id %>/edit" class="btn btn-primary" style="background-color: #7c3aed;">
+        ✏️ Düzenle
+      </a>
+      <form action="/announcements/<%= announcement.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu duyuruyu silmek istediğinize emin misiniz?');">
+        <button type="submit" class="btn btn-danger">
+          🗑️ Sil
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <% if (announcement.category === 'EVENT') { %>
+          <span class="badge badge-event">🎉 Etkinlik</span>
+        <% } else if (announcement.category === 'CAREER') { %>
+          <span class="badge badge-career">💼 Kariyer</span>
+        <% } else if (announcement.category === 'ACADEMIC') { %>
+          <span class="badge badge-academic">📚 Akademik</span>
+        <% } else { %>
+          <span class="badge badge-general">📢 Genel</span>
+        <% } %>
+
+        <% if (announcement.target_audience === 'ALUMNI') { %>
+          <span class="badge badge-alumni">Mezunlar</span>
+        <% } else if (announcement.target_audience === 'STUDENT') { %>
+          <span class="badge badge-student">Öğrenciler</span>
+        <% } else { %>
+          <span class="badge badge-verified">Herkes</span>
+        <% } %>
+
+        <% if (announcement.is_active) { %>
+          <span class="badge badge-active">Yayında</span>
+        <% } else { %>
+          <span class="badge badge-inactive">Taslak</span>
+        <% } %>
+      </div>
+
+      <div style="font-size: 0.85rem; color: var(--text-muted);">
+        Yayınlayan: <strong><%= announcement.author || 'Sistem' %></strong>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Duyuru Metni -->
+      <div style="font-size: 1.05rem; line-height: 1.8; color: #1e293b; white-space: pre-line; margin-bottom: 2rem;">
+        <%= announcement.content %>
+      </div>
+
+      <div style="background-color: #f8fafc; border-radius: 8px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+        <div>
+          <span>Yayınlanma Tarihi: </span>
+          <strong><%= announcement.created_at ? new Date(announcement.created_at).toLocaleString('tr-TR') : '-' %></strong>
+        </div>
+        <% if (announcement.updated_at) { %>
+          <div>
+            <span>Son Güncelleme: </span>
+            <strong><%= new Date(announcement.updated_at).toLocaleString('tr-TR') %></strong>
+          </div>
+        <% } %>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+          JSON API karşılığı: <a href="/api/announcements/<%= announcement.id %>" target="_blank" style="color: #7c3aed;">/api/announcements/<%= announcement.id %></a>
+        </span>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/announcements" class="btn btn-secondary">Duyuru Listesine Dön</a>
+          <a href="/announcements/<%= announcement.id %>/edit" class="btn btn-primary" style="background-color: #7c3aed;">Düzenle</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
