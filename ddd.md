@@ -25,6 +25,7 @@
    - [Sır: Docker İsimlendirilmiş Birimleri (Named Volumes)](#sır-docker-i̇simlendirilmiş-birimleri-named-volumes)
    - [Adım Adım Test Senaryosu (Doğrulama Kılavuzu)](#adım-adım-test-senaryosu-doğrulama-kılavuzu)
 8. [PostgreSQL DDL Şema Tanımı (SQL Script)](#8-postgresql-ddl-şema-tanımı-sql-script)
+9. [Migration ve Veritabanı Üretim Sistemi (Automated Migrations)](#9-migration-ve-veritabanı-üretim-sistemi)
 
 ---
 
@@ -558,6 +559,46 @@ CREATE TABLE IF NOT EXISTS mentorships (
     CONSTRAINT chk_mentor_not_mentee CHECK (mentor_id <> mentee_id)
 );
 ```
+
+---
+
+## 9. Migration ve Veritabanı Üretim Sistemi
+
+Dokümantasyonda tanımlanan ilişkisel veritabanı şemasını otomatik olarak oluşturmak, sürümlemek ve tohum verileri yüklemek için projede tam teşekküllü bir migration altyapısı geliştirilmiştir:
+
+### Mimari Dosya Yapısı:
+```plaintext
+src/database/
+├── connection.js                 # pg.Pool veritabanı bağlantı havuzu
+├── migrate.js                    # Otomatik migration koşucusu (Schema Runner)
+├── seed.js                       # Başlangıç örnek verilerini yükleyici (Seed Runner)
+├── reset.js                      # Şemayı sıfırlayıp baştan kuran temizleme betiği
+├── migrations/
+│   └── 001_create_tables.sql     # ddd.md'deki 8 tablo ve indeksleri üreten DDL
+└── seeds/
+    └── 001_initial_seed.sql      # Başlangıç kullanıcı, profil, duyuru ve ilan verileri
+```
+
+### Komutlar:
+
+#### 1. Veritabanı Şemasını ve Tabloları Üretme (Migration)
+```bash
+npm run db:migrate
+```
+- Hedef PostgreSQL veritabanı mevcut değilse otomatik olarak oluşturur (`CREATE DATABASE`).
+- `_migrations` tablosunu kontrol eder ve yalnızca henüz uygulanmamış SQL migration dosyalarını atomik bir transaction (`BEGIN ... COMMIT`) içerisinde çalıştırır.
+
+#### 2. Başlangıç Tohum Verilerini Yükleme (Seed)
+```bash
+npm run db:seed
+```
+- Sistemde test ve ilk kullanım için gerekli olan örnek kullanıcıları, mezun profillerini, duyuruları ve iş ilanlarını yükler.
+
+#### 3. Veritabanını Tamamen Sıfırlama ve Yeniden Üretme (Reset)
+```bash
+npm run db:reset
+```
+- Tüm eski şemayı ve tabloları temizler (`DROP SCHEMA public CASCADE`), ardından migration ve seed işlemlerini sırayla baştan koşturur.
 
 ---
 

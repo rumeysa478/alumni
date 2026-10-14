@@ -397,7 +397,21 @@ Copy-Item example.env .env
 npm install
 ```
 
-### 4. Uygulamayı Başlatın
+### 4. Veritabanı Migration ve Tohum Verileri (Veritabanını Üretme)
+Dokümantasyona (`ddd.md`) uygun olarak PostgreSQL veritabanı şemasını, tabloları ve indeksleri otomatik üretmek için:
+
+```bash
+# Şemayı, tabloları ve indeksleri oluşturun (Migration):
+npm run db:migrate
+
+# Başlangıç örnek verilerini ekleyin (Seed):
+npm run db:seed
+
+# (İsteğe bağlı) Tüm tabloları sıfırlayıp baştan üretmek için:
+npm run db:reset
+```
+
+### 5. Uygulamayı Başlatın
 ```bash
 # Normal / Üretim Başlatma
 npm start
@@ -416,7 +430,7 @@ Sunucu **5000** portunda dinlemeye başlayacaktır:
 - 🏥 **Sağlık Kontrolü:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
 - 🏠 **Ana Sayfa:** [http://localhost:5000/](http://localhost:5000/)
 
-### 5. Otomatik Testleri Koşun
+### 6. Otomatik Testleri Koşun
 Projede yerleşik `node:test` koşucusu ile uçtan uca hazırlanmış **30 adet** otomatik test bulunmaktadır:
 
 ```bash
