@@ -24,9 +24,11 @@
 5. [View Katmanı (EJS Templates)](#-view-katmanı-ejs-templates)
 6. [Uç Noktalar ve Rotalar (Endpoints)](#-uç-noktalar-ve-rotalar-endpoints)
 7. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
-8. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
-9. [Docker Desteği](#-docker-desteği)
-10. [Geliştirici Bilgileri](#-geliştirici-bilgileri)
+8. [Veri Tasarımı Dokümantasyonu (ddd.md)](#-veri-tasarımı-dokümantasyonu-dddmd)
+9. [Çevresel Değişkenler (.env ve example.env)](#-çevresel-değişkenler-env-ve-exampleenv)
+10. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
+11. [Docker Desteği ve "The Forgetting Test" Sırrı](#-docker-desteği-ve-the-forgetting-test-sırrı)
+12. [Geliştirici Bilgileri](#-geliştirici-bilgileri)
 
 ---
 
@@ -322,12 +324,62 @@ Projede yer alan hem **Web Görünüm (`/users`, `/announcements`)** rotaları h
 
 ---
 
+## 📊 Veri Tasarımı Dokümantasyonu (ddd.md)
+
+Projenin ilişkisel veritabanı şeması, E-R modeli, normalizasyon adımları ve veri kalıcılığı mimarisi özel olarak hazırlanan **Veri Tasarımı Dokümanı**'nda detaylandırılmıştır:
+
+👉 **[Kapsamlı Veri Tasarımı Dokümanını İnceleyin (ddd.md)](./ddd.md)**
+
+### Özet Kapsam:
+- **E-R Diyagramı (ERD):** Tüm varlıklar arasındaki 1:1, 1:N ve N:M ilişkilerin görsel Mermaid şeması.
+- **Veri Sözlüğü (Data Dictionary):** `users`, `alumni_profiles`, `announcements`, `job_postings`, `job_applications`, `events`, `event_attendees`, `mentorships` tablolarının veri tipleri, birincil/yabancı anahtarları ve kısıtları.
+- **Normalizasyon (1NF, 2NF, 3NF):** Veri tekrarını önleyen ve veri bütünlüğünü garanti eden 3. Normal Form analizi.
+- **İndeksleme & DDL:** Sık sorgulanan kolonlar için B-Tree indeks stratejisi ve [`docker/init.sql`](./docker/init.sql) başlatma scripti.
+- **The Forgetting Test:** Docker ortamında konteyner yeniden başlatmalarında verilerin kaybolmasını engelleyen kalıcılık mekanizması.
+
+---
+
+## ⚙️ Çevresel Değişkenler (.env ve example.env)
+
+Uygulama hassas kimlik doğrulama bilgilerini, veritabanı parolalarını ve ortam ayarlarını **çevresel değişkenler (Environment Variables)** üzerinden dinamik olarak yönetir:
+
+- 🔒 **`.env` Dosyası (Gizli):** Yerel geliştirme veya canlı ortamdaki gizli anahtarları ve parolaları içerir. `.gitignore` dosyasında listelenmiştir ve **asla GitHub'a gönderilmez**.
+- 📋 **`example.env` & `.env.example` (Şablon):** Projede kullanılan tüm değişkenleri, açıklamalarını ve varsayılan geliştirme değerlerini içeren şablon dosyadır. Repoda takip edilir ve herkese açıktır.
+
+### Kurulum:
+```bash
+# Windows PowerShell:
+Copy-Item example.env .env
+
+# Linux / macOS:
+cp example.env .env
+```
+
+### Temel Değişkenler Listesi:
+| Değişken | Varsayılan | Açıklama |
+| :--- | :--- | :--- |
+| `NODE_ENV` | `development` | Çalışma ortamı (`development`, `production`, `test`) |
+| `PORT` | `5000` | Web sunucusunun dinleyeceği port |
+| `DB_HOST` | `localhost` | PostgreSQL sunucu adresi (Docker için: `postgres_db`) |
+| `DB_PORT` | `5432` | PostgreSQL bağlantı portu |
+| `DB_USER` | `postgres` | Veritabanı kullanıcı adı |
+| `DB_PASSWORD` | `your_secure_password` | Veritabanı şifresi |
+| `DB_NAME` | `alumni_db` | Veritabanı adı |
+| `DATABASE_URL` | `postgresql://...` | Tam veritabanı bağlantı URI dizesi |
+| `JWT_SECRET` | `super_secret_jwt_key...` | JWT token imzalama gizli anahtarı |
+| `JWT_EXPIRES_IN` | `7d` | Token geçerlilik süresi |
+| `UPLOAD_DIR` | `./uploads` | Yüklenen dosyaların dizini |
+| `MAX_FILE_SIZE` | `5242880` | Maksimum dosya yükleme boyutu (5MB) |
+
+---
+
 ## 🚀 Kurulum, Çalıştırma ve Testler
 
 ### Ön Koşullar
 - [Node.js](https://nodejs.org/) (v18 veya üzeri)
 - [npm](https://www.npmjs.com/) (veya yarn/pnpm)
 - [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/) (Konteyner ile çalıştırma için)
 
 ### 1. Depoyu Klonlayın
 ```bash
@@ -335,21 +387,26 @@ git clone https://github.com/rumeysa478/alumni.git
 cd alumni
 ```
 
-### 2. Bağımlılıkları Yükleyin
+### 2. Çevresel Değişkenleri Ayarlayın
+```bash
+Copy-Item example.env .env
+```
+
+### 3. Bağımlılıkları Yükleyin
 ```bash
 npm install
 ```
 
-### 3. Uygulamayı Başlatın
+### 4. Uygulamayı Başlatın
 ```bash
-# Üretim / Normal Başlatma
+# Normal / Üretim Başlatma
 npm start
 
-# veya Geliştirici Modunda Başlatma (nodemon ile otomatik yeniden yükleme)
+# veya Geliştirici Modu (Nodemon ile canlı izleme)
 npm run dev
 ```
 
-Sunucu varsayılan olarak **5000** portunda dinlemeye başlayacaktır:
+Sunucu **5000** portunda dinlemeye başlayacaktır:
 - 👥 **Kullanıcı Web Arayüzü:** [http://localhost:5000/users](http://localhost:5000/users)
 - 📢 **Duyuru Yönetim Arayüzü:** [http://localhost:5000/announcements](http://localhost:5000/announcements)
 - ➕ **Yeni Duyuru Ekleme:** [http://localhost:5000/announcements/new](http://localhost:5000/announcements/new)
@@ -359,34 +416,69 @@ Sunucu varsayılan olarak **5000** portunda dinlemeye başlayacaktır:
 - 🏥 **Sağlık Kontrolü:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
 - 🏠 **Ana Sayfa:** [http://localhost:5000/](http://localhost:5000/)
 
-### 4. Otomatik Testleri Çalıştırın
-Projede Node.js'in yerleşik test koşucusu (`node:test`) ile hazırlanmış **30 adet** otomatik uçtan uca test bulunmaktadır:
+### 5. Otomatik Testleri Koşun
+Projede yerleşik `node:test` koşucusu ile uçtan uca hazırlanmış **30 adet** otomatik test bulunmaktadır:
 
 ```bash
 npm test
 ```
 
-Test çıktısı:
-```text
-✔ 30 test başarıyla geçti (30 passed, 0 failed)
-ℹ tests 30
-ℹ pass 30
-ℹ fail 0
+---
+
+## 🐳 Docker Desteği ve "The Forgetting Test" Sırrı
+
+Proje hem **Node.js Web & REST API** uygulamasını hem de **PostgreSQL** veritabanını içeren çoklu konteyner mimarisine (`docker-compose.yml`) sahiptir.
+
+### Hızlı Başlatma:
+```bash
+# Tüm servisleri (Web + PostgreSQL) derleyip arka planda ayağa kaldırın:
+docker compose up -d --build
+
+# Konteyner durumlarını görüntüleyin:
+docker compose ps
+
+# Logları takip edin:
+docker compose logs -f web
+
+# Konteynerleri durdurun:
+docker compose down
 ```
 
 ---
 
-## 🐳 Docker Desteği
+### 🌟 "The Forgetting Test" (Veri Kalıcılığı Sırrı)
 
-Uygulamayı Docker ile izole bir konteyner ortamında çalıştırmak için:
+#### Senaryo:
+1. **Adım 1:** Veritabanına yeni bir kayıt ekleyin (Örn: Yeni kullanıcı veya duyuru).
+2. **Adım 2:** `docker compose down` komutunu çalıştırarak konteynerleri kapatın ve yok edin.
+3. **Adım 3:** `docker compose up -d` komutu ile sistemi yeniden ayağa kaldırın.
+4. **Adım 4:** Eklediğiniz kaydı kontrol edin.
 
-```bash
-# Docker imajını derleyip ayağa kaldırın
-docker compose up --build
+#### ❓ Soru: Kayıt hala duruyor mu yoksa sistem kaydı "unuttu" mu?
+Konteynerlerin varsayılan dosya sistemi geçicidir (ephemeral). Eğer özel bir kalıcı depolama yapılandırılmazsa, `docker compose down` çalıştırıldığında konteyner silinir ve tüm veritabanı kayıtları **kaybolur (UNUTULUR)**!
 
-# Konteynerleri durdurmak için
-docker compose down
+#### 💡 Sır (The Secret):
+Bu testi başarıyla geçmenin sırrı, Docker'ın **İsimlendirilmiş Birimler (Named Volumes)** özelliğini kullanmaktır:
+
+```yaml
+services:
+  postgres_db:
+    image: postgres:15-alpine
+    volumes:
+      # THE FORGETTING TEST SECRET:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
 ```
+
+- **`postgres_data`**, konteyner yaşam döngüsünden bağımsız olarak Docker ana makinesinde (host) kalıcı olarak saklanır.
+- `docker compose down` konteyneri siler fakat bu named volume'e dokunmaz.
+- `docker compose up` yeni konteyneri ayağa kaldırıp aynı named volume'ü bağladığında PostgreSQL tüm eski tabloları ve yeni eklenen kayıtları eksiksiz hatırlar.
+- ⚠️ Yalnızca açıkça `docker compose down -v` (veya `--volumes`) komutu verilirse veriler sıfırlanır.
+
+Detaylı teknik izah ve SQL adımları için 👉 [ddd.md Bölüm 7'ye bakınız](./ddd.md#7--the-forgetting-test-sırrı-veri-kalıcılığı).
 
 ---
 
@@ -395,4 +487,5 @@ docker compose down
 - **Geliştirici:** Rümeysa Aydın ([@rumeysa478](https://github.com/rumeysa478))
 - **Ders:** Web Programlama / Web Programming (3. Sınıf)
 - **GitHub Deposu:** [https://github.com/rumeysa478/alumni](https://github.com/rumeysa478/alumni)
+- **Veri Tasarımı:** [Data Design Documentation (ddd.md)](./ddd.md)
 - **Lisans:** [MIT Lisansı](https://opensource.org/licenses/MIT)
