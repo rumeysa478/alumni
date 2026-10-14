@@ -23,7 +23,7 @@ class UserModel {
       {
         email: 'rumeysa.aydin@alumni.edu',
         password: 'password123',
-        first_name: 'Rümeysa',
+        first_name: 'Rumeysa',
         last_name: 'Aydın',
         role: 'ALUMNI',
         department: 'Yönetim Bilişim Sistemleri',

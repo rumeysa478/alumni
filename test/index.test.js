@@ -103,7 +103,7 @@ test('GET /users returns user listings HTML and status 200 (Read - R)', async ()
     assert.strictEqual(res.status, 200);
     const body = await res.text();
     assert.ok(body.includes('Mezun ve Öğrenci Listesi'));
-    assert.ok(body.includes('Rümeysa'));
+    assert.ok(body.includes('Rumeysa') || body.includes('Rümeysa'));
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -163,7 +163,7 @@ test('GET /users/:id returns user detail HTML (Read - R)', async () => {
     assert.strictEqual(res.status, 200);
     const body = await res.text();
     assert.ok(body.includes('Profil'));
-    assert.ok(body.includes('Rümeysa'));
+    assert.ok(body.includes('Rumeysa') || body.includes('Rümeysa'));
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -189,7 +189,7 @@ test('POST /users/:id updates user via form and redirects (Update - U)', async (
 
   try {
     const formData = new URLSearchParams({
-      first_name: 'Rümeysa',
+      first_name: 'Rumeysa',
       last_name: 'Aydın Güncel',
       email: 'rumeysa.aydin@alumni.edu',
       role: 'ALUMNI',
@@ -310,7 +310,7 @@ test('PUT /api/users/:id updates user', async () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        first_name: 'Rümeysa',
+        first_name: 'Rumeysa',
         last_name: 'Aydın',
         department: 'Yönetim Bilişim Sistemleri (Updated)'
       })

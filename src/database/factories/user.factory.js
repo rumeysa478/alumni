@@ -6,7 +6,7 @@
 const FIRST_NAMES = [
   'Emre', 'Burak', 'Can', 'Deniz', 'Mert', 'Kaan', 'Tolga', 'Barış', 'Alper', 'Oğuz',
   'Elif', 'Seda', 'Büşra', 'Demet', 'Gamze', 'İrem', 'Ece', 'Selin', 'Melis', 'Ezgi',
-  'Ahmet', 'Mehmet', 'Ali', 'Mustafa', 'Zeynep', 'Ayşe', 'Fatma', 'Rümeysa', 'Hakan'
+  'Ahmet', 'Mehmet', 'Ali', 'Mustafa', 'Zeynep', 'Ayşe', 'Fatma', 'Rumeysa', 'Hakan'
 ];
 
 const LAST_NAMES = [

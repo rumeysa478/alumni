@@ -184,14 +184,14 @@ alumni/
 
 ## 📦 Kullanıcı Modeli ve In-Memory CRUD
 
-`src/models/user.model.js` dosyası herhangi bir harici veritabanına bağlı olmaksızın çalışan saf JavaScript sınıfıdır. Başlangıçta sistemde 3 adet gerçekçi örnek kullanıcı (Rümeysa Aydın, Ahmet Yılmaz, Zeynep Kaya) ile tohumlanır (seed).
+`src/models/user.model.js` dosyası herhangi bir harici veritabanına bağlı olmaksızın çalışan saf JavaScript sınıfıdır. Başlangıçta sistemde 3 adet gerçekçi örnek kullanıcı (Rumeysa Aydın, Ahmet Yılmaz, Zeynep Kaya) ile tohumlanır (seed).
 
 ### Model Şeması
 
 ```javascript
 {
   id: 1,                                       // Otomatik artan tekil sayısal kimlik
-  first_name: "Rümeysa",                       // Kullanıcı adı
+  first_name: "Rumeysa",                       // Kullanıcı adı
   last_name: "Aydın",                          // Kullanıcı soyadı
   email: "rumeysa.aydin@alumni.edu",           // Benzersiz e-posta
   password: "password123",                     // Şifre
@@ -501,7 +501,7 @@ Detaylı teknik izah ve SQL adımları için 👉 [ddd.md Bölüm 7'ye bakınız
 
 ## 👥 Geliştirici Bilgileri
 
-- **Geliştirici:** Rümeysa Aydın ([@rumeysa478](https://github.com/rumeysa478))
+- **Geliştirici:** Rumeysa Aydın ([@rumeysa478](https://github.com/rumeysa478))
 - **Ders:** Web Programlama / Web Programming (3. Sınıf)
 - **GitHub Deposu:** [https://github.com/rumeysa478/alumni](https://github.com/rumeysa478/alumni)
 - **Veri Tasarımı:** [Data Design Documentation (ddd.md)](./ddd.md)
