@@ -1,6 +1,6 @@
 /**
  * @file src/controllers/announcementController.js
- * @description Web View Katmanı Duyuru Kontrolcüsü (HTML / EJS şablonlarını render eden AnnouncementController)
+ * @description Web View Katmanı Duyuru Kontrolcüsü (HTML / EJS şablonlarını render eden AnnouncementController - DB Connected)
  */
 
 import announcementModel from '../models/announcement.model.js';
@@ -10,14 +10,14 @@ export const AnnouncementController = {
    * Duyuruları listeleme sayfası (Read - R)
    * GET /announcements
    */
-  listAnnouncements: (req, res) => {
+  listAnnouncements: async (req, res) => {
     try {
       const search = req.query.search || req.query.q || '';
       const category = req.query.category || '';
       const target_audience = req.query.target_audience || '';
       const is_active = req.query.is_active;
 
-      const announcements = announcementModel.getAll({
+      const announcements = await announcementModel.getAll({
         search,
         category,
         target_audience,
@@ -44,9 +44,9 @@ export const AnnouncementController = {
    * Tekil duyuru detay sayfası (Read - R)
    * GET /announcements/:id
    */
-  showAnnouncement: (req, res) => {
+  showAnnouncement: async (req, res) => {
     try {
-      const announcement = announcementModel.getById(req.params.id);
+      const announcement = await announcementModel.getById(req.params.id);
       if (!announcement) {
         return res.status(404).render('error', {
           title: 'Duyuru Bulunamadı',
@@ -69,12 +69,12 @@ export const AnnouncementController = {
   },
 
   /**
-   * Yeni duyuru ekleme formu görünümü
+   * Yeni duyuru oluşturma formu (View)
    * GET /announcements/new
    */
   renderCreateForm: (req, res) => {
     res.render('announcements/new', {
-      title: 'Yeni Duyuru Oluştur',
+      title: 'Yeni Duyuru Yayınla',
       formData: {},
       errorMessage: null
     });
@@ -84,7 +84,7 @@ export const AnnouncementController = {
    * Yeni duyuru oluşturma işlemi (Create - C)
    * POST /announcements
    */
-  createAnnouncement: (req, res) => {
+  createAnnouncement: async (req, res) => {
     try {
       const {
         title,
@@ -95,7 +95,7 @@ export const AnnouncementController = {
         is_active
       } = req.body;
 
-      const newAnnouncement = announcementModel.create({
+      const newAnnouncement = await announcementModel.create({
         title,
         content,
         category,
@@ -105,11 +105,11 @@ export const AnnouncementController = {
       });
 
       console.log(`[MVC VIEW] Yeni duyuru eklendi: ID=${newAnnouncement.id}, Başlık="${newAnnouncement.title}"`);
-      res.redirect(`/announcements?success=${encodeURIComponent('Duyuru başarıyla oluşturuldu.')}`);
+      res.redirect(`/announcements?success=${encodeURIComponent('Duyuru başarıyla yayınlandı.')}`);
     } catch (error) {
-      console.error('Duyuru form ekleme hatası:', error.message);
+      console.error('Duyuru form oluşturma hatası:', error.message);
       res.status(400).render('announcements/new', {
-        title: 'Yeni Duyuru Oluştur',
+        title: 'Yeni Duyuru Yayınla',
         formData: req.body,
         errorMessage: error.message
       });
@@ -117,12 +117,12 @@ export const AnnouncementController = {
   },
 
   /**
-   * Duyuru düzenleme formu görünümü
+   * Duyuru güncelleme formu (View)
    * GET /announcements/:id/edit
    */
-  renderEditForm: (req, res) => {
+  renderEditForm: async (req, res) => {
     try {
-      const announcement = announcementModel.getById(req.params.id);
+      const announcement = await announcementModel.getById(req.params.id);
       if (!announcement) {
         return res.status(404).render('error', {
           title: 'Duyuru Bulunamadı',
@@ -136,7 +136,7 @@ export const AnnouncementController = {
         errorMessage: null
       });
     } catch (error) {
-      console.error('Duyuru düzenleme formu hatası:', error);
+      console.error('Duyuru düzenleme sayfası hatası:', error);
       res.status(500).render('error', {
         title: 'Hata',
         message: 'Duyuru düzenleme sayfası yüklenirken bir hata oluştu.'
@@ -148,7 +148,7 @@ export const AnnouncementController = {
    * Duyuru güncelleme işlemi (Update - U)
    * POST /announcements/:id
    */
-  updateAnnouncement: (req, res) => {
+  updateAnnouncement: async (req, res) => {
     try {
       const announcementId = req.params.id;
       const {
@@ -160,7 +160,7 @@ export const AnnouncementController = {
         is_active
       } = req.body;
 
-      const updated = announcementModel.update(announcementId, {
+      const updated = await announcementModel.update(announcementId, {
         title,
         content,
         category,
@@ -179,7 +179,7 @@ export const AnnouncementController = {
       console.log(`[MVC VIEW] Duyuru güncellendi: ID=${announcementId}`);
       res.redirect(`/announcements/${announcementId}?success=${encodeURIComponent('Duyuru başarıyla güncellendi.')}`);
     } catch (error) {
-      console.error('Duyuru güncelleme form hatası:', error.message);
+      console.error('Duyuru form güncelleme hatası:', error.message);
       res.status(400).render('announcements/edit', {
         title: 'Duyuruyu Düzenle',
         announcement: { ...req.body, id: req.params.id },
@@ -192,10 +192,10 @@ export const AnnouncementController = {
    * Duyuru silme işlemi (Delete - D)
    * POST /announcements/:id/delete
    */
-  deleteAnnouncement: (req, res) => {
+  deleteAnnouncement: async (req, res) => {
     try {
       const announcementId = req.params.id;
-      const deleted = announcementModel.delete(announcementId);
+      const deleted = await announcementModel.delete(announcementId);
 
       if (!deleted) {
         return res.status(404).render('error', {

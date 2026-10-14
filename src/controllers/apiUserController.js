@@ -1,6 +1,6 @@
 /**
  * @file src/controllers/apiUserController.js
- * @description REST API Kontrolcüsü (JSON yanıt dönen ApiUserController)
+ * @description REST API Kontrolcüsü (JSON yanıt dönen ApiUserController - DB Connected)
  */
 
 import userModel from '../models/user.model.js';
@@ -37,13 +37,13 @@ export const ApiUserController = {
    * Tüm kullanıcıları listeleme
    * GET /api/users
    */
-  getUsers: (req, res) => {
+  getUsers: async (req, res) => {
     try {
       const search = req.query.search || req.query.q;
       const role = req.query.role;
       const department = req.query.department;
 
-      const users = userModel.getAll({ search, role, department });
+      const users = await userModel.getAll({ search, role, department });
 
       return res.status(200).json({
         success: true,
@@ -64,7 +64,7 @@ export const ApiUserController = {
    * ID'ye göre tekil kullanıcı getirme
    * GET /api/users/:id
    */
-  getUserById: (req, res) => {
+  getUserById: async (req, res) => {
     try {
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
@@ -75,7 +75,7 @@ export const ApiUserController = {
         });
       }
 
-      const user = userModel.getById(userId);
+      const user = await userModel.getById(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -102,7 +102,7 @@ export const ApiUserController = {
    * Yeni kullanıcı oluşturma
    * POST /api/users
    */
-  createUser: (req, res) => {
+  createUser: async (req, res) => {
     try {
       const fields = extractUserFields(req);
       const { email, password, first_name, last_name, role = 'ALUMNI', department, graduation_year } = fields;
@@ -123,7 +123,7 @@ export const ApiUserController = {
         });
       }
 
-      const newUser = userModel.create({
+      const newUser = await userModel.create({
         email,
         password,
         first_name,
@@ -136,7 +136,7 @@ export const ApiUserController = {
       console.log(`[REST API] Kullanıcı oluşturuldu: ID ${newUser.id}`);
       return res.status(201).json({
         success: true,
-        message: 'Kullanıcı başarıyla oluşturuldu (In-Memory).',
+        message: 'Kullanıcı başarıyla oluşturuldu.',
         data: newUser
       });
     } catch (error) {
@@ -159,7 +159,7 @@ export const ApiUserController = {
    * Kullanıcı tam güncelleme (PUT)
    * PUT /api/users/:id
    */
-  updateUser: (req, res) => {
+  updateUser: async (req, res) => {
     try {
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
@@ -171,7 +171,7 @@ export const ApiUserController = {
       }
 
       const fields = extractUserFields(req);
-      const updatedUser = userModel.update(userId, fields);
+      const updatedUser = await userModel.update(userId, fields);
 
       if (!updatedUser) {
         return res.status(404).json({
@@ -207,7 +207,7 @@ export const ApiUserController = {
    * Kullanıcı kısmi güncelleme (PATCH)
    * PATCH /api/users/:id
    */
-  patchUser: (req, res) => {
+  patchUser: async (req, res) => {
     try {
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
@@ -219,7 +219,7 @@ export const ApiUserController = {
       }
 
       const fields = extractUserFields(req);
-      const updatedUser = userModel.patch(userId, fields);
+      const updatedUser = await userModel.patch(userId, fields);
 
       if (!updatedUser) {
         return res.status(404).json({
@@ -232,7 +232,7 @@ export const ApiUserController = {
       console.log(`[REST API] Kullanıcı güncellendi (PATCH): ID ${userId}`);
       return res.status(200).json({
         success: true,
-        message: `ID ${userId} olan kullanıcı başarıyla kısmi güncellendi (PATCH).`,
+        message: `ID ${userId} olan kullanıcı başarıyla güncellendi (PATCH).`,
         data: updatedUser
       });
     } catch (error) {
@@ -255,7 +255,7 @@ export const ApiUserController = {
    * Kullanıcı silme (DELETE)
    * DELETE /api/users/:id
    */
-  deleteUser: (req, res) => {
+  deleteUser: async (req, res) => {
     try {
       const userId = parseInt(req.params.id, 10);
       if (isNaN(userId)) {
@@ -266,7 +266,7 @@ export const ApiUserController = {
         });
       }
 
-      const deletedUser = userModel.delete(userId);
+      const deletedUser = await userModel.delete(userId);
       if (!deletedUser) {
         return res.status(404).json({
           success: false,
@@ -286,18 +286,10 @@ export const ApiUserController = {
       return res.status(500).json({
         success: false,
         error: 'Internal Server Error',
-        message: 'Kullanıcı silinirken bir sunucu hatası oluştu.'
+        message: 'Kullanıcı silinirken bir hata oluştu.'
       });
     }
   }
 };
-
-// Fonksiyonları doğrudan da dışa aktar (mevcut importlarla uyumluluk için)
-export const getUsers = ApiUserController.getUsers;
-export const getUserById = ApiUserController.getUserById;
-export const createUser = ApiUserController.createUser;
-export const updateUser = ApiUserController.updateUser;
-export const patchUser = ApiUserController.patchUser;
-export const deleteUser = ApiUserController.deleteUser;
 
 export default ApiUserController;

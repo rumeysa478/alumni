@@ -404,8 +404,11 @@ Dokümantasyona (`ddd.md`) uygun olarak PostgreSQL veritabanı şemasını, tabl
 # Şemayı, tabloları ve indeksleri oluşturun (Migration):
 npm run db:migrate
 
-# Başlangıç örnek verilerini ekleyin (Seed):
+# Başlangıç sabit verilerini ekleyin (Seed):
 npm run db:seed
+
+# Zengin ve gerçekçi demo verileri üretin (Factory & Demo Seeding):
+npm run db:factory
 
 # (İsteğe bağlı) Tüm tabloları sıfırlayıp baştan üretmek için:
 npm run db:reset

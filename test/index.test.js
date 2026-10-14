@@ -631,3 +631,40 @@ test('DELETE /api/announcements/:id removes announcement', async () => {
   }
 });
 
+// ==========================================
+// FACTORY & SEED UNIT TESTS
+// ==========================================
+
+import { UserFactory, AnnouncementFactory, JobPostingFactory } from '../src/database/factories/index.js';
+
+test('UserFactory produces realistic users and bulk objects', () => {
+  const single = UserFactory.definition();
+  assert.ok(single.email.includes('@alumni.edu'));
+  assert.ok(['ALUMNI', 'STUDENT', 'ADMIN'].includes(single.role));
+  assert.ok(single.profile.city);
+
+  const bulk = UserFactory.createMany(5);
+  assert.strictEqual(bulk.length, 5);
+  assert.strictEqual(typeof bulk[0].first_name, 'string');
+});
+
+test('AnnouncementFactory produces valid category templates', () => {
+  const single = AnnouncementFactory.definition();
+  assert.ok(single.title.length > 0);
+  assert.ok(['EVENT', 'CAREER', 'ACADEMIC', 'GENERAL'].includes(single.category));
+
+  const bulk = AnnouncementFactory.createMany(4);
+  assert.strictEqual(bulk.length, 4);
+});
+
+test('JobPostingFactory produces valid job postings', () => {
+  const single = JobPostingFactory.definition();
+  assert.ok(single.title.length > 0);
+  assert.ok(single.company.length > 0);
+  assert.ok(['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE', 'CONTRACT'].includes(single.type));
+
+  const bulk = JobPostingFactory.createMany(3);
+  assert.strictEqual(bulk.length, 3);
+});
+
+

@@ -1,6 +1,6 @@
 /**
  * @file src/controllers/userController.js
- * @description Web View Katmanı Kontrolcüsü (HTML / EJS şablonlarını render eden UserController)
+ * @description Web View Katmanı Kontrolcüsü (HTML / EJS şablonlarını render eden UserController - DB Connected)
  */
 
 import userModel from '../models/user.model.js';
@@ -10,13 +10,13 @@ export const UserController = {
    * Kullanıcıları listeleme sayfası (Read - R)
    * GET /users
    */
-  listUsers: (req, res) => {
+  listUsers: async (req, res) => {
     try {
       const search = req.query.search || req.query.q || '';
       const role = req.query.role || '';
       const department = req.query.department || '';
 
-      const users = userModel.getAll({ search, role, department });
+      const users = await userModel.getAll({ search, role, department });
 
       res.render('users/index', {
         title: 'Mezun ve Öğrenci Listesi',
@@ -38,9 +38,9 @@ export const UserController = {
    * Tekil kullanıcı detay sayfası (Read - R)
    * GET /users/:id
    */
-  showUser: (req, res) => {
+  showUser: async (req, res) => {
     try {
-      const user = userModel.getById(req.params.id);
+      const user = await userModel.getById(req.params.id);
       if (!user) {
         return res.status(404).render('error', {
           title: 'Kullanıcı Bulunamadı',
@@ -78,7 +78,7 @@ export const UserController = {
    * Yeni kullanıcı oluşturma işlemi (Create - C)
    * POST /users
    */
-  createUser: (req, res) => {
+  createUser: async (req, res) => {
     try {
       const {
         email,
@@ -91,7 +91,7 @@ export const UserController = {
         is_verified
       } = req.body;
 
-      const newUser = userModel.create({
+      const newUser = await userModel.create({
         email,
         password,
         first_name,
@@ -118,9 +118,9 @@ export const UserController = {
    * Kullanıcı güncelleme formu (View)
    * GET /users/:id/edit
    */
-  renderEditForm: (req, res) => {
+  renderEditForm: async (req, res) => {
     try {
-      const user = userModel.getById(req.params.id);
+      const user = await userModel.getById(req.params.id);
       if (!user) {
         return res.status(404).render('error', {
           title: 'Kullanıcı Bulunamadı',
@@ -146,7 +146,7 @@ export const UserController = {
    * Kullanıcı güncelleme işlemi (Update - U)
    * POST /users/:id (veya PUT /users/:id)
    */
-  updateUser: (req, res) => {
+  updateUser: async (req, res) => {
     try {
       const userId = req.params.id;
       const {
@@ -160,7 +160,7 @@ export const UserController = {
         is_verified
       } = req.body;
 
-      const updated = userModel.update(userId, {
+      const updated = await userModel.update(userId, {
         email,
         password,
         first_name,
@@ -194,10 +194,10 @@ export const UserController = {
    * Kullanıcı silme işlemi (Delete - D)
    * POST /users/:id/delete (veya DELETE /users/:id)
    */
-  deleteUser: (req, res) => {
+  deleteUser: async (req, res) => {
     try {
       const userId = req.params.id;
-      const deleted = userModel.delete(userId);
+      const deleted = await userModel.delete(userId);
 
       if (!deleted) {
         return res.status(404).render('error', {

@@ -10,6 +10,7 @@
     "test": "node --test",
     "db:migrate": "node src/database/migrate.js",
     "db:seed": "node src/database/seed.js",
+    "db:factory": "node src/database/factories/index.js",
     "db:reset": "node src/database/reset.js"
   },
   "keywords": [

@@ -573,6 +573,11 @@ src/database/
 ├── migrate.js                    # Otomatik migration koşucusu (Schema Runner)
 ├── seed.js                       # Başlangıç örnek verilerini yükleyici (Seed Runner)
 ├── reset.js                      # Şemayı sıfırlayıp baştan kuran temizleme betiği
+├── factories/                    # Veri Fabrikaları (Demo/Mock Veri Üreticileri)
+│   ├── index.js                  # Toplu factory koşucusu ve demo seeder
+│   ├── user.factory.js           # Gerçekçi mezun ve öğrenci veri fabrikası
+│   ├── announcement.factory.js   # Duyuru şablonları ve veri fabrikası
+│   └── job.factory.js            # İş ve staj ilanı veri fabrikası
 ├── migrations/
 │   └── 001_create_tables.sql     # ddd.md'deki 8 tablo ve indeksleri üreten DDL
 └── seeds/
@@ -592,9 +597,15 @@ npm run db:migrate
 ```bash
 npm run db:seed
 ```
-- Sistemde test ve ilk kullanım için gerekli olan örnek kullanıcıları, mezun profillerini, duyuruları ve iş ilanlarını yükler.
+- Sistemde test ve ilk kullanım için gerekli olan sabit örnek kullanıcıları, mezun profillerini, duyuruları ve iş ilanlarını yükler.
 
-#### 3. Veritabanını Tamamen Sıfırlama ve Yeniden Üretme (Reset)
+#### 3. Zengin ve Gerçekçi Demo Verileri Üretme (Factory)
+```bash
+npm run db:factory
+```
+- `UserFactory`, `AnnouncementFactory` ve `JobPostingFactory` şablonlarını kullanarak onlarca farklı, rastgele ve gerçekçi mezun profili, kariyer duyurusu ve staj ilanını tek komutla üretip veritabanına kaydeder.
+
+#### 4. Veritabanını Tamamen Sıfırlama ve Yeniden Üretme (Reset)
 ```bash
 npm run db:reset
 ```
