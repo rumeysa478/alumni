@@ -5,7 +5,7 @@ export const swaggerDocument = {
     version: '1.0.0',
     description: 'Üniversite mezunları ve öğrenciler için Mezun Takip Sistemi RESTful API ve MVC Web Görünüm dokümantasyonu.',
     contact: {
-      name: 'Rümeysa Aydın',
+      name: 'Rumeysa Aydın',
       url: 'https://github.com/rumeysa478/alumni'
     }
   },
@@ -53,7 +53,7 @@ export const swaggerDocument = {
             in: 'query',
             required: false,
             description: 'İsim, e-posta veya bölüme göre arama terimi',
-            schema: { type: 'string', example: 'Rümeysa' }
+            schema: { type: 'string', example: 'Rumeysa' }
           },
           {
             name: 'role',

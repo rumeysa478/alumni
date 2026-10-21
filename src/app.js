@@ -3,9 +3,12 @@ import path from 'path';
 import cors from 'cors';
 import methodOverride from 'method-override';
 import { fileURLToPath } from 'url';
+import directRouter from './routes/direct.routes.js';
 import apiRouter from './routes/index.js';
 import userRoutes from './routes/user.routes.js';
 import announcementRoutes from './routes/announcement.routes.js';
+import jobRoutes from './routes/job.routes.js';
+import eventRoutes from './routes/event.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,27 +30,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(rootDir, 'public')));
 
-// Root welcome route
-app.get('/', (req, res) => {
-  if (req.accepts('html')) {
-    return res.sendFile(path.join(rootDir, 'public', 'index.html'));
-  }
-  res.status(200).json({
-    message: 'Alumni Tracking System API is running',
-    usersPage: '/users',
-    announcementsPage: '/announcements',
-    healthCheck: '/api/health',
-    swaggerDocs: '/api/swagger'
-  });
-});
+// 1. Mount Direct & Informational Routes (/, /about, /hello, /sum, /health)
+app.use('/', directRouter);
 
-// Mount MVC View Routes for Users at /users
+// 2. Mount MVC Web Resource Routes
 app.use('/users', userRoutes);
-
-// Mount MVC View Routes for Announcements at /announcements
 app.use('/announcements', announcementRoutes);
+app.use('/jobs', jobRoutes);
+app.use('/events', eventRoutes);
 
-// API Routes
+// 3. Mount Central REST API Router at /api
 app.use('/api', apiRouter);
 
 // 404 Handler

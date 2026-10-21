@@ -285,6 +285,30 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `POST` | `/announcements/:id` | Duyuru bilgilerini güncelleme (U) | Controller -> Redirect `/announcements/:id` |
 | `POST` | `/announcements/:id/delete` | Duyuruyu silme işlemi (D) | Controller -> Redirect `/announcements` |
 
+#### İş ve Staj İlanları Yönetimi
+| HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/jobs` | Tüm iş ve staj ilanlarının listesi, arama ve filtreleme | View (`jobs/index.ejs`) |
+| `GET` | `/jobs/new` | Yeni ilan oluşturma formu | View (`jobs/new.ejs`) |
+| `POST` | `/jobs` | Yeni ilan ekleme form gönderimi (C) | Controller -> Redirect `/jobs` |
+| `GET` | `/jobs/:id` | Tekil ilan detayları, aranan şartlar ve başvuru alanı (R) | View (`jobs/show.ejs`) |
+| `GET` | `/jobs/:id/edit` | İlan bilgileri düzenleme formu | View (`jobs/edit.ejs`) |
+| `POST` | `/jobs/:id` | İlan bilgilerini güncelleme (U) | Controller -> Redirect `/jobs/:id` |
+| `POST` | `/jobs/:id/delete` | İlanı silme işlemi (D) | Controller -> Redirect `/jobs` |
+| `POST` | `/jobs/:id/apply` | İlana Alumni hesabı ile başvuru yapma | Controller -> Redirect `/jobs/:id` |
+
+#### Etkinlikler ve Buluşmalar
+| HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/events` | Tüm etkinliklerin listesi ve arama | View (`events/index.ejs`) |
+| `GET` | `/events/new` | Yeni etkinlik oluşturma formu | View (`events/new.ejs`) |
+| `POST` | `/events` | Yeni etkinlik form gönderimi (C) | Controller -> Redirect `/events` |
+| `GET` | `/events/:id` | Etkinlik detayı, kayıtlı katılımcılar ve kontenjan (R) | View (`events/show.ejs`) |
+| `GET` | `/events/:id/edit` | Etkinlik düzenleme formu | View (`events/edit.ejs`) |
+| `POST` | `/events/:id` | Etkinlik bilgilerini güncelleme (U) | Controller -> Redirect `/events/:id` |
+| `POST` | `/events/:id/delete` | Etkinliği silme işlemi (D) | Controller -> Redirect `/events` |
+| `POST` | `/events/:id/register` | Etkinliğe katılım kaydı oluşturma | Controller -> Redirect `/events/:id` |
+
 ### ⚡ REST API Rotaları (JSON API Layer)
 
 | HTTP Metodu | Rota | Açıklama | Yanıt Tipi |
@@ -301,17 +325,40 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `PUT` | `/api/announcements/:id` | Duyuru kaydını tam güncelle | `200 OK` / `404 Not Found` |
 | `PATCH` | `/api/announcements/:id` | Duyuru kaydını kısmi güncelle | `200 OK` / `404 Not Found` |
 | `DELETE` | `/api/announcements/:id` | Duyuru kaydını sil | `200 OK` / `404 Not Found` |
-| `GET` | `/api/health` | Sunucu sağlık ve sistem metrikleri | `200 OK` (JSON) |
+| `GET` | `/api/jobs` | İş ve staj ilanlarını filtreleyerek listele | `200 OK` (JSON) |
+| `POST` | `/api/jobs` | Yeni iş/staj ilanı yayınla | `201 Created` (JSON) |
+| `GET` | `/api/jobs/:id` | Tekil ilan detayları ve ilan sahibi mezun | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/jobs/:id` | İlan bilgilerini güncelle | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/jobs/:id` | İlanı sil | `200 OK` / `404 Not Found` |
+| `POST` | `/api/jobs/:id/apply` | İlana başvuru yap (N:M İlişki) | `201 Created` / `409 Conflict` |
+| `GET` | `/api/jobs/:id/applications` | İlana başvuran tüm adaylar | `200 OK` (JSON) |
+| `GET` | `/api/events` | Etkinlikleri tarih sırasına göre listele | `200 OK` (JSON) |
+| `POST` | `/api/events` | Yeni etkinlik oluştur | `201 Created` (JSON) |
+| `GET` | `/api/events/:id` | Tekil etkinlik detayları ve organizatör | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/events/:id` | Etkinlik güncelle | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/events/:id` | Etkinlik sil | `200 OK` / `404 Not Found` |
+| `POST` | `/api/events/:id/register` | Etkinliğe katılım kaydı yap (N:M İlişki) | `201 Created` / `409 Conflict` |
+| `GET` | `/api/events/:id/attendees` | Etkinliğin tüm katılımcıları | `200 OK` (JSON) |
+| `GET` | `/api/profiles` | Tüm mezun profillerini listele | `200 OK` (JSON) |
+| `GET` | `/api/profiles/:userId` | Kullanıcı ID'sine göre mezun profili (1:1) | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/profiles/:userId` | Kullanıcı profil bilgilerini güncelle | `200 OK` / `404 Not Found` |
+| `GET` | `/api/mentorships` | Mentörlük eşleşmelerini listele | `200 OK` (JSON) |
+| `POST` | `/api/mentorships` | Yeni mentörlük talebi oluştur | `201 Created` (JSON) |
+| `GET` | `/api/mentorships/:id` | Mentör ve mentee detayları | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/mentorships/:id` | Mentörlük durumunu güncelle | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/mentorships/:id` | Mentörlük ilişkisini sonlandır | `200 OK` / `404 Not Found` |
+| `GET` | `/api/health` | Sunucu sağlık ve çalışma durumu | `200 OK` (JSON) |
 
-### 📄 Genel ve Statik Rotalar
+### 📄 Doğrudan ve Statik Rotalar (Direct Routes)
 
 | HTTP Metodu | Rota | Açıklama |
 | :--- | :--- | :--- |
-| `GET` | `/` | Hoş geldiniz ana sayfası (`public/index.html`) veya API JSON |
+| `GET` | `/` | Hoş geldiniz ana sayfası (`public/index.html`) veya API JSON özeti |
 | `GET` | `/about` | Proje ve teknoloji yığını sayfası (`public/about.html`) |
 | `GET` | `/hello` | "Hello World" selamlama yanıtı |
 | `GET` | `/hello/:name` | Dinamik isim selamlama yanıtı (`Hello <Name>!`) |
-| `GET` | `/sum/:num1/:num2`| İki sayının toplamını hesaplayan uç nokta |
+| `GET` | `/sum/:num1/:num2`| İki sayının toplamını hesaplayan uç nokta (`toplam= <sum>`) |
+| `GET` | `/health` | Doğrudan sistem sağlık durumu kontrolü (`status: UP`) |
 
 ---
 

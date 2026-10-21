@@ -1,3 +1,9 @@
+/**
+ * @file src/routes/index.js
+ * @description Merkezi API Router Kaydı (/api)
+ * @author Rumeysa Aydın
+ */
+
 import { Router } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import healthRoutes from './health.routes.js';
@@ -5,6 +11,12 @@ import apiUserRoutes from './apiUser.routes.js';
 import userRoutes from './user.routes.js';
 import apiAnnouncementRoutes from './apiAnnouncement.routes.js';
 import announcementRoutes from './announcement.routes.js';
+import apiJobRoutes from './apiJob.routes.js';
+import jobRoutes from './job.routes.js';
+import apiEventRoutes from './apiEvent.routes.js';
+import eventRoutes from './event.routes.js';
+import apiProfileRoutes from './apiProfile.routes.js';
+import apiMentorshipRoutes from './apiMentorship.routes.js';
 import { swaggerDocument } from '../config/swagger.js';
 
 const apiRouter = Router();
@@ -21,14 +33,39 @@ const swaggerUiOptions = {
 };
 apiRouter.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerUiOptions));
 
-// Mount health routes at /api/health
+// 1. Health check routes (/api/health)
 apiRouter.use('/health', healthRoutes);
 
-// Mount API user routes at /api/users
+// 2. Users REST API routes (/api/users)
 apiRouter.use('/users', apiUserRoutes);
 
-// Mount API announcement routes at /api/announcements
+// 3. Announcements REST API routes (/api/announcements)
 apiRouter.use('/announcements', apiAnnouncementRoutes);
 
-export { apiRouter, userRoutes, apiUserRoutes, announcementRoutes, apiAnnouncementRoutes };
+// 4. Job Postings & Applications REST API routes (/api/jobs)
+apiRouter.use('/jobs', apiJobRoutes);
+
+// 5. Events & Attendees REST API routes (/api/events)
+apiRouter.use('/events', apiEventRoutes);
+
+// 6. Alumni Profiles REST API routes (/api/profiles)
+apiRouter.use('/profiles', apiProfileRoutes);
+
+// 7. Mentorships REST API routes (/api/mentorships)
+apiRouter.use('/mentorships', apiMentorshipRoutes);
+
+export {
+  apiRouter,
+  userRoutes,
+  apiUserRoutes,
+  announcementRoutes,
+  apiAnnouncementRoutes,
+  jobRoutes,
+  apiJobRoutes,
+  eventRoutes,
+  apiEventRoutes,
+  apiProfileRoutes,
+  apiMentorshipRoutes
+};
+
 export default apiRouter;

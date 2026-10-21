@@ -1,0 +1,116 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 1rem;">
+  <a href="/events" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
+    ← Tüm Etkinliklere Dön
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.4rem;">
+        <span class="badge" style="background-color: #ccfbf1; color: #0f766e;">ETKİNLİK</span>
+        <span class="badge" style="background-color: #f1f5f9; color: #475569;">Kontenjan: <%= event.capacity %></span>
+      </div>
+      <h1 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin: 0 0 0.3rem 0;">
+        <%= event.title %>
+      </h1>
+      <div style="color: #64748b; font-size: 1rem;">
+        📅 <%= event.event_date ? new Date(event.event_date).toLocaleString('tr-TR') : '-' %> &nbsp;•&nbsp; 📍 <%= event.location || 'Konum belirtilmedi' %>
+      </div>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <a href="/events/<%= event.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
+      <form action="/events/<%= event.id %>/delete" method="POST" onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');" style="display: inline;">
+        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div style="background-color: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+      <div>
+        <span style="color: #64748b; font-size: 0.9rem;">Organizatör:</span><br>
+        <strong><%= creator ? (creator.first_name + ' ' + creator.last_name + ' (' + creator.role + ')') : 'Sistem' %></strong>
+      </div>
+      <div>
+        <span style="color: #64748b; font-size: 0.9rem;">Kayıtlı Katılımcı:</span><br>
+        <strong>👥 <%= participants ? participants.length : 0 %> kişi</strong>
+      </div>
+      <div>
+        <span style="color: #64748b; font-size: 0.9rem;">Kalan Kontenjan:</span><br>
+        <strong><%= Math.max(0, event.capacity - (participants ? participants.length : 0)) %> kişilik yer var</strong>
+      </div>
+    </div>
+
+    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Etkinlik Programı ve Detayları</h3>
+    <p style="color: #334155; line-height: 1.6; margin-bottom: 1.5rem; white-space: pre-line;">
+      <%= event.description || 'Bu etkinlik için henüz bir detay metni girilmedi.' %>
+    </p>
+  </div>
+</div>
+
+<!-- Katılım Kayıt Formu (N:M İlişki) -->
+<div class="card">
+  <div class="card-header">
+    <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">🎟️ Etkinliğe Kayıt Ol</h3>
+  </div>
+  <div class="card-body">
+    <form action="/events/<%= event.id %>/register" method="POST">
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <label class="form-label" for="user_id">Kayıt Olacak Kullanıcıyı Seçin *</label>
+        <select id="user_id" name="user_id" class="form-select" required>
+          <option value="">-- Kullanıcı Hesabı Seçin --</option>
+          <% if (typeof allUsers !== 'undefined' && allUsers) { %>
+            <% allUsers.forEach(u => { %>
+              <option value="<%= u.id %>"><%= u.first_name %> <%= u.last_name %> (<%= u.role %>)</option>
+            <% }); %>
+          <% } %>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">
+        ✓ Kaydımı Oluştur
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Katılımcılar Listesi -->
+<% if (participants && participants.length > 0) { %>
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">👥 Kayıtlı Katılımcılar (<%= participants.length %> Kişi)</h3>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <table class="table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color: #f8fafc; text-align: left;">
+            <th style="padding: 0.75rem 1rem;">Katılımcı</th>
+            <th style="padding: 0.75rem 1rem;">Rol</th>
+            <th style="padding: 0.75rem 1rem;">Bölüm</th>
+            <th style="padding: 0.75rem 1rem;">Kayıt Tarihi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% participants.forEach(p => { %>
+            <tr>
+              <td style="padding: 0.75rem 1rem;">
+                <strong><%= p.first_name %> <%= p.last_name %></strong><br>
+                <small style="color: #64748b;"><%= p.email %></small>
+              </td>
+              <td style="padding: 0.75rem 1rem;"><span class="badge badge-<%= p.role.toLowerCase() %>"><%= p.role %></span></td>
+              <td style="padding: 0.75rem 1rem;"><%= p.department || '-' %></td>
+              <td style="padding: 0.75rem 1rem;">
+                <%= p.attendance ? new Date(p.attendance.registered_at).toLocaleDateString('tr-TR') : '-' %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

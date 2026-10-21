@@ -1,0 +1,73 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 1rem;">
+  <a href="/events/<%= event.id %>" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
+    ← Etkinlik Detayına Dön
+  </a>
+</div>
+
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+  <div class="card-header">
+    <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0;">
+      ✏️ Etkinliği Düzenle: <%= event.title %>
+    </h1>
+  </div>
+
+  <div class="card-body">
+    <% if (errorMessage) { %>
+      <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+        ⚠ <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <form action="/events/<%= event.id %>" method="POST">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label class="form-label" for="title">Etkinlik Başlığı *</label>
+        <input type="text" id="title" name="title" class="form-control" value="<%= event.title %>" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="event_date">Etkinlik Tarihi ve Saati *</label>
+          <input type="datetime-local" id="event_date" name="event_date" class="form-control" value="<%= event.event_date ? event.event_date.substring(0, 16) : '' %>" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="capacity">Kontenjan (Kişi)</label>
+          <input type="number" id="capacity" name="capacity" class="form-control" value="<%= event.capacity %>">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="location">Yer / Lokasyon</label>
+          <input type="text" id="location" name="location" class="form-control" value="<%= event.location || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="created_by">Organizatör</label>
+          <select id="created_by" name="created_by" class="form-select">
+            <option value="">-- Yetkili Seçin --</option>
+            <% if (typeof users !== 'undefined' && users) { %>
+              <% users.forEach(u => { %>
+                <option value="<%= u.id %>" <%= event.created_by == u.id ? 'selected' : '' %>><%= u.first_name %> <%= u.last_name %></option>
+              <% }); %>
+            <% } %>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label class="form-label" for="description">Etkinlik Detay ve Programı</label>
+        <textarea id="description" name="description" class="form-control" rows="4"><%= event.description || '' %></textarea>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">✓ Değişiklikleri Kaydet</button>
+        <a href="/events/<%= event.id %>" class="btn btn-secondary">İptal</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,116 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">💼 İş ve Staj İlanları</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Mezun ve Partner Şirket Kariyer Fırsatları Portalı</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="/jobs/new" class="btn btn-primary" style="background-color: #0284c7;">
+      <span>➕</span> Yeni İlan Yayınla
+    </a>
+    <a href="/api/jobs" target="_blank" class="btn btn-secondary">
+      <span>⚡</span> REST API (JSON)
+    </a>
+  </div>
+</div>
+
+<!-- Filtreleme Kartı -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-body" style="padding: 1rem 1.5rem;">
+    <form action="/jobs" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 220px;">
+        <label class="form-label" for="search">Pozisyon, Şirket veya Sektör Ara</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="form-control"
+          placeholder="Örn: Backend, Frontend, Savunma..."
+          value="<%= filters && filters.search ? filters.search : '' %>"
+        >
+      </div>
+
+      <div style="flex: 1; min-width: 140px;">
+        <label class="form-label" for="type">Çalışma Şekli</label>
+        <select id="type" name="type" class="form-select">
+          <option value="">Tümü</option>
+          <option value="FULL_TIME" <%= filters && filters.type === 'FULL_TIME' ? 'selected' : '' %>>Tam Zamanlı</option>
+          <option value="PART_TIME" <%= filters && filters.type === 'PART_TIME' ? 'selected' : '' %>>Yarı Zamanlı</option>
+          <option value="INTERNSHIP" <%= filters && filters.type === 'INTERNSHIP' ? 'selected' : '' %>>Staj</option>
+          <option value="CONTRACT" <%= filters && filters.type === 'CONTRACT' ? 'selected' : '' %>>Sözleşmeli</option>
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 140px;">
+        <label class="form-label" for="work_model">Çalışma Modeli</label>
+        <select id="work_model" name="work_model" class="form-select">
+          <option value="">Tümü</option>
+          <option value="ONSITE" <%= filters && filters.work_model === 'ONSITE' ? 'selected' : '' %>>Ofisten (Onsite)</option>
+          <option value="HYBRID" <%= filters && filters.work_model === 'HYBRID' ? 'selected' : '' %>>Hibrit</option>
+          <option value="REMOTE" <%= filters && filters.work_model === 'REMOTE' ? 'selected' : '' %>>Uzaktan (Remote)</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary" style="background-color: #0284c7;">Filtrele</button>
+        <% if (filters && (filters.search || filters.type || filters.work_model)) { %>
+          <a href="/jobs" class="btn btn-secondary">Temizle</a>
+        <% } %>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- İlan Listesi -->
+<% if (jobs && jobs.length > 0) { %>
+  <div style="display: grid; gap: 1.25rem;">
+    <% jobs.forEach(job => { %>
+      <div class="card" style="margin-bottom: 0;">
+        <div class="card-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.4rem;">
+                <span class="badge" style="background-color: #e0f2fe; color: #0369a1;"><%= job.work_model || 'HYBRID' %></span>
+                <span class="badge" style="background-color: #fef3c7; color: #92400e;"><%= job.type %></span>
+                <span class="badge" style="background-color: #f3e8ff; color: #7e22ce;"><%= job.experience_level || 'MID' %></span>
+                <% if (job.sector) { %>
+                  <span class="badge" style="background-color: #f1f5f9; color: #475569;"><%= job.sector %></span>
+                <% } %>
+              </div>
+              <h2 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem 0;">
+                <a href="/jobs/<%= job.id %>" style="color: inherit; text-decoration: none;">
+                  <%= job.title %>
+                </a>
+              </h2>
+              <div style="color: #64748b; font-size: 0.95rem; margin-bottom: 0.75rem;">
+                🏢 <strong><%= job.company %></strong> &nbsp;•&nbsp; 📍 <%= job.location || 'Lokasyon belirtilmedi' %>
+                <% if (job.salary_min && job.salary_max) { %>
+                  &nbsp;•&nbsp; 💰 <%= Number(job.salary_min).toLocaleString('tr-TR') %> - <%= Number(job.salary_max).toLocaleString('tr-TR') %> <%= job.currency || 'TRY' %>
+                <% } %>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/jobs/<%= job.id %>" class="btn btn-secondary btn-sm">Detayları İncele & Başvur</a>
+              <a href="/jobs/<%= job.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
+            </div>
+          </div>
+
+          <p style="color: #334155; font-size: 0.93rem; line-height: 1.5; margin: 0.5rem 0 0 0;">
+            <%= job.description.length > 180 ? job.description.substring(0, 180) + '...' : job.description %>
+          </p>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } else { %>
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">İlan Bulunamadı</h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Arama kriterlerinize uyan açık bir iş veya staj ilanı bulunmuyor.</p>
+    <a href="/jobs/new" class="btn btn-primary" style="background-color: #0284c7;">Yeni İlan Oluştur</a>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

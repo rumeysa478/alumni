@@ -770,5 +770,192 @@ test('1:N Self-referential Relation: Mentorship (mentor & mentee)', async () => 
   assert.strictEqual(mentee.id, 2);
 });
 
+// ==========================================
+// DIRECT & NEEDED ROUTES TESTS
+// ==========================================
+
+test('GET /health returns direct health status and 200 OK', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/health`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.status, 'UP');
+    assert.ok(body.uptime >= 0);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /jobs returns job listings HTML and status 200 (Web MVC)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/jobs`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert.ok(html.includes('İş ve Staj İlanları'));
+    assert.ok(html.includes('Junior Backend Developer'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /jobs/new and POST /jobs creates new job via form (Web MVC)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const formRes = await fetch(`http://127.0.0.1:${port}/jobs/new`);
+    assert.strictEqual(formRes.status, 200);
+
+    const createRes = await fetch(`http://127.0.0.1:${port}/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        title: 'Cloud DevOps Architect',
+        company: 'Google Cloud Partner',
+        description: 'Terraform ve Kubernetes altyapıları yönetecek mühendis.',
+        type: 'FULL_TIME',
+        work_model: 'REMOTE'
+      }).toString(),
+      redirect: 'manual'
+    });
+    assert.strictEqual(createRes.status, 302);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /api/jobs returns JSON list of jobs with filters (REST API)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/jobs`);
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.ok(body.count > 0);
+    assert.ok(Array.isArray(body.data));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /api/jobs creates job and returns 201 Created (REST API)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Full Stack AI Engineer',
+        company: 'DeepMind Tech',
+        description: 'LLM entegrasyonları ve web arayüzleri geliştirme.',
+        work_model: 'REMOTE',
+        type: 'FULL_TIME'
+      })
+    });
+    assert.strictEqual(res.status, 201);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.data.title, 'Full Stack AI Engineer');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /api/jobs/:id/apply submits application (N:M relation)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/jobs/1/apply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: 3,
+        cover_letter: 'Backend pozisyonu için başvurmak istiyorum.',
+        resume_url: '/uploads/zeynep_cv.pdf'
+      })
+    });
+    assert.strictEqual(res.status, 201);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.data.user_id, 3);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /events and GET /api/events return events (Web & API)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const webRes = await fetch(`http://127.0.0.1:${port}/events`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(webRes.status, 200);
+
+    const apiRes = await fetch(`http://127.0.0.1:${port}/api/events`);
+    assert.strictEqual(apiRes.status, 200);
+    const body = await apiRes.json();
+    assert.strictEqual(body.success, true);
+    assert.ok(body.count > 0);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /api/events/:id/register registers user to event (N:M relation)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/api/events/1/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: 3 })
+    });
+    assert.strictEqual(res.status, 201);
+    const body = await res.json();
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.data.user_id, 3);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('GET /api/profiles/:userId and GET /api/mentorships return valid data', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const profileRes = await fetch(`http://127.0.0.1:${port}/api/profiles/1`);
+    assert.strictEqual(profileRes.status, 200);
+    const profileBody = await profileRes.json();
+    assert.strictEqual(profileBody.success, true);
+    assert.strictEqual(profileBody.data.user.id, 1);
+
+    const mentorRes = await fetch(`http://127.0.0.1:${port}/api/mentorships`);
+    assert.strictEqual(mentorRes.status, 200);
+    const mentorBody = await mentorRes.json();
+    assert.strictEqual(mentorBody.success, true);
+    assert.ok(mentorBody.count > 0);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+
 
 

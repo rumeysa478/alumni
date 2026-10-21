@@ -1,0 +1,89 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">📅 Etkinlikler ve Buluşmalar</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Mezunlar Günü, Kariyer Panelleri ve Networking Toplantıları</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="/events/new" class="btn btn-primary" style="background-color: #0d9488;">
+      <span>➕</span> Yeni Etkinlik Oluştur
+    </a>
+    <a href="/api/events" target="_blank" class="btn btn-secondary">
+      <span>⚡</span> REST API (JSON)
+    </a>
+  </div>
+</div>
+
+<!-- Arama Kartı -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-body" style="padding: 1rem 1.5rem;">
+    <form action="/events" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 240px;">
+        <label class="form-label" for="search">Etkinlik Başlığı veya Konum Ara</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="form-control"
+          placeholder="Örn: Mezunlar Günü, Mavi Salon, Panel..."
+          value="<%= filters && filters.search ? filters.search : '' %>"
+        >
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">Ara</button>
+        <% if (filters && filters.search) { %>
+          <a href="/events" class="btn btn-secondary">Temizle</a>
+        <% } %>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Etkinlikler Listesi -->
+<% if (events && events.length > 0) { %>
+  <div style="display: grid; gap: 1.25rem;">
+    <% events.forEach(evt => { %>
+      <div class="card" style="margin-bottom: 0;">
+        <div class="card-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
+                <span class="badge" style="background-color: #ccfbf1; color: #0f766e;">ETKİNLİK</span>
+                <span class="badge" style="background-color: #f1f5f9; color: #475569;">Kontenjan: <%= evt.capacity %></span>
+              </div>
+              <h2 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem 0;">
+                <a href="/events/<%= evt.id %>" style="color: inherit; text-decoration: none;">
+                  <%= evt.title %>
+                </a>
+              </h2>
+              <div style="color: #64748b; font-size: 0.95rem; margin-bottom: 0.75rem;">
+                📅 <strong><%= evt.event_date ? new Date(evt.event_date).toLocaleString('tr-TR') : 'Tarih belirtilmedi' %></strong>
+                &nbsp;•&nbsp; 📍 <%= evt.location || 'Konum belirtilmedi' %>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/events/<%= evt.id %>" class="btn btn-secondary btn-sm">Detay & Katıl</a>
+              <a href="/events/<%= evt.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
+            </div>
+          </div>
+
+          <p style="color: #334155; font-size: 0.93rem; line-height: 1.5; margin: 0.5rem 0 0 0;">
+            <%= evt.description && evt.description.length > 180 ? evt.description.substring(0, 180) + '...' : evt.description %>
+          </p>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } else { %>
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Etkinlik Bulunamadı</h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Arama kriterlerine uygun planlanmış bir etkinlik bulunamadı.</p>
+    <a href="/events/new" class="btn btn-primary" style="background-color: #0d9488;">Yeni Etkinlik Oluştur</a>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>
