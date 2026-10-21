@@ -619,9 +619,10 @@ src/database/
 │   ├── announcement.factory.js   # Duyuru şablonları ve veri fabrikası
 │   └── job.factory.js            # İş ve staj ilanı veri fabrikası
 ├── migrations/
-│   └── 001_create_tables.sql     # ddd.md'deki 8 tablo ve indeksleri üreten DDL
+│   ├── 001_create_tables.sql              # ddd.md'deki 8 temel tablo ve indeksleri üreten DDL
+│   └── 002_update_job_postings_table.sql  # job_postings tablosunu modern kariyer alanlarıyla güncelleyen DDL
 └── seeds/
-    └── 001_initial_seed.sql      # Başlangıç kullanıcı, profil, duyuru ve ilan verileri
+    └── 001_initial_seed.sql               # Başlangıç kullanıcı, profil, duyuru ve ilan verileri
 ```
 
 ### Komutlar:
