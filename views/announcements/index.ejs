@@ -2,22 +2,22 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">📢 Duyurular ve Etkinlikler</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">MVC Mimarisi - Duyuru Yönetim Arayüzü (In-Memory CRUD)</p>
+    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">📢 Duyurular ve Etkinlikler</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT &bull; İstanbul Üniversitesi Resmi Duyuruları, Haberleri ve Akış Paylaşımları</p>
   </div>
   <div style="display: flex; gap: 0.75rem;">
-    <a href="/announcements/new" class="btn btn-primary" style="background-color: #7c3aed;">
+    <a href="/announcements/new" class="pill-btn pill-pink">
       <span>➕</span> Yeni Duyuru Ekle
     </a>
-    <a href="/api/announcements" target="_blank" class="btn btn-secondary">
+    <a href="/api/announcements" target="_blank" class="pill-btn">
       <span>⚡</span> REST API (JSON)
     </a>
   </div>
 </div>
 
 <!-- Arama ve Filtreleme Kartı -->
-<div class="card" style="margin-bottom: 1.5rem;">
-  <div class="card-body" style="padding: 1rem 1.5rem;">
+<div class="card" style="margin-bottom: 1.5rem; border: 1.5px solid var(--connext-border);">
+  <div class="card-body" style="padding: 1.25rem 1.5rem;">
     <form action="/announcements" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
       <div style="flex: 2; min-width: 220px;">
         <label class="form-label" for="search">Başlık, İçerik veya Yazar Ara</label>
@@ -53,112 +53,73 @@
       </div>
 
       <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="btn btn-primary" style="background-color: #7c3aed;">Filtrele</button>
+        <button type="submit" class="pill-btn pill-peach">Filtrele</button>
         <% if (filters && (filters.search || filters.category || filters.target_audience)) { %>
-          <a href="/announcements" class="btn btn-secondary">Temizle</a>
+          <a href="/announcements" class="pill-btn">Temizle</a>
         <% } %>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Duyuru Listesi Kartı -->
-<div class="card">
-  <div class="card-header">
-    <div style="font-weight: 700; color: #1e293b;">
-      Aktif ve Yayınlanmış Duyurular (<%= announcements ? announcements.length : 0 %>)
-    </div>
-    <div style="font-size: 0.85rem; color: var(--text-muted);">
-      In-Memory Duyuru Deposu
-    </div>
-  </div>
-
-  <div class="table-responsive">
-    <% if (announcements && announcements.length > 0) { %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Başlık</th>
-            <th>Kategori</th>
-            <th>Hedef Kitle</th>
-            <th>Yazar</th>
-            <th>Tarih</th>
-            <th>Durum</th>
-            <th style="text-align: right;">İşlemler (CRUD)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% announcements.forEach(item => { %>
-            <tr>
-              <td style="font-weight: 700; color: #64748b;">#<%= item.id %></td>
-              <td style="font-weight: 600; max-width: 280px;">
-                <a href="/announcements/<%= item.id %>" style="color: #0f172a; text-decoration: none;">
-                  <%= item.title %>
-                </a>
-              </td>
-              <td>
-                <% if (item.category === 'EVENT') { %>
+<!-- Duyuru Listesi -->
+<% if (announcements && announcements.length > 0) { %>
+  <div style="display: grid; gap: 1.25rem;">
+    <% announcements.forEach(a => { %>
+      <div class="card" style="border: 1.5px solid var(--connext-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-radius: 14px; margin-bottom: 0;">
+        <div class="card-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <% if (a.category === 'EVENT') { %>
                   <span class="badge badge-event">🎉 Etkinlik</span>
-                <% } else if (item.category === 'CAREER') { %>
+                <% } else if (a.category === 'CAREER') { %>
                   <span class="badge badge-career">💼 Kariyer</span>
-                <% } else if (item.category === 'ACADEMIC') { %>
+                <% } else if (a.category === 'ACADEMIC') { %>
                   <span class="badge badge-academic">📚 Akademik</span>
                 <% } else { %>
                   <span class="badge badge-general">📢 Genel</span>
                 <% } %>
-              </td>
-              <td>
-                <% if (item.target_audience === 'ALUMNI') { %>
+
+                <% if (a.target_audience === 'ALUMNI') { %>
                   <span class="badge badge-alumni">Mezunlar</span>
-                <% } else if (item.target_audience === 'STUDENT') { %>
+                <% } else if (a.target_audience === 'STUDENT') { %>
                   <span class="badge badge-student">Öğrenciler</span>
                 <% } else { %>
                   <span class="badge badge-verified">Herkes</span>
                 <% } %>
-              </td>
-              <td style="color: var(--text-muted); font-size: 0.88rem;"><%= item.author || '-' %></td>
-              <td style="color: var(--text-muted); font-size: 0.85rem;">
-                <%= item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR') : '-' %>
-              </td>
-              <td>
-                <% if (item.is_active) { %>
-                  <span class="badge badge-active">Yayında</span>
-                <% } else { %>
-                  <span class="badge badge-inactive">Taslak</span>
-                <% } %>
-              </td>
-              <td style="text-align: right;">
-                <div style="display: inline-flex; gap: 0.35rem; align-items: center;">
-                  <!-- Detay (Read) -->
-                  <a href="/announcements/<%= item.id %>" class="btn btn-secondary btn-sm" title="Detay">
-                    Detay
-                  </a>
-                  <!-- Düzenle (Update) -->
-                  <a href="/announcements/<%= item.id %>/edit" class="btn btn-primary btn-sm" style="background-color: #7c3aed;" title="Düzenle">
-                    Düzenle
-                  </a>
-                  <!-- Sil (Delete) -->
-                  <form action="/announcements/<%= item.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu duyuruyu silmek istediğinize emin misiniz? (#<%= item.id %> <%= item.title %>)');">
-                    <button type="submit" class="btn btn-danger btn-sm" title="Sil">
-                      Sil
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    <% } else { %>
-      <div style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📢</div>
-        <h3 style="color: #334155; margin-bottom: 0.5rem;">Duyuru Bulunamadı</h3>
-        <p style="margin-bottom: 1.25rem;">Arama kriterlerine uygun duyuru bulunamadı veya henüz eklenmedi.</p>
-        <a href="/announcements/new" class="btn btn-primary" style="background-color: #7c3aed;">+ İlk Duyuruyu Ekle</a>
+              </div>
+
+              <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 800; color: #111; margin: 0 0 0.35rem 0;">
+                <a href="/announcements/<%= a.id %>" style="color: inherit; text-decoration: none;">
+                  <%= a.title %>
+                </a>
+              </h2>
+
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                Yayınlayan: <strong><%= a.author || 'Sistem' %></strong> &bull;
+                Tarih: <%= a.published_at ? new Date(a.published_at).toLocaleString('tr-TR') : '-' %>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/announcements/<%= a.id %>" class="pill-btn pill-peach" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">Detay ↗</a>
+              <a href="/announcements/<%= a.id %>/edit" class="pill-btn" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">Düzenle</a>
+            </div>
+          </div>
+
+          <p style="color: #334155; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0 0 0;">
+            <%= a.content && a.content.length > 200 ? a.content.substring(0, 200) + '...' : a.content %>
+          </p>
+        </div>
       </div>
-    <% } %>
+    <% }); %>
   </div>
-</div>
+<% } else { %>
+  <div class="card" style="padding: 3rem; text-align: center; border: 1.5px solid var(--connext-border);">
+    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.25rem;">Kriterlere uygun duyuru bulunamadı.</p>
+    <a href="/announcements" class="pill-btn">Tüm Duyuruları Göster</a>
+  </div>
+<% } %>
 
 <%- include('../partials/footer') %>

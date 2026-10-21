@@ -2,22 +2,22 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">📅 Etkinlikler ve Buluşmalar</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">Mezunlar Günü, Kariyer Panelleri ve Networking Toplantıları</p>
+    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">📅 Etkinlikler ve Buluşmalar</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT Mezunlar Günü, Kariyer Panelleri ve Networking Buluşmaları</p>
   </div>
   <div style="display: flex; gap: 0.75rem;">
-    <a href="/events/new" class="btn btn-primary" style="background-color: #0d9488;">
+    <a href="/events/new" class="pill-btn pill-pink">
       <span>➕</span> Yeni Etkinlik Oluştur
     </a>
-    <a href="/api/events" target="_blank" class="btn btn-secondary">
+    <a href="/api/events" target="_blank" class="pill-btn">
       <span>⚡</span> REST API (JSON)
     </a>
   </div>
 </div>
 
-<!-- Arama Kartı -->
-<div class="card" style="margin-bottom: 1.5rem;">
-  <div class="card-body" style="padding: 1rem 1.5rem;">
+<!-- Arama Kartı (Photo 2 inspired) -->
+<div class="card" style="margin-bottom: 2rem; border: 1.5px solid var(--connext-border);">
+  <div class="card-body" style="padding: 1.25rem 1.5rem;">
     <form action="/events" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
       <div style="flex: 2; min-width: 240px;">
         <label class="form-label" for="search">Etkinlik Başlığı veya Konum Ara</label>
@@ -26,63 +26,142 @@
           id="search"
           name="search"
           class="form-control"
-          placeholder="Örn: Mezunlar Günü, Mavi Salon, Panel..."
+          placeholder="Örn: Reunion, Mezunlar Günü, İstanbul Üniversitesi..."
           value="<%= filters && filters.search ? filters.search : '' %>"
         >
       </div>
 
       <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">Ara</button>
+        <button type="submit" class="pill-btn pill-peach">Ara</button>
         <% if (filters && filters.search) { %>
-          <a href="/events" class="btn btn-secondary">Temizle</a>
+          <a href="/events" class="pill-btn">Temizle</a>
         <% } %>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Etkinlikler Listesi -->
+<!-- Etkinlikler Listesi: Periwinkle Poster Kartları (Photo 3 Directly Inspired) -->
 <% if (events && events.length > 0) { %>
-  <div style="display: grid; gap: 1.25rem;">
-    <% events.forEach(evt => { %>
-      <div class="card" style="margin-bottom: 0;">
-        <div class="card-body">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
-                <span class="badge" style="background-color: #ccfbf1; color: #0f766e;">ETKİNLİK</span>
-                <span class="badge" style="background-color: #f1f5f9; color: #475569;">Kontenjan: <%= evt.capacity %></span>
-              </div>
-              <h2 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem 0;">
-                <a href="/events/<%= evt.id %>" style="color: inherit; text-decoration: none;">
-                  <%= evt.title %>
-                </a>
-              </h2>
-              <div style="color: #64748b; font-size: 0.95rem; margin-bottom: 0.75rem;">
-                📅 <strong><%= evt.event_date ? new Date(evt.event_date).toLocaleString('tr-TR') : 'Tarih belirtilmedi' %></strong>
-                &nbsp;•&nbsp; 📍 <%= evt.location || 'Konum belirtilmedi' %>
-              </div>
+  <div style="display: grid; gap: 2rem; max-width: 760px; margin: 0 auto;">
+    <% events.forEach(evt => { 
+        const dateObj = evt.event_date ? new Date(evt.event_date) : new Date();
+        const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' }).toUpperCase();
+        const formattedTime = dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    %>
+      <!-- Event Feed Card (Photo 3) -->
+      <div class="card" style="border: 2px solid var(--connext-border); box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-radius: 16px; overflow: hidden; margin-bottom: 0;">
+        
+        <!-- Post Header: Creator + Follow Button (Photo 3) -->
+        <div style="padding: 0.9rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--connext-border); background: #ffffff;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--connext-border); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: #fafafa;">
+              👤
             </div>
-
-            <div style="display: flex; gap: 0.5rem;">
-              <a href="/events/<%= evt.id %>" class="btn btn-secondary btn-sm">Detay & Katıl</a>
-              <a href="/events/<%= evt.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
+            <div>
+              <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.05rem; font-weight: 800; color: #111;">
+                <%= evt.creator ? (evt.creator.first_name + ' ' + evt.creator.last_name) : 'Frosty Franklin' %>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">
+                Organizatör &bull; İstanbul Üniversitesi
+              </div>
             </div>
           </div>
 
-          <p style="color: #334155; font-size: 0.93rem; line-height: 1.5; margin: 0.5rem 0 0 0;">
-            <%= evt.description && evt.description.length > 180 ? evt.description.substring(0, 180) + '...' : evt.description %>
-          </p>
+          <button type="button" class="pill-btn pill-pink" onclick="alert('Takip edildi!')" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+            + Follow
+          </button>
         </div>
+
+        <!-- Event Subtitle Line (Photo 3) -->
+        <div style="padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--connext-border); background: #fafafa; font-size: 0.92rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700; color: #111;">
+            <span>✨</span>
+            <span>Event: <strong><%= evt.title %></strong></span>
+          </div>
+
+          <a href="/events/<%= evt.id %>" class="pill-btn pill-pink" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+            + Send Request
+          </a>
+        </div>
+
+        <!-- Main Periwinkle Poster Graphic (Photo 3) -->
+        <div style="background-color: #dde4ff; padding: 2.75rem 1.5rem; text-align: center; border-bottom: 1.5px solid var(--connext-border);">
+          
+          <!-- Retro Bold Graphic Title -->
+          <h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Impact', 'Arial Black', sans-serif; font-size: 3.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.01em; color: #dc2626; text-transform: uppercase; margin: 0 0 1.5rem 0;">
+            <%= evt.title && evt.title.length > 25 ? evt.title : 'CLASS OF 2000 REUNION' %>
+          </h2>
+
+          <!-- Event Meta Row -->
+          <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 800; color: #1e293b; letter-spacing: 0.04em;">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span>📅</span>
+              <span><%= formattedDate || '24 KASIM' %></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span>🕒</span>
+              <span><%= formattedTime || '17.00' %></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span>📍</span>
+              <span><%= (evt.location || 'ISTANBUL UNIVERSITY').toUpperCase() %></span>
+            </div>
+          </div>
+
+          <!-- Tagline -->
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.15rem; font-weight: 800; color: #334155; letter-spacing: 0.08em; text-transform: uppercase;">
+            WE ARE WAITING TO SEE YOU ALL
+          </div>
+        </div>
+
+        <!-- Description Snippet -->
+        <div style="padding: 1.25rem 1.5rem; background: #ffffff;">
+          <p style="color: #334155; font-size: 0.94rem; line-height: 1.6; margin-bottom: 1rem;">
+            <%= evt.description || 'İstanbul Üniversitesi Mezunları Buluşması ve networking toplantısı.' %>
+          </p>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Kontenjan: <strong><%= evt.capacity %> kişi</strong>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/events/<%= evt.id %>" class="pill-btn pill-peach" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+                Detay & Kayıt ↗
+              </a>
+              <a href="/events/<%= evt.id %>/edit" class="pill-btn" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+                Düzenle
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Social Interaction Bar (Photo 3) -->
+        <div style="padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1.5px solid var(--connext-border); background: #fafafa;">
+          <div style="display: flex; gap: 1.25rem; align-items: center;">
+            <button type="button" onclick="this.classList.toggle('liked'); alert('Beğenildi!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Beğen">
+              🤍 <span style="font-size: 0.85rem; font-weight: 700;">24</span>
+            </button>
+            <button type="button" onclick="alert('Tekrar paylaşıldı!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Repost">
+              🔁 <span style="font-size: 0.85rem; font-weight: 700;">7</span>
+            </button>
+            <button type="button" onclick="window.location.href='/events/<%= evt.id %>#comments'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Yorum Yap">
+              💬 <span style="font-size: 0.85rem; font-weight: 700;">12</span>
+            </button>
+          </div>
+
+          <button type="button" onclick="alert('Kaydedildi!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Kaydet">
+            🔖
+          </button>
+        </div>
+
       </div>
     <% }); %>
   </div>
 <% } else { %>
-  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
-    <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Etkinlik Bulunamadı</h3>
-    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Arama kriterlerine uygun planlanmış bir etkinlik bulunamadı.</p>
-    <a href="/events/new" class="btn btn-primary" style="background-color: #0d9488;">Yeni Etkinlik Oluştur</a>
+  <div class="card" style="padding: 3rem; text-align: center; border: 1.5px solid var(--connext-border);">
+    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.25rem;">Henüz planlanmış bir etkinlik bulunamadı.</p>
+    <a href="/events/new" class="pill-btn pill-pink">+ İlk Etkinliği Oluştur</a>
   </div>
 <% } %>
 

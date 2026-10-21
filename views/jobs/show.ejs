@@ -1,185 +1,170 @@
 <%- include('../partials/header') %>
 
-<div style="margin-bottom: 1rem;">
-  <a href="/jobs" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-    ← Tüm İlanlara Dön
+<div style="margin-bottom: 1.25rem;">
+  <a href="/jobs" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+    &larr; Tüm İlanlara Dön
   </a>
 </div>
 
-<div class="card">
-  <div class="card-header">
+<div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06); margin-bottom: 1.75rem;">
+  <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.5rem 2rem;">
     <div>
       <div style="display: flex; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
-        <span class="badge" style="background-color: #e0f2fe; color: #0369a1;"><%= job.work_model %></span>
-        <span class="badge" style="background-color: #fef3c7; color: #92400e;"><%= job.type %></span>
-        <span class="badge" style="background-color: #f3e8ff; color: #7e22ce;"><%= job.experience_level %></span>
-        <% if (job.sector) { %>
-          <span class="badge" style="background-color: #f1f5f9; color: #475569;"><%= job.sector %></span>
+        <span class="badge" style="background-color: #e0f2fe; color: #0369a1;"><%= job.type %></span>
+        <span class="badge" style="background-color: #f3e8ff; color: #6b21a8;"><%= job.work_model %></span>
+        <% if (job.is_active) { %>
+          <span class="badge badge-active">Açık Pozisyon</span>
+        <% } else { %>
+          <span class="badge badge-inactive">Kapandı</span>
         <% } %>
       </div>
-      <h1 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin: 0 0 0.3rem 0;">
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 800; color: #111; margin: 0 0 0.3rem 0;">
         <%= job.title %>
       </h1>
-      <div style="color: #64748b; font-size: 1rem;">
+      <div style="color: #64748b; font-size: 1.05rem;">
         🏢 <strong><%= job.company %></strong> &nbsp;•&nbsp; 📍 <%= job.location || 'Konum belirtilmedi' %>
       </div>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-      <a href="/jobs/<%= job.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <a href="/jobs/<%= job.id %>/edit" class="pill-btn pill-peach">Düzenle</a>
       <form action="/jobs/<%= job.id %>/delete" method="POST" onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');" style="display: inline;">
-        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+        <button type="submit" class="pill-btn" style="background: #fee2e2; color: #b91c1c; border-color: #f87171;">Sil</button>
       </form>
     </div>
   </div>
 
-  <div class="card-body">
-    <!-- Meta Bilgiler -->
-    <div style="background-color: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.92rem;">
+  <div class="card-body" style="padding: 2rem;">
+    <div style="background-color: #fafafa; border: 1px solid #e5e7eb; padding: 1.25rem; border-radius: 12px; margin-bottom: 1.75rem; display: flex; gap: 2.5rem; flex-wrap: wrap;">
       <div>
-        <span style="color: #64748b;">Maaş Skalası:</span><br>
-        <strong>
+        <span style="color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Maaş Skalası</span><br>
+        <strong style="font-size: 1.15rem; color: #111;">
           <% if (job.salary_min && job.salary_max) { %>
             <%= Number(job.salary_min).toLocaleString('tr-TR') %> - <%= Number(job.salary_max).toLocaleString('tr-TR') %> <%= job.currency || 'TRY' %>
           <% } else { %>
-            Belirtilmedi
+            Görüşmede Belirlenecek
           <% } %>
         </strong>
       </div>
       <div>
-        <span style="color: #64748b;">Son Başvuru Tarihi:</span><br>
-        <strong><%= job.deadline ? new Date(job.deadline).toLocaleDateString('tr-TR') : 'Süresiz / Açık' %></strong>
+        <span style="color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">İlan Sahibi</span><br>
+        <strong style="font-size: 1.15rem; color: #111;"><%= poster ? (poster.first_name + ' ' + poster.last_name) : 'Sistem / Mezun' %></strong>
       </div>
       <div>
-        <span style="color: #64748b;">Görüntülenme:</span><br>
-        <strong>👁️ <%= job.view_count || 1 %> kez</strong>
-      </div>
-      <div>
-        <span style="color: #64748b;">İlan Sorumlusu (Mezun):</span><br>
-        <strong><%= poster ? (poster.first_name + ' ' + poster.last_name) : 'Sistem Yöneticisi' %></strong>
+        <span style="color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Toplam Başvuru</span><br>
+        <strong style="font-size: 1.15rem; color: #111;">👥 <%= applicants ? applicants.length : 0 %> Aday</strong>
       </div>
     </div>
 
-    <!-- Pozisyon Özeti -->
-    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Pozisyon Tanımı</h3>
-    <p style="color: #334155; line-height: 1.6; margin-bottom: 1.5rem; white-space: pre-line;">
+    <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 800; color: #111; margin-bottom: 0.5rem;">İş Tanımı ve Kapsamı</h3>
+    <p style="color: #334155; line-height: 1.7; margin-bottom: 1.5rem; white-space: pre-line;">
       <%= job.description %>
     </p>
 
-    <!-- Aranan Nitelikler -->
     <% if (job.requirements) { %>
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Aranan Nitelikler & Şartlar</h3>
-      <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; color: #166534; line-height: 1.6; white-space: pre-line;">
+      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 800; color: #111; margin-bottom: 0.5rem;">Aranan Nitelikler</h3>
+      <p style="color: #334155; line-height: 1.7; margin-bottom: 1.5rem; white-space: pre-line;">
         <%= job.requirements %>
-      </div>
-    <% } %>
-
-    <!-- Harici Başvuru Butonu -->
-    <% if (job.application_url) { %>
-      <div style="margin-bottom: 1.5rem;">
-        <a href="<%= job.application_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background-color: #0284c7; padding: 0.6rem 1.25rem;">
-          🌐 Şirket Portalı Üzerinden Başvur ↗
-        </a>
-      </div>
+      </p>
     <% } %>
   </div>
 </div>
 
-<!-- İlana Başvur Formu (N:M İlişki) -->
-<div class="card">
-  <div class="card-header">
-    <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">📝 Bu İlana Alumni Hesabınızla Başvurun</h3>
+<!-- Başvuru Formu (N:M İlişki) -->
+<div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; margin-bottom: 1.75rem;">
+  <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.25rem 2rem;">
+    <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; font-weight: 800; margin: 0;">🚀 Bu İlana Başvuru Yap</h3>
+    <a href="/applications/new?job_id=<%= job.id %>" class="pill-btn pill-pink" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+      Tam Sayfa Başvuru Formu &rarr;
+    </a>
   </div>
-  <div class="card-body">
+  <div class="card-body" style="padding: 2rem;">
     <form action="/jobs/<%= job.id %>/apply" method="POST">
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label class="form-label" for="user_id">Başvuran Kullanıcı Seçin *</label>
+      <div class="form-group">
+        <label class="form-label" for="user_id">Başvuran Kullanıcıyı Seçin *</label>
         <select id="user_id" name="user_id" class="form-select" required>
-          <option value="">-- Kullanıcı Hesabı Seçin --</option>
+          <option value="">-- Başvuran Kullanıcı Seçin --</option>
           <% if (typeof allUsers !== 'undefined' && allUsers) { %>
             <% allUsers.forEach(u => { %>
-              <option value="<%= u.id %>"><%= u.first_name %> <%= u.last_name %> (<%= u.role %> - <%= u.department || 'Bölüm Yok' %>)</option>
+              <option value="<%= u.id %>"><%= u.first_name %> <%= u.last_name %> (<%= u.role %> - <%= u.department || 'MIS' %>)</option>
             <% }); %>
           <% } %>
         </select>
       </div>
 
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label class="form-label" for="cover_letter">Ön Yazı / Niyet Mektubu (Cover Letter)</label>
-        <textarea id="cover_letter" name="cover_letter" class="form-control" rows="3" placeholder="Pozisyona ilginizi ve deneyimlerinizi kısaca özetleyin..."></textarea>
+      <div class="form-group">
+        <label class="form-label" for="cover_letter">Ön Yazı / Motivasyon Notu</label>
+        <textarea id="cover_letter" name="cover_letter" class="form-control" rows="3" placeholder="Pozisyona ilgi ve yetkinliklerinizi kısaca özetleyin..."></textarea>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="expected_salary">Beklenen Aylık Net Maaş (₺)</label>
-          <input type="number" id="expected_salary" name="expected_salary" class="form-control" placeholder="Örn: 45000" min="0" step="500">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <label class="form-label" for="resume_url">Özgeçmiş / CV Linki</label>
+          <input type="text" id="resume_url" name="resume_url" class="form-control" placeholder="https://linkedin.com/in/... veya CV linki">
         </div>
-        <div class="form-group">
-          <label class="form-label" for="portfolio_url">Portfolyo / GitHub / LinkedIn</label>
-          <input type="url" id="portfolio_url" name="portfolio_url" class="form-control" placeholder="https://github.com/...">
+
+        <div>
+          <label class="form-label" for="portfolio_url">Portfolyo / GitHub Linki</label>
+          <input type="text" id="portfolio_url" name="portfolio_url" class="form-control" placeholder="https://github.com/... veya web sitesi">
+        </div>
+
+        <div>
+          <label class="form-label" for="expected_salary">Beklenen Aylık Net Maaş (TRY)</label>
+          <input type="number" id="expected_salary" name="expected_salary" class="form-control" placeholder="Örn: 65000" min="0" step="1000">
         </div>
       </div>
 
-      <div class="form-group" style="margin-bottom: 1.5rem;">
-        <label class="form-label" for="resume_url">Özgeçmiş Dosya URL (PDF)</label>
-        <input type="text" id="resume_url" name="resume_url" class="form-control" placeholder="https://... veya /uploads/cv.pdf">
-      </div>
-
-      <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-        <button type="submit" class="btn btn-primary" style="background-color: #16a34a;">
-          ✓ Başvuruyu Gönder
-        </button>
-        <a href="/applications/new?job_id=<%= job.id %>" class="btn btn-secondary">
-          📝 Ayrıntılı Başvuru Formu ↗
-        </a>
-      </div>
+      <button type="submit" class="pill-btn pill-pink" style="font-size: 0.95rem; padding: 0.6rem 1.75rem;">
+        ✓ Başvurumu İlet
+      </button>
     </form>
   </div>
 </div>
 
-<!-- Gelen Başvurular Listesi (Admin / İlan Sahibi) -->
+<!-- Mevcut Başvuranlar Tablosu -->
 <% if (applicants && applicants.length > 0) { %>
-  <div class="card">
-    <div class="card-header">
-      <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">👥 Bu İlana Gelen Başvurular (<%= applicants.length %> Aday)</h3>
+  <div class="card" style="border: 1.5px solid var(--connext-border); border-radius: 16px;">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.25rem 2rem;">
+      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 800; margin: 0;">
+        👥 Bu İlana Yapılan Başvurular (<%= applicants.length %>)
+      </h3>
     </div>
     <div class="card-body" style="padding: 0;">
-      <table class="table" style="width: 100%; border-collapse: collapse;">
-        <thead>
-          <tr style="background-color: #f8fafc; text-align: left;">
-            <th style="padding: 0.75rem 1rem;">Aday Adı Soyadı</th>
-            <th style="padding: 0.75rem 1rem;">Bölüm</th>
-            <th style="padding: 0.75rem 1rem;">Durum</th>
-            <th style="padding: 0.75rem 1rem;">Başvuru Tarihi</th>
-            <th style="padding: 0.75rem 1rem; text-align: right;">İşlem</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% applicants.forEach(cand => { %>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
             <tr>
-              <td style="padding: 0.75rem 1rem;">
-                <strong><%= cand.first_name %> <%= cand.last_name %></strong><br>
-                <small style="color: #64748b;"><%= cand.email %></small>
-              </td>
-              <td style="padding: 0.75rem 1rem;"><%= cand.department || '-' %></td>
-              <td style="padding: 0.75rem 1rem;">
-                <span class="badge" style="background-color: #fef3c7; color: #92400e;">
-                  <%= cand.application ? cand.application.status : 'PENDING' %>
-                </span>
-              </td>
-              <td style="padding: 0.75rem 1rem;">
-                <%= cand.application ? new Date(cand.application.applied_at).toLocaleDateString('tr-TR') : '-' %>
-              </td>
-              <td style="padding: 0.75rem 1rem; text-align: right;">
-                <% if (cand.application && cand.application.id) { %>
-                  <a href="/applications/<%= cand.application.id %>" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+              <th>Aday</th>
+              <th>E-Posta</th>
+              <th>Durum</th>
+              <th>Başvuru Tarihi</th>
+              <th style="text-align: right;">Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% applicants.forEach(app => { %>
+              <tr>
+                <td>
+                  <a href="/users/<%= app.user_id %>" style="color: #111; font-weight: 700; text-decoration: none;">
+                    <%= app.first_name %> <%= app.last_name %>
+                  </a>
+                </td>
+                <td style="font-size: 0.9rem; color: #475569;"><%= app.email %></td>
+                <td>
+                  <span class="badge" style="background-color: #fef3c7; color: #92400e;"><%= app.status %></span>
+                </td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">
+                  <%= app.applied_at ? new Date(app.applied_at).toLocaleString('tr-TR') : '-' %>
+                </td>
+                <td style="text-align: right;">
+                  <a href="/applications/<%= app.application_id || app.id %>" class="pill-btn pill-peach" style="font-size: 0.8rem; padding: 0.2rem 0.65rem;">
                     İncele ↗
                   </a>
-                <% } %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 <% } %>

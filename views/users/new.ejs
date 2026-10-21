@@ -2,23 +2,23 @@
 
 <div style="max-width: 700px; margin: 0 auto;">
   <div style="margin-bottom: 1.5rem;">
-    <a href="/users" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+    <a href="/users" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
       &larr; Kullanıcı Listesine Dön
     </a>
-    <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111; margin-top: 0.75rem;">
       ➕ Yeni Kullanıcı Kaydı (Create)
     </h1>
     <p style="color: var(--text-muted); font-size: 0.95rem;">
-      MVC View Katmanı - Form üzerinden POST /users rotasına kullanıcı kaydı ekleyin.
+      CONNEXT &bull; İstanbul Üniversitesi Mezun ve Öğrenci Ağına Yeni Profil Ekleme
     </p>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      <div style="font-weight: 700;">Kullanıcı Bilgileri</div>
+  <div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.25rem 2rem;">
+      <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 800; color: #111;">Kullanıcı Bilgileri</div>
       <div style="font-size: 0.85rem; color: var(--text-muted);">* Zorunlu Alanlar</div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="padding: 2rem;">
       <form action="/users" method="POST">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="form-group">
@@ -28,7 +28,7 @@
               id="first_name"
               name="first_name"
               class="form-control"
-              placeholder="Örn: Rümeysa"
+              placeholder="Örn: Rumeysa"
               value="<%= typeof formData !== 'undefined' && formData.first_name ? formData.first_name : '' %>"
             >
           </div>
@@ -54,7 +54,7 @@
             name="email"
             required
             class="form-control"
-            placeholder="ornek@alumni.edu"
+            placeholder="ornek@alumni.iu.edu.tr"
             value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>"
           >
           <div class="form-text">Benzersiz bir kurumsal veya kişisel e-posta adresi giriniz.</div>
@@ -68,8 +68,7 @@
             name="password"
             required
             class="form-control"
-            placeholder="En az 6 karakter"
-            value="<%= typeof formData !== 'undefined' && formData.password ? formData.password : '' %>"
+            placeholder="En az 6 karakterli güçlü bir şifre"
           >
         </div>
 
@@ -90,8 +89,8 @@
               id="graduation_year"
               name="graduation_year"
               class="form-control"
-              placeholder="Örn: 2026"
-              min="1970"
+              placeholder="Örn: 2024"
+              min="1950"
               max="2035"
               value="<%= typeof formData !== 'undefined' && formData.graduation_year ? formData.graduation_year : '' %>"
             >
@@ -99,36 +98,22 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="department">Bölüm / Fakülte</label>
+          <label class="form-label" for="department">Bölüm / Program</label>
           <input
             type="text"
             id="department"
             name="department"
             class="form-control"
-            placeholder="Örn: Yönetim Bilişim Sistemleri"
+            placeholder="Örn: Management Information Systems (YBS)"
             value="<%= typeof formData !== 'undefined' && formData.department ? formData.department : '' %>"
           >
         </div>
 
-        <div class="form-group" style="margin-top: 0.5rem;">
-          <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
-            <input
-              type="checkbox"
-              id="is_verified"
-              name="is_verified"
-              value="true"
-              style="width: 1.1rem; height: 1.1rem;"
-              <%= typeof formData !== 'undefined' && formData.is_verified ? 'checked' : '' %>
-            >
-            <span style="font-weight: 500; font-size: 0.95rem;">Doğrulanmış Kullanıcı (Verified Status)</span>
-          </label>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-          <a href="/users" class="btn btn-secondary">İptal</a>
-          <button type="submit" class="btn btn-primary">
-            ✓ Kullanıcıyı Kaydet (POST /users)
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="submit" class="pill-btn pill-pink" style="font-size: 0.95rem; padding: 0.6rem 1.75rem;">
+            ✓ Kullanıcıyı Kaydet
           </button>
+          <a href="/users" class="pill-btn">İptal</a>
         </div>
       </form>
     </div>

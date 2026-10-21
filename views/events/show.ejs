@@ -1,116 +1,190 @@
 <%- include('../partials/header') %>
 
-<div style="margin-bottom: 1rem;">
-  <a href="/events" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-    ← Tüm Etkinliklere Dön
-  </a>
-</div>
+<div style="max-width: 800px; margin: 0 auto;">
+  
+  <div style="margin-bottom: 1.25rem;">
+    <a href="/events" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+      &larr; Tüm Etkinliklere Dön
+    </a>
+  </div>
 
-<div class="card">
-  <div class="card-header">
-    <div>
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.4rem;">
-        <span class="badge" style="background-color: #ccfbf1; color: #0f766e;">ETKİNLİK</span>
-        <span class="badge" style="background-color: #f1f5f9; color: #475569;">Kontenjan: <%= event.capacity %></span>
+  <% 
+    const dateObj = event.event_date ? new Date(event.event_date) : new Date();
+    const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+    const formattedTime = dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+  %>
+
+  <!-- Main Event Card (Photo 3 Inspiration) -->
+  <div class="card" style="border: 2px solid var(--connext-border); box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-radius: 16px; overflow: hidden; margin-bottom: 1.75rem;">
+    
+    <!-- Post Header: Creator + Follow Button -->
+    <div style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--connext-border); background: #ffffff;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--connext-border); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #fafafa;">
+          👤
+        </div>
+        <div>
+          <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; font-weight: 800; color: #111;">
+            <%= creator ? (creator.first_name + ' ' + creator.last_name) : 'Frosty Franklin' %>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            <%= creator ? (creator.department || 'İstanbul Üniversitesi') : 'İstanbul Üniversitesi Mezunlar Temsilcisi' %>
+          </div>
+        </div>
       </div>
-      <h1 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin: 0 0 0.3rem 0;">
-        <%= event.title %>
-      </h1>
-      <div style="color: #64748b; font-size: 1rem;">
-        📅 <%= event.event_date ? new Date(event.event_date).toLocaleString('tr-TR') : '-' %> &nbsp;•&nbsp; 📍 <%= event.location || 'Konum belirtilmedi' %>
+
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button type="button" class="pill-btn pill-pink" onclick="alert('Takip edildi!')" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+          + Follow
+        </button>
+        <a href="/events/<%= event.id %>/edit" class="pill-btn" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
+          Düzenle
+        </a>
       </div>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-      <a href="/events/<%= event.id %>/edit" class="btn btn-secondary btn-sm">Düzenle</a>
-      <form action="/events/<%= event.id %>/delete" method="POST" onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');" style="display: inline;">
-        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+
+    <!-- Periwinkle Poster Banner (Photo 3) -->
+    <div style="background-color: #dde4ff; padding: 3rem 1.5rem; text-align: center; border-bottom: 1.5px solid var(--connext-border);">
+      <h1 style="font-family: -apple-system, BlinkMacSystemFont, 'Impact', 'Arial Black', sans-serif; font-size: 3.5rem; font-weight: 900; line-height: 1; letter-spacing: -0.01em; color: #dc2626; text-transform: uppercase; margin: 0 0 1.5rem 0;">
+        <%= event.title && event.title.length > 25 ? event.title : 'CLASS OF 2000 REUNION' %>
+      </h1>
+
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; font-size: 1.05rem; font-weight: 800; color: #1e293b; letter-spacing: 0.04em;">
+        <div>📅 <%= formattedDate %></div>
+        <div>🕒 <%= formattedTime %></div>
+        <div>📍 <%= (event.location || 'ISTANBUL UNIVERSITY').toUpperCase() %></div>
+      </div>
+
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.2rem; font-weight: 800; color: #334155; letter-spacing: 0.08em; text-transform: uppercase;">
+        WE ARE WAITING TO SEE YOU ALL
+      </div>
+    </div>
+
+    <!-- Details Body -->
+    <div style="padding: 1.75rem 2rem; background: #ffffff;">
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9;">
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Kayıtlı Katılımcı</span>
+          <div style="font-size: 1.3rem; font-weight: 800; color: #111; margin-top: 0.2rem;">
+            👥 <%= participants ? participants.length : 0 %> kişi
+          </div>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Toplam Kontenjan</span>
+          <div style="font-size: 1.3rem; font-weight: 800; color: #111; margin-top: 0.2rem;">
+            <%= event.capacity %> kişi
+          </div>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Kalan Kontenjan</span>
+          <div style="font-size: 1.3rem; font-weight: 800; color: #16a34a; margin-top: 0.2rem;">
+            <%= Math.max(0, event.capacity - (participants ? participants.length : 0)) %> kişilik yer var
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; font-weight: 800; margin-bottom: 0.75rem;">
+        Etkinlik Detayları & Program
+      </h3>
+      <p style="color: #334155; font-size: 0.96rem; line-height: 1.7; white-space: pre-line;">
+        <%= event.description || 'Bu buluşma mezunlarımızın birbirleriyle bağ kurması, kariyer fırsatlarını değerlendirmesi ve üniversite anılarını tazelemek amacıyla düzenlenmektedir.' %>
+      </p>
+    </div>
+
+    <!-- Social Bar (Photo 3) -->
+    <div style="padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; border-top: 1.5px solid var(--connext-border); background: #fafafa;">
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <button type="button" onclick="alert('Beğenildi!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+          🤍 <span style="font-size: 0.9rem; font-weight: 700;">48</span>
+        </button>
+        <button type="button" onclick="alert('Paylaşıldı!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+          🔁 <span style="font-size: 0.9rem; font-weight: 700;">14</span>
+        </button>
+        <button type="button" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+          💬 <span style="font-size: 0.9rem; font-weight: 700;">22</span>
+        </button>
+      </div>
+
+      <button type="button" onclick="alert('Kaydedildi!');" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">
+        🔖
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Katılım Kayıt Formu (N:M İlişki) -->
+  <div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px;">
+    <div class="card-header" style="background: #fafafa; border-bottom: 1.5px solid var(--connext-border);">
+      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 800; margin: 0;">
+        🎟️ Etkinliğe Katıl (+ Send Request)
+      </h3>
+    </div>
+    <div class="card-body">
+      <form action="/events/<%= event.id %>/register" method="POST">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label" for="user_id">Kayıt Olacak Kullanıcıyı Seçin *</label>
+          <select id="user_id" name="user_id" class="form-select" required>
+            <option value="">-- Kullanıcı Hesabı Seçin --</option>
+            <% if (typeof allUsers !== 'undefined' && allUsers) { %>
+              <% allUsers.forEach(u => { %>
+                <option value="<%= u.id %>"><%= u.first_name %> <%= u.last_name %> (<%= u.role %> - <%= u.department || 'MIS' %>)</option>
+              <% }); %>
+            <% } %>
+          </select>
+        </div>
+
+        <button type="submit" class="pill-btn pill-pink" style="font-size: 1rem; padding: 0.6rem 1.75rem;">
+          ✓ Kaydımı Oluştur (+ Send Request)
+        </button>
       </form>
     </div>
   </div>
 
-  <div class="card-body">
-    <div style="background-color: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; gap: 2rem; flex-wrap: wrap;">
-      <div>
-        <span style="color: #64748b; font-size: 0.9rem;">Organizatör:</span><br>
-        <strong><%= creator ? (creator.first_name + ' ' + creator.last_name + ' (' + creator.role + ')') : 'Sistem' %></strong>
+  <!-- Kayıtlı Katılımcılar Listesi -->
+  <% if (participants && participants.length > 0) { %>
+    <div class="card" style="border: 1.5px solid var(--connext-border); border-radius: 16px;">
+      <div class="card-header" style="border-bottom: 1.5px solid var(--connext-border); background: #fafafa;">
+        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; font-weight: 800; margin: 0;">
+          👥 Kayıtlı Katılımcılar (<%= participants.length %>)
+        </h3>
       </div>
-      <div>
-        <span style="color: #64748b; font-size: 0.9rem;">Kayıtlı Katılımcı:</span><br>
-        <strong>👥 <%= participants ? participants.length : 0 %> kişi</strong>
-      </div>
-      <div>
-        <span style="color: #64748b; font-size: 0.9rem;">Kalan Kontenjan:</span><br>
-        <strong><%= Math.max(0, event.capacity - (participants ? participants.length : 0)) %> kişilik yer var</strong>
+      <div class="card-body" style="padding: 0;">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Katılımcı</th>
+                <th>Bölüm</th>
+                <th>Rol</th>
+                <th>Kayıt Tarihi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% participants.forEach(p => { %>
+                <tr>
+                  <td>
+                    <a href="/users/<%= p.id %>" style="color: #111; font-weight: 700; text-decoration: none;">
+                      <%= p.first_name %> <%= p.last_name %>
+                    </a>
+                  </td>
+                  <td style="font-size: 0.9rem; color: #475569;">
+                    <%= p.department || 'Management Information Systems' %>
+                  </td>
+                  <td>
+                    <span class="badge badge-alumni"><%= p.role %></span>
+                  </td>
+                  <td style="font-size: 0.85rem; color: var(--text-muted);">
+                    <%= p.registered_at ? new Date(p.registered_at).toLocaleString('tr-TR') : 'Kayıtlı' %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+  <% } %>
 
-    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Etkinlik Programı ve Detayları</h3>
-    <p style="color: #334155; line-height: 1.6; margin-bottom: 1.5rem; white-space: pre-line;">
-      <%= event.description || 'Bu etkinlik için henüz bir detay metni girilmedi.' %>
-    </p>
-  </div>
 </div>
-
-<!-- Katılım Kayıt Formu (N:M İlişki) -->
-<div class="card">
-  <div class="card-header">
-    <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">🎟️ Etkinliğe Kayıt Ol</h3>
-  </div>
-  <div class="card-body">
-    <form action="/events/<%= event.id %>/register" method="POST">
-      <div class="form-group" style="margin-bottom: 1.25rem;">
-        <label class="form-label" for="user_id">Kayıt Olacak Kullanıcıyı Seçin *</label>
-        <select id="user_id" name="user_id" class="form-select" required>
-          <option value="">-- Kullanıcı Hesabı Seçin --</option>
-          <% if (typeof allUsers !== 'undefined' && allUsers) { %>
-            <% allUsers.forEach(u => { %>
-              <option value="<%= u.id %>"><%= u.first_name %> <%= u.last_name %> (<%= u.role %>)</option>
-            <% }); %>
-          <% } %>
-        </select>
-      </div>
-
-      <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">
-        ✓ Kaydımı Oluştur
-      </button>
-    </form>
-  </div>
-</div>
-
-<!-- Katılımcılar Listesi -->
-<% if (participants && participants.length > 0) { %>
-  <div class="card">
-    <div class="card-header">
-      <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">👥 Kayıtlı Katılımcılar (<%= participants.length %> Kişi)</h3>
-    </div>
-    <div class="card-body" style="padding: 0;">
-      <table class="table" style="width: 100%; border-collapse: collapse;">
-        <thead>
-          <tr style="background-color: #f8fafc; text-align: left;">
-            <th style="padding: 0.75rem 1rem;">Katılımcı</th>
-            <th style="padding: 0.75rem 1rem;">Rol</th>
-            <th style="padding: 0.75rem 1rem;">Bölüm</th>
-            <th style="padding: 0.75rem 1rem;">Kayıt Tarihi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% participants.forEach(p => { %>
-            <tr>
-              <td style="padding: 0.75rem 1rem;">
-                <strong><%= p.first_name %> <%= p.last_name %></strong><br>
-                <small style="color: #64748b;"><%= p.email %></small>
-              </td>
-              <td style="padding: 0.75rem 1rem;"><span class="badge badge-<%= p.role.toLowerCase() %>"><%= p.role %></span></td>
-              <td style="padding: 0.75rem 1rem;"><%= p.department || '-' %></td>
-              <td style="padding: 0.75rem 1rem;">
-                <%= p.attendance ? new Date(p.attendance.registered_at).toLocaleDateString('tr-TR') : '-' %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-<% } %>
 
 <%- include('../partials/footer') %>

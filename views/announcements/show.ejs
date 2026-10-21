@@ -3,10 +3,10 @@
 <div style="max-width: 800px; margin: 0 auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
     <div>
-      <a href="/announcements" style="color: #7c3aed; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+      <a href="/announcements" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
         &larr; Duyuru Listesine Dön
       </a>
-      <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.5rem;">
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111; margin-top: 0.75rem;">
         <%= announcement.title %>
       </h1>
       <p style="color: var(--text-muted); font-size: 0.95rem;">
@@ -15,19 +15,19 @@
     </div>
 
     <div style="display: flex; gap: 0.5rem;">
-      <a href="/announcements/<%= announcement.id %>/edit" class="btn btn-primary" style="background-color: #7c3aed;">
-        ✏️ Düzenle
+      <a href="/announcements/<%= announcement.id %>/edit" class="pill-btn pill-peach">
+        ✏️ Duyuru Bilgilerini Düzenle
       </a>
       <form action="/announcements/<%= announcement.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu duyuruyu silmek istediğinize emin misiniz?');">
-        <button type="submit" class="btn btn-danger">
+        <button type="submit" class="pill-btn" style="background: #fee2e2; color: #b91c1c; border-color: #f87171;">
           🗑️ Sil
         </button>
       </form>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-header">
+  <div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border);">
       <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <% if (announcement.category === 'EVENT') { %>
           <span class="badge badge-event">🎉 Etkinlik</span>
@@ -59,33 +59,18 @@
       </div>
     </div>
 
-    <div class="card-body">
-      <!-- Duyuru Metni -->
-      <div style="font-size: 1.05rem; line-height: 1.8; color: #1e293b; white-space: pre-line; margin-bottom: 2rem;">
+    <div class="card-body" style="padding: 2rem;">
+      <div style="color: #1e293b; font-size: 1.05rem; line-height: 1.8; white-space: pre-line; margin-bottom: 2rem;">
         <%= announcement.content %>
       </div>
 
-      <div style="background-color: #f8fafc; border-radius: 8px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-        <div>
-          <span>Yayınlanma Tarihi: </span>
-          <strong><%= announcement.created_at ? new Date(announcement.created_at).toLocaleString('tr-TR') : '-' %></strong>
-        </div>
-        <% if (announcement.updated_at) { %>
-          <div>
-            <span>Son Güncelleme: </span>
-            <strong><%= new Date(announcement.updated_at).toLocaleString('tr-TR') %></strong>
-          </div>
-        <% } %>
-      </div>
-
-      <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="padding-top: 1.5rem; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <span style="font-size: 0.85rem; color: var(--text-muted);">
-          JSON API karşılığı: <a href="/api/announcements/<%= announcement.id %>" target="_blank" style="color: #7c3aed;">/api/announcements/<%= announcement.id %></a>
+          Yayın Tarihi: <strong><%= announcement.published_at ? new Date(announcement.published_at).toLocaleString('tr-TR') : '-' %></strong>
         </span>
-        <div style="display: flex; gap: 0.5rem;">
-          <a href="/announcements" class="btn btn-secondary">Duyuru Listesine Dön</a>
-          <a href="/announcements/<%= announcement.id %>/edit" class="btn btn-primary" style="background-color: #7c3aed;">Düzenle</a>
-        </div>
+        <a href="/api/announcements/<%= announcement.id %>" target="_blank" class="pill-btn" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">
+          JSON API Uç Noktası ↗
+        </a>
       </div>
     </div>
   </div>
