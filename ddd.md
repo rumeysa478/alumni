@@ -106,11 +106,21 @@ erDiagram
         string title "NOT NULL"
         string company "NOT NULL"
         text description "NOT NULL"
+        text requirements
         string location
-        string type "FULL_TIME | PART_TIME | INTERNSHIP | REMOTE"
+        string work_model "ONSITE | HYBRID | REMOTE"
+        string type "FULL_TIME | PART_TIME | INTERNSHIP | CONTRACT | FREELANCE"
+        string experience_level "INTERN | ENTRY_LEVEL | JUNIOR | MID | SENIOR | LEAD"
+        string sector
+        numeric salary_min
+        numeric salary_max
+        string currency "DEFAULT 'TRY'"
+        string application_url
+        string contact_email
         timestamp deadline
         int posted_by FK "ON DELETE SET NULL"
         boolean is_active "DEFAULT true"
+        int view_count "DEFAULT 0"
         timestamp created_at
         timestamp updated_at
     }
@@ -217,21 +227,35 @@ Koordinatörlük ve yöneticiler tarafından paylaşılan duyuruları, etkinlik 
 ---
 
 ### 3.4. `job_postings` (İş ve Staj İlanları)
-Mezunlar ve işverenler tarafından paylaşılan kariyer fırsatlarını yönetir.
+Mezunlar ve işveren partnerler tarafından paylaşılan iş, staj ve kariyer fırsatlarını yönetir. Modern kariyer portalları standartlarına uygun olarak çalışma modeli (hibrit/uzaktan), deneyim seviyesi, sektör, maaş aralığı ve doğrudan başvuru kanalları (harici URL / e-posta) ile zenginleştirilmiştir.
 
 | Sütun Adı | Veri Tipi | Kısıtlamalar | Varsayılan | Açıklama |
 | :--- | :--- | :--- | :--- | :--- |
-| `id` | `SERIAL` | `PRIMARY KEY` | Otomatik artan | İlan ID'si |
-| `title` | `VARCHAR(200)`| `NOT NULL` | - | Pozisyon başlığı (örn: Frontend Developer) |
-| `company` | `VARCHAR(150)`| `NOT NULL` | - | İşveren firma adı |
-| `description` | `TEXT` | `NOT NULL` | - | Pozisyon tanımı ve aranan nitelikler |
-| `location` | `VARCHAR(100)`| - | `NULL` | Şehir / Çalışma modeli (Hibrit, Uzaktan vb.) |
-| `type` | `VARCHAR(50)` | `CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE', 'CONTRACT'))` | `'FULL_TIME'` | Çalışma şekli |
-| `deadline` | `TIMESTAMPTZ` | - | `NULL` | Son başvuru tarihi |
-| `posted_by` | `INT` | `REFERENCES users(id) ON DELETE SET NULL` | `NULL` | İlanı oluşturan kullanıcı |
-| `is_active` | `BOOLEAN` | `NOT NULL` | `TRUE` | İlanın aktiflik durumu |
-| `created_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | İlan tarihi |
-| `updated_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Güncelleme tarihi |
+| `id` | `SERIAL` | `PRIMARY KEY` | Otomatik artan | Benzersiz ilan ID'si |
+| `title` | `VARCHAR(200)`| `NOT NULL` | - | Pozisyon başlığı (örn: Full Stack Developer, Veri Analisti) |
+| `company` | `VARCHAR(150)`| `NOT NULL` | - | İlanı veren firma / kurum adı |
+| `description` | `TEXT` | `NOT NULL` | - | Pozisyon özeti, görev ve sorumluluklar |
+| `requirements` | `TEXT` | - | `NULL` | Aranan teknik yetkinlikler, eğitim şartı ve nitelikler |
+| `location` | `VARCHAR(100)`| - | `NULL` | Şehir ve lokasyon bilgisi (örn: İstanbul, ODTÜ Teknokent) |
+| `work_model` | `VARCHAR(50)` | `CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE'))` | `'HYBRID'` | Çalışma ortamı modeli (Ofisten, Hibrit, Uzaktan) |
+| `type` | `VARCHAR(50)` | `CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'FREELANCE'))` | `'FULL_TIME'` | İstihdam türü / çalışma şekli |
+| `experience_level`| `VARCHAR(50)` | `CHECK (experience_level IN ('INTERN', 'ENTRY_LEVEL', 'JUNIOR', 'MID', 'SENIOR', 'LEAD'))` | `'MID'` | Hedeflenen tecrübe seviyesi |
+| `sector` | `VARCHAR(100)`| - | `NULL` | Faaliyet sektörü (örn: Yazılım & Bilişim, Siber Güvenlik, Finans) |
+| `salary_min` | `NUMERIC(12, 2)` | `CHECK (salary_min >= 0)` | `NULL` | Minimum maaş beklentisi / alt skala |
+| `salary_max` | `NUMERIC(12, 2)` | `CHECK (salary_max >= 0)` | `NULL` | Maksimum maaş üst sınırı |
+| `currency` | `VARCHAR(10)` | - | `'TRY'` | Maaş para birimi (TRY, USD, EUR) |
+| `application_url` | `VARCHAR(255)`| - | `NULL` | Harici başvuru bağlantısı (LinkedIn, Kariyer.net, Kurumsal portal) |
+| `contact_email` | `VARCHAR(255)`| - | `NULL` | İlan sorumlusu iletişim ve CV gönderim e-posta adresi |
+| `deadline` | `TIMESTAMPTZ` | - | `NULL` | Son başvuru kabul tarihi |
+| `posted_by` | `INT` | `REFERENCES users(id) ON DELETE SET NULL` | `NULL` | İlanı sisteme giren mezun veya yönetici ID |
+| `is_active` | `BOOLEAN` | `NOT NULL` | `TRUE` | İlanın aktif olarak yayında olup olmadığı |
+| `view_count` | `INT` | `CHECK (view_count >= 0)` | `0` | İlanın görüntülenme / tıklanma sayısı |
+| `created_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | İlanın yayınlanma tarihi |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Son güncelleme tarihi |
+
+*Tablo Kısıtları:*
+- `CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)` — Minimum maaş, maksimum maaştan büyük olamaz.
+- `work_model` ve `type` alanlarının ayrıştırılması sayesinde istihdam biçimi (`FULL_TIME`, `INTERNSHIP`) ile çalışma lokasyonu modeli (`REMOTE`, `HYBRID`, `ONSITE`) birbirine karışmaz.
 
 ---
 
@@ -352,6 +376,11 @@ CREATE INDEX idx_announcements_is_active ON announcements(is_active);
 -- İlan filtreleme ve yabancı anahtar aramaları:
 CREATE INDEX idx_job_postings_posted_by ON job_postings(posted_by);
 CREATE INDEX idx_job_postings_type ON job_postings(type);
+CREATE INDEX idx_job_postings_work_model ON job_postings(work_model);
+CREATE INDEX idx_job_postings_experience_level ON job_postings(experience_level);
+CREATE INDEX idx_job_postings_sector ON job_postings(sector);
+CREATE INDEX idx_job_postings_is_active ON job_postings(is_active);
+CREATE INDEX idx_job_postings_deadline ON job_postings(deadline);
 
 -- Etkinlik tarih sıralaması:
 CREATE INDEX idx_events_date ON events(event_date);
@@ -504,13 +533,24 @@ CREATE TABLE IF NOT EXISTS job_postings (
     title VARCHAR(200) NOT NULL,
     company VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
+    requirements TEXT,
     location VARCHAR(100),
-    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE', 'CONTRACT')),
+    work_model VARCHAR(50) DEFAULT 'HYBRID' CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE')),
+    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'FREELANCE')),
+    experience_level VARCHAR(50) DEFAULT 'MID' CHECK (experience_level IN ('INTERN', 'ENTRY_LEVEL', 'JUNIOR', 'MID', 'SENIOR', 'LEAD')),
+    sector VARCHAR(100),
+    salary_min NUMERIC(12, 2) CHECK (salary_min >= 0),
+    salary_max NUMERIC(12, 2) CHECK (salary_max >= 0),
+    currency VARCHAR(10) DEFAULT 'TRY',
+    application_url VARCHAR(255),
+    contact_email VARCHAR(255),
     deadline TIMESTAMP WITH TIME ZONE,
     posted_by INT REFERENCES users(id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
+    view_count INT DEFAULT 0 CHECK (view_count >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 
 -- 5. İŞ BAŞVURULARI (N:M KÖPRÜ TABLOSU)

@@ -55,13 +55,24 @@ CREATE TABLE IF NOT EXISTS job_postings (
     title VARCHAR(200) NOT NULL,
     company VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
+    requirements TEXT,
     location VARCHAR(100),
-    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE', 'CONTRACT')),
+    work_model VARCHAR(50) DEFAULT 'HYBRID' CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE')),
+    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'FREELANCE')),
+    experience_level VARCHAR(50) DEFAULT 'MID' CHECK (experience_level IN ('INTERN', 'ENTRY_LEVEL', 'JUNIOR', 'MID', 'SENIOR', 'LEAD')),
+    sector VARCHAR(100),
+    salary_min NUMERIC(12, 2) CHECK (salary_min >= 0),
+    salary_max NUMERIC(12, 2) CHECK (salary_max >= 0),
+    currency VARCHAR(10) DEFAULT 'TRY',
+    application_url VARCHAR(255),
+    contact_email VARCHAR(255),
     deadline TIMESTAMP WITH TIME ZONE,
     posted_by INT REFERENCES users(id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
+    view_count INT DEFAULT 0 CHECK (view_count >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 
 -- 6. JOB APPLICATIONS TABLE (N:M bridge between users and job_postings)
@@ -121,5 +132,10 @@ CREATE INDEX IF NOT EXISTS idx_announcements_is_active ON announcements(is_activ
 
 CREATE INDEX IF NOT EXISTS idx_job_postings_posted_by ON job_postings(posted_by);
 CREATE INDEX IF NOT EXISTS idx_job_postings_type ON job_postings(type);
+CREATE INDEX IF NOT EXISTS idx_job_postings_work_model ON job_postings(work_model);
+CREATE INDEX IF NOT EXISTS idx_job_postings_experience_level ON job_postings(experience_level);
+CREATE INDEX IF NOT EXISTS idx_job_postings_sector ON job_postings(sector);
+CREATE INDEX IF NOT EXISTS idx_job_postings_is_active ON job_postings(is_active);
+CREATE INDEX IF NOT EXISTS idx_job_postings_deadline ON job_postings(deadline);
 
 CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date);

@@ -55,13 +55,24 @@ CREATE TABLE IF NOT EXISTS job_postings (
     title VARCHAR(200) NOT NULL,
     company VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
+    requirements TEXT,
     location VARCHAR(100),
-    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE', 'CONTRACT')),
+    work_model VARCHAR(50) DEFAULT 'HYBRID' CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE')),
+    type VARCHAR(50) DEFAULT 'FULL_TIME' CHECK (type IN ('FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'CONTRACT', 'FREELANCE')),
+    experience_level VARCHAR(50) DEFAULT 'MID' CHECK (experience_level IN ('INTERN', 'ENTRY_LEVEL', 'JUNIOR', 'MID', 'SENIOR', 'LEAD')),
+    sector VARCHAR(100),
+    salary_min NUMERIC(12, 2) CHECK (salary_min >= 0),
+    salary_max NUMERIC(12, 2) CHECK (salary_max >= 0),
+    currency VARCHAR(10) DEFAULT 'TRY',
+    application_url VARCHAR(255),
+    contact_email VARCHAR(255),
     deadline TIMESTAMP WITH TIME ZONE,
     posted_by INT REFERENCES users(id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
+    view_count INT DEFAULT 0 CHECK (view_count >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 
 -- 6. JOB APPLICATIONS TABLE (N:M bridge between users and job_postings)
@@ -121,6 +132,11 @@ CREATE INDEX IF NOT EXISTS idx_announcements_is_active ON announcements(is_activ
 
 CREATE INDEX IF NOT EXISTS idx_job_postings_posted_by ON job_postings(posted_by);
 CREATE INDEX IF NOT EXISTS idx_job_postings_type ON job_postings(type);
+CREATE INDEX IF NOT EXISTS idx_job_postings_work_model ON job_postings(work_model);
+CREATE INDEX IF NOT EXISTS idx_job_postings_experience_level ON job_postings(experience_level);
+CREATE INDEX IF NOT EXISTS idx_job_postings_sector ON job_postings(sector);
+CREATE INDEX IF NOT EXISTS idx_job_postings_is_active ON job_postings(is_active);
+CREATE INDEX IF NOT EXISTS idx_job_postings_deadline ON job_postings(deadline);
 
 CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date);
 
@@ -153,10 +169,10 @@ ON CONFLICT (id) DO NOTHING;
 SELECT setval('announcements_id_seq', (SELECT MAX(id) FROM announcements));
 
 -- Job Postings seed
-INSERT INTO job_postings (id, title, company, description, location, type, deadline, posted_by, is_active)
+INSERT INTO job_postings (id, title, company, description, requirements, location, work_model, type, experience_level, sector, salary_min, salary_max, currency, application_url, contact_email, deadline, posted_by, is_active, view_count)
 VALUES
-    (1, 'Junior Backend Developer', 'Tech Global Solutions', 'Node.js, Express ve PostgreSQL deneyimli çalışma arkadaşı aranıyor.', 'İstanbul (Hibrit)', 'FULL_TIME', '2026-12-31', 1, TRUE),
-    (2, 'Stajyer Yazılım Geliştirici', 'Cyber Security Corp', 'Web programlama temellerine hakim, öğrenmeye açık stajyer.', 'Ankara / Uzaktan', 'INTERNSHIP', '2026-11-30', 3, TRUE)
+    (1, 'Junior Backend Developer', 'Tech Global Solutions', 'Node.js, Express ve PostgreSQL deneyimli çalışma arkadaşı aranıyor.', 'Node.js & Express temelleri, PostgreSQL/SQL bilgisi, REST API geliştirme tecrübesi, Git kullanımı.', 'İstanbul (Maslak)', 'HYBRID', 'FULL_TIME', 'JUNIOR', 'Yazılım & Bilişim', 45000.00, 65000.00, 'TRY', 'https://techglobal.com/careers/jr-backend', 'kariyer@techglobal.com', '2026-12-31 23:59:59+03', 1, TRUE, 142),
+    (2, 'Stajyer Yazılım Geliştirici', 'Cyber Security Corp', 'Web programlama temellerine hakim, öğrenmeye açık stajyer.', 'Üniversitelerin ilgili mühendislik/bilişim bölümlerinde 3. veya 4. sınıf öğrencisi olmak, temel JavaScript/Python bilgisi.', 'Ankara / Uzaktan', 'REMOTE', 'INTERNSHIP', 'INTERN', 'Siber Güvenlik', 18500.00, 22000.00, 'TRY', 'https://cybercorp.io/internship-2026', 'hr@cybercorp.io', '2026-11-30 23:59:59+03', 3, TRUE, 89)
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval('job_postings_id_seq', (SELECT MAX(id) FROM job_postings));

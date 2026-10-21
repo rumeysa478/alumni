@@ -29,10 +29,10 @@ ON CONFLICT (id) DO NOTHING;
 SELECT setval('announcements_id_seq', (SELECT COALESCE(MAX(id), 1) FROM announcements));
 
 -- 4. SEED JOB POSTINGS
-INSERT INTO job_postings (id, title, company, description, location, type, deadline, posted_by, is_active)
+INSERT INTO job_postings (id, title, company, description, requirements, location, work_model, type, experience_level, sector, salary_min, salary_max, currency, application_url, contact_email, deadline, posted_by, is_active, view_count)
 VALUES
-    (1, 'Junior Backend Developer', 'Tech Global Solutions', 'Node.js, Express ve PostgreSQL deneyimli çalışma arkadaşı aranıyor.', 'İstanbul (Hibrit)', 'FULL_TIME', '2026-12-31', 1, TRUE),
-    (2, 'Stajyer Yazılım Geliştirici', 'Cyber Security Corp', 'Web programlama temellerine hakim, öğrenmeye açık stajyer.', 'Ankara / Uzaktan', 'INTERNSHIP', '2026-11-30', 3, TRUE)
+    (1, 'Junior Backend Developer', 'Tech Global Solutions', 'Node.js, Express ve PostgreSQL deneyimli çalışma arkadaşı aranıyor.', 'Node.js & Express temelleri, PostgreSQL/SQL bilgisi, REST API geliştirme tecrübesi, Git kullanımı.', 'İstanbul (Maslak)', 'HYBRID', 'FULL_TIME', 'JUNIOR', 'Yazılım & Bilişim', 45000.00, 65000.00, 'TRY', 'https://techglobal.com/careers/jr-backend', 'kariyer@techglobal.com', '2026-12-31 23:59:59+03', 1, TRUE, 142),
+    (2, 'Stajyer Yazılım Geliştirici', 'Cyber Security Corp', 'Web programlama temellerine hakim, öğrenmeye açık stajyer.', 'Üniversitelerin ilgili mühendislik/bilişim bölümlerinde 3. veya 4. sınıf öğrencisi olmak, temel JavaScript/Python bilgisi.', 'Ankara / Uzaktan', 'REMOTE', 'INTERNSHIP', 'INTERN', 'Siber Güvenlik', 18500.00, 22000.00, 'TRY', 'https://cybercorp.io/internship-2026', 'hr@cybercorp.io', '2026-11-30 23:59:59+03', 3, TRUE, 89)
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval('job_postings_id_seq', (SELECT COALESCE(MAX(id), 1) FROM job_postings));

@@ -79,9 +79,17 @@ export async function seedDemoData({ userCount = 15, announcementCount = 8, jobC
     // 3. İş ilanlarını ekle
     for (const j of mockJobs) {
       await client.query(
-        `INSERT INTO job_postings (title, company, description, location, type, deadline, is_active)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [j.title, j.company, j.description, j.location, j.type, j.deadline, j.is_active]
+        `INSERT INTO job_postings (
+          title, company, description, requirements, location, work_model,
+          type, experience_level, sector, salary_min, salary_max,
+          currency, application_url, contact_email, deadline, is_active, view_count
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
+        [
+          j.title, j.company, j.description, j.requirements, j.location, j.work_model,
+          j.type, j.experience_level, j.sector, j.salary_min, j.salary_max,
+          j.currency, j.application_url, j.contact_email, j.deadline, j.is_active, j.view_count
+        ]
       );
     }
     console.log(`✅ ${mockJobs.length} adet demo iş/staj ilanı kaydedildi.`);
