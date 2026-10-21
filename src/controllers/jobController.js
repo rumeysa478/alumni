@@ -4,7 +4,7 @@
  * @author Rumeysa Aydın
  */
 
-import { jobPostingModel, jobApplicationModel, userModel } from '../models/index.js';
+import { jobPostingModel, applicationModel, userModel } from '../models/index.js';
 
 export const JobController = {
   /**
@@ -24,9 +24,19 @@ export const JobController = {
         experience_level
       });
 
+      const enrichedJobs = await Promise.all(
+        jobs.map(async (job) => {
+          const applications = await applicationModel.getByJobId(job.id);
+          return {
+            ...job,
+            applicationsCount: applications.length
+          };
+        })
+      );
+
       res.render('jobs/index', {
         title: 'İş ve Staj İlanları',
-        jobs,
+        jobs: enrichedJobs,
         filters: { search, type, work_model, experience_level },
         successMessage: req.query.success || null,
         errorMessage: req.query.error || null
@@ -243,18 +253,20 @@ export const JobController = {
    */
   applyToJob: async (req, res) => {
     try {
-      const { user_id, cover_letter, resume_url } = req.body;
+      const { user_id, cover_letter, resume_url, portfolio_url, expected_salary } = req.body;
       const jobId = req.params.id;
 
       if (!user_id) {
         return res.redirect(`/jobs/${jobId}?error=` + encodeURIComponent('Lütfen başvuran kullanıcı seçiniz.'));
       }
 
-      await jobApplicationModel.apply({
+      await applicationModel.apply({
         job_id: jobId,
         user_id,
         cover_letter,
-        resume_url
+        resume_url,
+        portfolio_url,
+        expected_salary
       });
 
       res.redirect(`/jobs/${jobId}?success=` + encodeURIComponent('Başvurunuz başarıyla kaydedildi!'));

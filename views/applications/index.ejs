@@ -18,6 +18,57 @@
   </div>
 </div>
 
+<%
+  const totalApps = applications ? applications.length : 0;
+  let pendingCount = 0;
+  let reviewingCount = 0;
+  let interviewCount = 0;
+  let offeredAcceptedCount = 0;
+
+  if (applications) {
+    applications.forEach(a => {
+      if (a.status === 'PENDING') pendingCount++;
+      else if (a.status === 'REVIEWING') reviewingCount++;
+      else if (a.status === 'INTERVIEW') interviewCount++;
+      else if (a.status === 'OFFERED' || a.status === 'ACCEPTED') offeredAcceptedCount++;
+    });
+  }
+%>
+
+<!-- İstatistik Özet Şeridi -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+  <a href="/applications" style="text-decoration: none;">
+    <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #6366f1;">
+      <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">TOPLAM BAŞVURU</div>
+      <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-top: 0.2rem;"><%= totalApps %></div>
+    </div>
+  </a>
+  <a href="/applications?status=PENDING" style="text-decoration: none;">
+    <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #f59e0b;">
+      <div style="font-size: 0.8rem; color: #92400e; font-weight: 700;">⏳ BEKLEMEDE</div>
+      <div style="font-size: 1.5rem; font-weight: 800; color: #b45309; margin-top: 0.2rem;"><%= pendingCount %></div>
+    </div>
+  </a>
+  <a href="/applications?status=REVIEWING" style="text-decoration: none;">
+    <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #3b82f6;">
+      <div style="font-size: 0.8rem; color: #1e40af; font-weight: 700;">👀 İNCELENİYOR</div>
+      <div style="font-size: 1.5rem; font-weight: 800; color: #1d4ed8; margin-top: 0.2rem;"><%= reviewingCount %></div>
+    </div>
+  </a>
+  <a href="/applications?status=INTERVIEW" style="text-decoration: none;">
+    <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #8b5cf6;">
+      <div style="font-size: 0.8rem; color: #5b21b6; font-weight: 700;">🎯 MÜLAKAT</div>
+      <div style="font-size: 1.5rem; font-weight: 800; color: #6d28d9; margin-top: 0.2rem;"><%= interviewCount %></div>
+    </div>
+  </a>
+  <a href="/applications?status=OFFERED" style="text-decoration: none;">
+    <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #10b981;">
+      <div style="font-size: 0.8rem; color: #065f46; font-weight: 700;">💌 TEKLİF / KABUL</div>
+      <div style="font-size: 1.5rem; font-weight: 800; color: #047857; margin-top: 0.2rem;"><%= offeredAcceptedCount %></div>
+    </div>
+  </a>
+</div>
+
 <!-- Filtreleme Kartı -->
 <div class="card" style="margin-bottom: 1.5rem;">
   <div class="card-body" style="padding: 1rem 1.5rem;">

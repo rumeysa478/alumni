@@ -38,6 +38,28 @@ class ApplicationModel {
         status: APPLICATION_STATUS.PENDING,
         notes: 'Ön elemeden geçti, teknik mülakat planlanabilir.',
         rejection_reason: null
+      },
+      {
+        job_id: 3,
+        user_id: 1,
+        cover_letter: 'Yönetim Bilişim Sistemleri mezunuyum. React ve modern web teknolojilerindeki portfolyo projelerimle ekibinize değer katmak istiyorum.',
+        resume_url: '/uploads/resumes/rumeysa_cv.pdf',
+        portfolio_url: 'https://github.com/rumeysa478',
+        expected_salary: 75000.00,
+        status: APPLICATION_STATUS.INTERVIEW,
+        notes: 'Teknik mülakat 28 Ekim saat 11:00 olarak belirlendi.',
+        rejection_reason: null
+      },
+      {
+        job_id: 5,
+        user_id: 3,
+        cover_letter: 'DevOps ve bulut altyapıları üzerine çalışmalarımı sunmaktan memnuniyet duyarım.',
+        resume_url: '/uploads/resumes/zeynep_cv.pdf',
+        portfolio_url: 'https://github.com/zeynepkaya',
+        expected_salary: 90000.00,
+        status: APPLICATION_STATUS.OFFERED,
+        notes: 'Adaya resmi teklif mektubu iletildi.',
+        rejection_reason: null
       }
     ];
 
