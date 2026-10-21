@@ -678,6 +678,8 @@ import {
   alumniProfileModel,
   jobPostingModel,
   jobApplicationModel,
+  applicationModel,
+  APPLICATION_STATUS,
   eventModel,
   eventAttendeeModel,
   mentorshipModel
@@ -689,14 +691,18 @@ test('Models Registry exports all 8 domain models and valid RELATIONS metadata',
   assert.ok(models.Announcement);
   assert.ok(models.JobPosting);
   assert.ok(models.JobApplication);
+  assert.ok(models.Application);
   assert.ok(models.Event);
   assert.ok(models.EventAttendee);
   assert.ok(models.Mentorship);
 
   assert.strictEqual(RELATIONS.User.profile.cardinality, '1:1');
   assert.strictEqual(RELATIONS.User.postedJobs.cardinality, '1:N');
+  assert.strictEqual(RELATIONS.User.applications.cardinality, '1:N');
   assert.strictEqual(RELATIONS.User.appliedJobs.cardinality, 'N:M');
   assert.strictEqual(RELATIONS.JobPosting.poster.cardinality, '1:N');
+  assert.strictEqual(RELATIONS.JobPosting.applications.cardinality, '1:N');
+  assert.strictEqual(RELATIONS.Application.job.cardinality, '1:N');
   assert.strictEqual(RELATIONS.Event.participants.cardinality, 'N:M');
   assert.strictEqual(RELATIONS.Mentorship.mentor.cardinality, '1:N');
 });
@@ -955,6 +961,241 @@ test('GET /api/profiles/:userId and GET /api/mentorships return valid data', asy
     await new Promise((resolve) => server.close(resolve));
   }
 });
+
+// ==========================================
+// APPLICATION ACTION TABLE & ROUTES TESTS
+// ==========================================
+
+test('ApplicationModel manages full application lifecycle and relational navigation', async () => {
+  // 1. Yeni başvuru yapma
+  const appData = {
+    job_id: 1,
+    user_id: 2,
+    cover_letter: 'Backend geliştirme konusunda yetkinliklerimi şirketinizde değerlendirmek istiyorum.',
+    resume_url: '/uploads/resumes/ahmet_backend_cv.pdf',
+    portfolio_url: 'https://github.com/ahmetyilmaz/projects',
+    expected_salary: 48000,
+    notes: 'Aday mülakata davet edildi.'
+  };
+
+  const created = await applicationModel.apply(appData);
+  assert.ok(created.id);
+  assert.strictEqual(created.job_id, 1);
+  assert.strictEqual(created.user_id, 2);
+  assert.strictEqual(created.status, 'PENDING');
+  assert.strictEqual(created.expected_salary, 48000);
+
+  // 2. Mükerrer başvuru engelleme kontrolü (Conflict 409)
+  await assert.rejects(
+    async () => {
+      await applicationModel.apply(appData);
+    },
+    (err) => {
+      assert.strictEqual(err.code, 409);
+      assert.ok(err.message.includes('zaten başvuruda'));
+      return true;
+    }
+  );
+
+  // 3. İlişkisel gezinim (getJob, getUser)
+  const job = await applicationModel.getJob(created.id);
+  assert.ok(job);
+  assert.strictEqual(job.id, 1);
+  assert.strictEqual(job.title, 'Junior Backend Developer');
+
+  const applicant = await applicationModel.getUser(created.id);
+  assert.ok(applicant);
+  assert.strictEqual(applicant.id, 2);
+  assert.strictEqual(applicant.first_name, 'Ahmet');
+
+  // 4. Durum güncelleme (State machine: PENDING -> INTERVIEW)
+  const updated = await applicationModel.updateStatus(created.id, 'INTERVIEW', 'Teknik mülakat 25 Ekim saat 14:00');
+  assert.strictEqual(updated.status, 'INTERVIEW');
+  assert.strictEqual(updated.notes, 'Teknik mülakat 25 Ekim saat 14:00');
+
+  // 5. Başvuruyu geri çekme (WITHDRAWN)
+  const withdrawn = await applicationModel.withdraw(created.id, 2);
+  assert.strictEqual(withdrawn.status, 'WITHDRAWN');
+});
+
+test('GET /applications and GET /applications/new return HTML and status 200 (Web MVC)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    const listRes = await fetch(`http://127.0.0.1:${port}/applications`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(listRes.status, 200);
+    const listHtml = await listRes.text();
+    assert.ok(listHtml.includes('İş ve Staj Başvuruları'));
+    assert.ok(listHtml.includes('Beklenen Maaş'));
+
+    const newRes = await fetch(`http://127.0.0.1:${port}/applications/new?job_id=1`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(newRes.status, 200);
+    const newHtml = await newRes.text();
+    assert.ok(newHtml.includes('Yeni İş / Staj Başvurusu Yap'));
+    assert.ok(newHtml.includes('Beklenen Aylık Net Maaş'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('POST /applications, GET /applications/:id, and POST /applications/:id/status (Web MVC)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    // 1. MVC Form submit ile başvuru yapma
+    const postRes = await fetch(`http://127.0.0.1:${port}/applications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'text/html'
+      },
+      redirect: 'manual',
+      body: new URLSearchParams({
+        job_id: '2',
+        user_id: '3',
+        cover_letter: 'Web MVC üzerinden oluşturulan başvuru niyet mektubu.',
+        resume_url: '/uploads/resumes/zeynep_cv.pdf',
+        portfolio_url: 'https://github.com/zeynepkaya',
+        expected_salary: '55000'
+      }).toString()
+    });
+    assert.strictEqual(postRes.status, 302);
+    const redirectUrl = postRes.headers.get('location');
+    assert.ok(redirectUrl.includes('/applications/'));
+
+    // 2. Detay sayfasını açma
+    const detailRes = await fetch(`http://127.0.0.1:${port}${redirectUrl}`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(detailRes.status, 200);
+    const detailHtml = await detailRes.text();
+    assert.ok(detailHtml.includes('Web MVC üzerinden oluşturulan başvuru'));
+    assert.ok(detailHtml.includes('55.000'));
+
+    // ID'yi URL'den al
+    const appId = redirectUrl.split('/applications/')[1].split('?')[0];
+
+    // 3. Durum güncelleme formu submit
+    const statusRes = await fetch(`http://127.0.0.1:${port}/applications/${appId}/status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'text/html'
+      },
+      redirect: 'manual',
+      body: new URLSearchParams({
+        status: 'OFFERED',
+        notes: 'Teklif mektubu iletildi.'
+      }).toString()
+    });
+    assert.strictEqual(statusRes.status, 302);
+
+    // 4. Geri çekme formu submit
+    const withdrawRes = await fetch(`http://127.0.0.1:${port}/applications/${appId}/withdraw`, {
+      method: 'POST',
+      redirect: 'manual'
+    });
+    assert.strictEqual(withdrawRes.status, 302);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('REST API /api/applications endpoints support full CRUD and status workflow', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    // 1. GET /api/applications
+    const getRes = await fetch(`http://127.0.0.1:${port}/api/applications`);
+    assert.strictEqual(getRes.status, 200);
+    const getBody = await getRes.json();
+    assert.strictEqual(getBody.success, true);
+    assert.ok(Array.isArray(getBody.data));
+
+    // 2. POST /api/applications - Başvuru oluşturma
+    // Yeni bir kullanıcı ve ilana başvuru
+    const postRes = await fetch(`http://127.0.0.1:${port}/api/applications`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        job_id: 2,
+        user_id: 1,
+        cover_letter: 'REST API Test Başvurusu',
+        portfolio_url: 'https://github.com/rumeysa478',
+        expected_salary: 60000
+      })
+    });
+    assert.strictEqual(postRes.status, 201);
+    const postBody = await postRes.json();
+    assert.strictEqual(postBody.success, true);
+    const newId = postBody.data.id;
+    assert.strictEqual(postBody.data.status, 'PENDING');
+    assert.strictEqual(postBody.data.expected_salary, 60000);
+
+    // 3. POST /api/applications - Mükerrer başvuru kontrolü (409 Conflict)
+    const duplicateRes = await fetch(`http://127.0.0.1:${port}/api/applications`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        job_id: 2,
+        user_id: 1
+      })
+    });
+    assert.strictEqual(duplicateRes.status, 409);
+
+    // 4. GET /api/applications/:id
+    const singleRes = await fetch(`http://127.0.0.1:${port}/api/applications/${newId}`);
+    assert.strictEqual(singleRes.status, 200);
+    const singleBody = await singleRes.json();
+    assert.strictEqual(singleBody.success, true);
+    assert.ok(singleBody.data.job);
+    assert.ok(singleBody.data.applicant);
+    assert.strictEqual(singleBody.data.applicant.first_name, 'Rumeysa');
+
+    // 5. PUT /api/applications/:id/status
+    const statusRes = await fetch(`http://127.0.0.1:${port}/api/applications/${newId}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status: 'REVIEWING',
+        notes: 'Ön eleme tamamlandı.'
+      })
+    });
+    assert.strictEqual(statusRes.status, 200);
+    const statusBody = await statusRes.json();
+    assert.strictEqual(statusBody.data.status, 'REVIEWING');
+
+    // 6. POST /api/applications/:id/withdraw
+    const withdrawRes = await fetch(`http://127.0.0.1:${port}/api/applications/${newId}/withdraw`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: 1 })
+    });
+    assert.strictEqual(withdrawRes.status, 200);
+    const withdrawBody = await withdrawRes.json();
+    assert.strictEqual(withdrawBody.data.status, 'WITHDRAWN');
+
+    // 7. DELETE /api/applications/:id
+    const deleteRes = await fetch(`http://127.0.0.1:${port}/api/applications/${newId}`, {
+      method: 'DELETE'
+    });
+    assert.strictEqual(deleteRes.status, 200);
+
+    // Silinen kaydın artık bulunamadığını teyit et (404)
+    const verifyRes = await fetch(`http://127.0.0.1:${port}/api/applications/${newId}`);
+    assert.strictEqual(verifyRes.status, 404);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
 
 
 

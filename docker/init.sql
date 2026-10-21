@@ -75,7 +75,24 @@ CREATE TABLE IF NOT EXISTS job_postings (
     CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 
--- 6. JOB APPLICATIONS TABLE (N:M bridge between users and job_postings)
+-- 6. APPLICATIONS TABLE (N:M Action Table between users and job_postings)
+CREATE TABLE IF NOT EXISTS applications (
+    id SERIAL PRIMARY KEY,
+    job_id INT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    cover_letter TEXT,
+    resume_url VARCHAR(255),
+    portfolio_url VARCHAR(255),
+    expected_salary NUMERIC(12, 2) CHECK (expected_salary >= 0),
+    status VARCHAR(50) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN')),
+    notes TEXT,
+    rejection_reason TEXT,
+    applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_job_user_application UNIQUE (job_id, user_id)
+);
+
+-- Legacy compatibility table for job_applications
 CREATE TABLE IF NOT EXISTS job_applications (
     id SERIAL PRIMARY KEY,
     job_id INT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
@@ -84,7 +101,7 @@ CREATE TABLE IF NOT EXISTS job_applications (
     resume_url VARCHAR(255),
     status VARCHAR(50) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED')),
     applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_job_user_application UNIQUE (job_id, user_id)
+    CONSTRAINT unique_legacy_job_user_application UNIQUE (job_id, user_id)
 );
 
 -- 7. EVENTS TABLE
@@ -140,6 +157,11 @@ CREATE INDEX IF NOT EXISTS idx_job_postings_deadline ON job_postings(deadline);
 
 CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date);
 
+CREATE INDEX IF NOT EXISTS idx_applications_job_id ON applications(job_id);
+CREATE INDEX IF NOT EXISTS idx_applications_user_id ON applications(user_id);
+CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
+CREATE INDEX IF NOT EXISTS idx_applications_applied_at ON applications(applied_at);
+
 -- 11. INITIAL SEED DATA
 -- Users seed
 INSERT INTO users (id, email, password_hash, first_name, last_name, role, department, graduation_year, is_verified)
@@ -176,3 +198,12 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval('job_postings_id_seq', (SELECT MAX(id) FROM job_postings));
+
+-- Applications seed (N:M Action Table)
+INSERT INTO applications (id, job_id, user_id, cover_letter, resume_url, portfolio_url, expected_salary, status, notes)
+VALUES
+    (1, 2, 2, 'Staj programınıza katılmayı ve kendimi web teknolojilerinde geliştirmeyi çok istiyorum.', 'https://storage.alumni.edu/resumes/ahmet-cv.pdf', 'https://github.com/ahmetyilmaz', 20000.00, 'REVIEWING', 'Ön elemeden geçti, teknik mülakat planlanabilir.')
+ON CONFLICT (id) DO NOTHING;
+
+SELECT setval('applications_id_seq', (SELECT COALESCE(MAX(id), 1) FROM applications));
+

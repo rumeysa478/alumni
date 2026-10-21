@@ -13,7 +13,7 @@
    - [3.2. alumni_profiles (Mezun Profilleri)](#32-alumni_profiles-mezun-profilleri)
    - [3.3. announcements (Duyurular)](#33-announcements-duyurular)
    - [3.4. job_postings (İş ve Staj İlanları)](#34-job_postings-iş-ve-staj-ilanları)
-   - [3.5. job_applications (İş Başvuruları)](#35-job_applications-iş-başvuruları)
+   - [3.5. applications (İş ve Staj Başvuruları — Action Table)](#35-applications-iş-ve-staj-başvuruları--nm-action-table)
    - [3.6. events (Etkinlikler)](#36-events-etkinlikler)
    - [3.7. event_attendees (Etkinlik Katılımcıları)](#37-event_attendees-etkinlik-katılımcıları)
    - [3.8. mentorships (Mentörlük Eşleşmeleri)](#38-mentorships-mentörlük-eşleşmeleri)
@@ -50,13 +50,13 @@ erDiagram
     USERS ||--o| ALUMNI_PROFILES : "1:1 genişletir"
     USERS ||--o{ ANNOUNCEMENTS : "yazar / yayınlar"
     USERS ||--o{ JOB_POSTINGS : "ilan verir (posted_by)"
-    USERS ||--o{ JOB_APPLICATIONS : "başvurur (user_id)"
+    USERS ||--o{ APPLICATIONS : "başvuru yapar (user_id)"
     USERS ||--o{ EVENTS : "oluşturur (created_by)"
     USERS ||--o{ EVENT_ATTENDEES : "kayıt olur (user_id)"
     USERS ||--o{ MENTORSHIPS : "mentör olarak katılır"
     USERS ||--o{ MENTORSHIPS : "mentee olarak katılır"
 
-    JOB_POSTINGS ||--o{ JOB_APPLICATIONS : "başvuru alır (job_id)"
+    JOB_POSTINGS ||--o{ APPLICATIONS : "başvuru alır (job_id)"
     EVENTS ||--o{ EVENT_ATTENDEES : "katılımcı listesi (event_id)"
 
     USERS {
@@ -125,14 +125,19 @@ erDiagram
         timestamp updated_at
     }
 
-    JOB_APPLICATIONS {
+    APPLICATIONS {
         int id PK
         int job_id FK "ON DELETE CASCADE"
         int user_id FK "ON DELETE CASCADE"
         text cover_letter
         string resume_url
-        string status "PENDING | REVIEWED | ACCEPTED | REJECTED"
+        string portfolio_url
+        numeric expected_salary
+        string status "PENDING | REVIEWING | INTERVIEW | OFFERED | ACCEPTED | REJECTED | WITHDRAWN"
+        text notes
+        text rejection_reason
         timestamp applied_at
+        timestamp updated_at
     }
 
     EVENTS {
@@ -259,20 +264,30 @@ Mezunlar ve işveren partnerler tarafından paylaşılan iş, staj ve kariyer f�
 
 ---
 
-### 3.5. `job_applications` (İş Başvuruları)
-Öğrenci ve mezunların iş ilanlarına yaptıkları başvuruları tutan **N:M (Çoka-Çok)** köprü tablosudur.
+### 3.5. `applications` (İş ve Staj Başvuruları — N:M Action Table)
+`users` (mezun/öğrenci) ile `job_postings` (iş/staj fırsatları) arasındaki **Çoka-Çok (N:M)** ilişkiyi somutlaştıran ve başvuru sürecini yöneten **Aksiyon Tablosudur (Action Table / Associative Entity)**. Yalnızca yabancı anahtarları birleştiren basit bir ara tablo olmanın ötesinde; adayın niyet mektubunu, portfolyosunu, maaş beklentisini ve İK değerlendirme/mülakat sürecini uçtan uca modeller.
 
 | Sütun Adı | Veri Tipi | Kısıtlamalar | Varsayılan | Açıklama |
 | :--- | :--- | :--- | :--- | :--- |
-| `id` | `SERIAL` | `PRIMARY KEY` | Otomatik artan | Başvuru ID'si |
-| `job_id` | `INT` | `NOT NULL`, `REFERENCES job_postings(id) ON DELETE CASCADE` | - | İlgili iş ilanı ID |
-| `user_id` | `INT` | `NOT NULL`, `REFERENCES users(id) ON DELETE CASCADE` | - | Başvuran kullanıcı ID |
-| `cover_letter` | `TEXT` | - | `NULL` | Ön yazı / niyet mektubu |
-| `resume_url` | `VARCHAR(255)`| - | `NULL` | Başvuruya eklenen özgeçmiş dosyası |
-| `status` | `VARCHAR(50)` | `CHECK (status IN ('PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED'))` | `'PENDING'` | Başvuru değerlendirme durumu |
-| `applied_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Başvuru zamanı |
+| `id` | `SERIAL` | `PRIMARY KEY` | Otomatik artan | Benzersiz başvuru aksiyon ID'si |
+| `job_id` | `INT` | `NOT NULL`, `REFERENCES job_postings(id) ON DELETE CASCADE` | - | Başvurulan iş ilanı ID'si |
+| `user_id` | `INT` | `NOT NULL`, `REFERENCES users(id) ON DELETE CASCADE` | - | Başvuru yapan aday kullanıcı ID'si |
+| `cover_letter` | `TEXT` | - | `NULL` | Ön yazı / niyet mektubu (adayın motivasyonu) |
+| `resume_url` | `VARCHAR(255)`| - | `NULL` | Başvuruya eklenen PDF özgeçmiş bağlantısı |
+| `portfolio_url`| `VARCHAR(255)`| - | `NULL` | GitHub, LinkedIn veya kişisel portfolyo adresi |
+| `expected_salary`| `NUMERIC(12, 2)` | `CHECK (expected_salary >= 0)` | `NULL` | Adayın net/brüt aylık maaş beklentisi |
+| `status` | `VARCHAR(50)` | `CHECK (status IN ('PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'))` | `'PENDING'` | Başvuru yaşam döngüsü durumu |
+| `notes` | `TEXT` | - | `NULL` | İlan sahibi / İK değerlendirme ve mülakat notları |
+| `rejection_reason`| `TEXT` | - | `NULL` | Başvuru olumsuzsa iletilen gerekçe / geri bildirim |
+| `applied_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Başvurunun ilk yapıldığı tarih |
+| `updated_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Başvuru durumunun son güncellendiği tarih |
 
-*Kısıt:* `UNIQUE (job_id, user_id)` — Bir kullanıcı aynı ilana yalnızca bir kez başvurabilir.
+*Tablo Kısıtları:*
+- `CONSTRAINT unique_job_user_application UNIQUE (job_id, user_id)` — Bir kullanıcı aynı iş ilanına mükerrer başvuru yapamaz.
+- `CHECK (expected_salary IS NULL OR expected_salary >= 0)` — Beklenen maaş negatif olamaz.
+
+*Başvuru Durumu Yaşam Döngüsü (Status Lifecycle):*
+`PENDING` (Beklemede) ➔ `REVIEWING` (İnceleniyor) ➔ `INTERVIEW` (Mülakat Aşaması) ➔ `OFFERED` (Teklif Yapıldı) ➔ `ACCEPTED` (Kabul Edildi) / `REJECTED` (Reddedildi) / `WITHDRAWN` (Aday Tarafından Geri Çekildi)
 
 ---
 
@@ -332,7 +347,7 @@ Deneyimli mezunlar ile öğrenciler veya yeni mezunlar arasındaki mentör-mente
 | :--- | :---: | :--- | :--- | :--- |
 | `users` | **1 : 1** | `alumni_profiles` | `CASCADE` | Kullanıcı hesabı silinirse profil verisi de silinmelidir. |
 | `users` | **1 : N** | `job_postings` | `SET NULL` | İlanı oluşturan kullanıcı silinse dahi yayınlanan iş ilanı arşivde kalabilir. |
-| `users` | **N : M** | `job_postings` | `CASCADE` (`job_applications` üzerinden) | İlan veya kullanıcı silindiğinde başvuru bağı silinir. |
+| `users` | **N : M** | `job_postings` | `CASCADE` (`applications` aksiyon tablosu üzerinden) | İlan veya kullanıcı silindiğinde başvuru bağı silinir. |
 | `users` | **1 : N** | `events` | `SET NULL` | Etkinliği oluşturan organizatör silinse de etkinlik kaydı korunur. |
 | `users` | **N : M** | `events` | `CASCADE` (`event_attendees` üzerinden) | Etkinlik iptal edilirse tüm katılımcı kayıtları temizlenir. |
 | `users` (mentor) | **1 : N** | `mentorships` | `CASCADE` | Kullanıcı ayrıldığında mentörlük ilişkisi sonlandırılır. |
@@ -346,11 +361,11 @@ Veritabanında tanımlanan 8 varlık için Node.js tarafında hibrit mimarili (P
 
 | Model Adı | Dosya | Tablo | İlişkiler (Associations) |
 | :--- | :--- | :--- | :--- |
-| `UserModel` | [`user.model.js`](./src/models/user.model.js) | `users` | `hasOne(Profile)`, `hasMany(JobPosting)`, `hasMany(JobApplication)`, `belongsToMany(JobPosting)`, `hasMany(Event)`, `belongsToMany(Event)`, `hasMany(Mentorship)` |
+| `UserModel` | [`user.model.js`](./src/models/user.model.js) | `users` | `hasOne(Profile)`, `hasMany(JobPosting)`, `hasMany(Application)`, `belongsToMany(JobPosting)`, `hasMany(Event)`, `belongsToMany(Event)`, `hasMany(Mentorship)` |
 | `AlumniProfileModel` | [`alumniProfile.model.js`](./src/models/alumniProfile.model.js) | `alumni_profiles` | `belongsTo(User, { foreignKey: 'user_id' })` |
 | `AnnouncementModel` | [`announcement.model.js`](./src/models/announcement.model.js) | `announcements` | Bağımsız genel duyuru modeli |
-| `JobPostingModel` | [`jobPosting.model.js`](./src/models/jobPosting.model.js) | `job_postings` | `belongsTo(User, { as: 'poster' })`, `hasMany(JobApplication)`, `belongsToMany(User, { as: 'applicants' })` |
-| `JobApplicationModel` | [`jobApplication.model.js`](./src/models/jobApplication.model.js) | `job_applications` | `belongsTo(JobPosting)`, `belongsTo(User)` *(N:M Pivot)* |
+| `JobPostingModel` | [`jobPosting.model.js`](./src/models/jobPosting.model.js) | `job_postings` | `belongsTo(User, { as: 'poster' })`, `hasMany(Application)`, `belongsToMany(User, { as: 'applicants' })` |
+| `ApplicationModel` *(JobApplicationModel)* | [`application.model.js`](./src/models/application.model.js) | `applications` | `belongsTo(JobPosting)`, `belongsTo(User)` *(N:M Action Table / Associative Entity)* |
 | `EventModel` | [`event.model.js`](./src/models/event.model.js) | `events` | `belongsTo(User, { as: 'organizer' })`, `hasMany(EventAttendee)`, `belongsToMany(User, { as: 'participants' })` |
 | `EventAttendeeModel` | [`eventAttendee.model.js`](./src/models/eventAttendee.model.js) | `event_attendees` | `belongsTo(Event)`, `belongsTo(User)` *(N:M Pivot)* |
 | `MentorshipModel` | [`mentorship.model.js`](./src/models/mentorship.model.js) | `mentorships` | `belongsTo(User, { as: 'mentor' })`, `belongsTo(User, { as: 'mentee' })` |
@@ -389,7 +404,7 @@ Veritabanı tasarımımız 3. Normal Form (3NF) gereksinimlerini eksiksiz karş�
 
 ### 2. Normal Form (2NF) — Tam Fonksiyonel Bağımlılık
 - Tablolar 1NF kurallarına uygundur.
-- Bileşik anahtara (Composite PK) sahip köprü tablolarında (`job_applications`, `event_attendees`) anahtar olmayan tüm alanlar (`status`, `applied_at`, `registered_at`) bileşik anahtarın tamamına bağımlıdır, kısmi bağımlılık (partial dependency) yoktur.
+- Bileşik anahtara veya tekil aksiyon anahtarına sahip tablolarda (`applications`, `event_attendees`) anahtar olmayan tüm alanlar (`status`, `applied_at`, `registered_at`, `expected_salary` vb.) birincil anahtara tam fonksiyonel olarak bağımlıdır, kısmi bağımlılık (partial dependency) yoktur.
 
 ### 3. Normal Form (3NF) — Geçişsiz Bağımlılıkların Önlenmesi (Transitive Dependency)
 - Tablolar 2NF kurallarına uygundur.
@@ -424,6 +439,12 @@ CREATE INDEX idx_job_postings_deadline ON job_postings(deadline);
 
 -- Etkinlik tarih sıralaması:
 CREATE INDEX idx_events_date ON events(event_date);
+
+-- İş ve staj başvuruları aksiyon tablosu (N:M):
+CREATE INDEX idx_applications_job_id ON applications(job_id);
+CREATE INDEX idx_applications_user_id ON applications(user_id);
+CREATE INDEX idx_applications_status ON applications(status);
+CREATE INDEX idx_applications_applied_at ON applications(applied_at);
 ```
 
 ---
@@ -593,15 +614,20 @@ CREATE TABLE IF NOT EXISTS job_postings (
     CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 
--- 5. İŞ BAŞVURULARI (N:M KÖPRÜ TABLOSU)
-CREATE TABLE IF NOT EXISTS job_applications (
+-- 5. İŞ VE STAJ BAŞVURULARI (N:M AKSİYON TABLOSU / ACTION TABLE)
+CREATE TABLE IF NOT EXISTS applications (
     id SERIAL PRIMARY KEY,
     job_id INT NOT NULL REFERENCES job_postings(id) ON DELETE CASCADE,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     cover_letter TEXT,
     resume_url VARCHAR(255),
-    status VARCHAR(50) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED')),
+    portfolio_url VARCHAR(255),
+    expected_salary NUMERIC(12, 2) CHECK (expected_salary >= 0),
+    status VARCHAR(50) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN')),
+    notes TEXT,
+    rejection_reason TEXT,
     applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_job_user_application UNIQUE (job_id, user_id)
 );
 
@@ -660,7 +686,8 @@ src/database/
 │   └── job.factory.js            # İş ve staj ilanı veri fabrikası
 ├── migrations/
 │   ├── 001_create_tables.sql              # ddd.md'deki 8 temel tablo ve indeksleri üreten DDL
-│   └── 002_update_job_postings_table.sql  # job_postings tablosunu modern kariyer alanlarıyla güncelleyen DDL
+│   ├── 002_update_job_postings_table.sql  # job_postings tablosunu modern kariyer alanlarıyla güncelleyen DDL
+│   └── 003_create_or_update_applications_table.sql # applications aksiyon tablosunu ve indekslerini kuran DDL
 └── seeds/
     └── 001_initial_seed.sql               # Başlangıç kullanıcı, profil, duyuru ve ilan verileri
 ```

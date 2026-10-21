@@ -1,0 +1,243 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 1000px; margin: 0 auto;">
+  <!-- Üst Bar -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin: 0;">
+          Başvuru #<%= application.id %>
+        </h1>
+        <% 
+          let badgeBg = '#f1f5f9';
+          let badgeColor = '#475569';
+          let statusLabel = application.status;
+
+          switch (application.status) {
+            case 'PENDING':
+              badgeBg = '#fef3c7'; badgeColor = '#92400e'; statusLabel = '⏳ Beklemede (PENDING)';
+              break;
+            case 'REVIEWING':
+              badgeBg = '#dbeafe'; badgeColor = '#1e40af'; statusLabel = '👀 İnceleniyor (REVIEWING)';
+              break;
+            case 'INTERVIEW':
+              badgeBg = '#ede9fe'; badgeColor = '#5b21b6'; statusLabel = '🎯 Mülakat (INTERVIEW)';
+              break;
+            case 'OFFERED':
+              badgeBg = '#ccfbf1'; badgeColor = '#115e59'; statusLabel = '💌 Teklif Yapıldı (OFFERED)';
+              break;
+            case 'ACCEPTED':
+              badgeBg = '#dcfce7'; badgeColor = '#166534'; statusLabel = '✅ Kabul Edildi (ACCEPTED)';
+              break;
+            case 'REJECTED':
+              badgeBg = '#fee2e2'; badgeColor = '#991b1b'; statusLabel = '❌ Reddedildi (REJECTED)';
+              break;
+            case 'WITHDRAWN':
+              badgeBg = '#f3f4f6'; badgeColor = '#6b7280'; statusLabel = '↩️ Geri Çekildi (WITHDRAWN)';
+              break;
+          }
+        %>
+        <span style="display: inline-block; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 700; background-color: <%= badgeBg %>; color: <%= badgeColor %>;">
+          <%= statusLabel %>
+        </span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+        Başvuru Tarihi: <%= new Date(application.applied_at).toLocaleString('tr-TR') %>
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="/applications" class="btn btn-secondary">← Tüm Başvurular</a>
+      <a href="/api/applications/<%= application.id %>" target="_blank" class="btn btn-secondary">
+        <span>⚡</span> JSON API
+      </a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start;">
+    <!-- Sol Kolon: Başvuru ve Aday Bilgileri -->
+    <div style="display: flex; flexDirection: column; gap: 1.5rem;">
+      <!-- İlan ve Aday Kartı -->
+      <div class="card">
+        <div class="card-header" style="background-color: #f8fafc; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-weight: 700; color: #0f172a;">
+          📌 İlan ve Aday Eşleşmesi (N:M Action Table)
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Başvurulan Pozisyon</span>
+              <% if (job) { %>
+                <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0.25rem 0;">
+                  <a href="/jobs/<%= job.id %>" style="color: #0284c7; text-decoration: none;">
+                    <%= job.title %> ↗
+                  </a>
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">🏢 <%= job.company %></p>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem;">
+                  <span class="badge" style="background-color: #f1f5f9; color: #334155;"><%= job.work_model || 'HYBRID' %></span>
+                  <span class="badge" style="background-color: #f1f5f9; color: #334155;"><%= job.type || 'FULL_TIME' %></span>
+                </div>
+              <% } else { %>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">İlan bilgisi bulunamadı.</p>
+              <% } %>
+            </div>
+
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Başvuran Aday</span>
+              <% if (applicant) { %>
+                <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0.25rem 0;">
+                  <a href="/users/<%= applicant.id %>" style="color: #6366f1; text-decoration: none;">
+                    <%= applicant.first_name %> <%= applicant.last_name %> ↗
+                  </a>
+                </h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">✉️ <%= applicant.email %></p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0 0;">
+                  🎓 <%= applicant.department || 'Bölüm belirtilmemiş' %> (<%= applicant.role %>)
+                </p>
+              <% } else { %>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Aday bilgisi bulunamadı.</p>
+              <% } %>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Beklenen Aylık Net Maaş</span>
+              <div style="font-size: 1.1rem; font-weight: 700; color: #059669; margin-top: 0.25rem;">
+                <%= application.expected_salary ? Number(application.expected_salary).toLocaleString('tr-TR') + ' ₺' : 'Belirtilmedi' %>
+              </div>
+            </div>
+
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Portfolyo / CV Bağlantıları</span>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap;">
+                <% if (application.resume_url) { %>
+                  <a href="<%= application.resume_url %>" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.82rem;">
+                    📄 Özgeçmiş (CV) ↗
+                  </a>
+                <% } %>
+                <% if (application.portfolio_url) { %>
+                  <a href="<%= application.portfolio_url %>" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.82rem;">
+                    🌐 Portfolyo / GitHub ↗
+                  </a>
+                <% } %>
+                <% if (!application.resume_url && !application.portfolio_url) { %>
+                  <span style="color: var(--text-muted); font-size: 0.85rem;">Harici bağlantı eklenmemiş</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ön Yazı (Cover Letter) -->
+      <div class="card">
+        <div class="card-header" style="background-color: #f8fafc; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-weight: 700; color: #0f172a;">
+          📝 Ön Yazı / Niyet Mektubu (Cover Letter)
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+          <% if (application.cover_letter) { %>
+            <div style="white-space: pre-line; line-height: 1.7; color: #334155; font-size: 0.95rem;">
+              <%= application.cover_letter %>
+            </div>
+          <% } else { %>
+            <p style="color: var(--text-muted); font-style: italic;">Aday bu başvuru için ön yazı eklememiş.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- İK / Değerlendirme Notları & Red Gerekçesi -->
+      <% if (application.notes || application.rejection_reason) { %>
+        <div class="card">
+          <div class="card-header" style="background-color: #f8fafc; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); font-weight: 700; color: #0f172a;">
+            💬 Değerlendirme ve Süreç Notları
+          </div>
+          <div class="card-body" style="padding: 1.5rem;">
+            <% if (application.notes) { %>
+              <div style="margin-bottom: 1rem;">
+                <span style="font-weight: 600; color: #0f172a; font-size: 0.9rem;">Dahili İK / Mülakat Notu:</span>
+                <p style="color: #334155; margin-top: 0.25rem;"><%= application.notes %></p>
+              </div>
+            <% } %>
+
+            <% if (application.rejection_reason) { %>
+              <div>
+                <span style="font-weight: 600; color: #991b1b; font-size: 0.9rem;">Geri Bildirim / Red Gerekçesi:</span>
+                <p style="color: #991b1b; margin-top: 0.25rem;"><%= application.rejection_reason %></p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Sağ Kolon: Durum Güncelleme ve Aksiyonlar -->
+    <div style="display: flex; flexDirection: column; gap: 1.5rem;">
+      <!-- Durum Güncelleme Kartı -->
+      <div class="card">
+        <div class="card-header" style="background-color: #f8fafc; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); font-weight: 700; color: #0f172a;">
+          ⚡ Durum Yönetimi (State Machine)
+        </div>
+        <div class="card-body" style="padding: 1.25rem;">
+          <form action="/applications/<%= application.id %>/status" method="POST">
+            <div style="margin-bottom: 1rem;">
+              <label class="form-label" for="status" style="font-weight: 600;">Yeni Başvuru Durumu</label>
+              <select id="status" name="status" class="form-select" required>
+                <% statuses.forEach(st => { %>
+                  <option value="<%= st %>" <%= application.status === st ? 'selected' : '' %>>
+                    <%= st %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label class="form-label" for="notes" style="font-weight: 600;">Değerlendirme Notu</label>
+              <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Aday veya mülakat hakkında not..."><%= application.notes || '' %></textarea>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label class="form-label" for="rejection_reason" style="font-weight: 600;">Red Gerekçesi (Varsa)</label>
+              <textarea id="rejection_reason" name="rejection_reason" class="form-control" rows="2" placeholder="Olumsuz ise gerekçe..."><%= application.rejection_reason || '' %></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; background-color: #6366f1;">
+              Durumu Güncelle
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Diğer Aksiyonlar -->
+      <div class="card">
+        <div class="card-header" style="background-color: #f8fafc; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); font-weight: 700; color: #0f172a;">
+          ⚙️ Aday & İlan İşlemleri
+        </div>
+        <div class="card-body" style="padding: 1.25rem; display: flex; flexDirection: column; gap: 0.75rem;">
+          <% if (application.status !== 'WITHDRAWN') { %>
+            <form action="/applications/<%= application.id %>/withdraw" method="POST" onsubmit="return confirm('Başvuruyu geri çekmek istediğinizden emin misiniz?');">
+              <button type="submit" class="btn btn-secondary" style="width: 100%; color: #b45309; border-color: #fde68a;">
+                ↩️ Başvuruyu Geri Çek (Withdraw)
+              </button>
+            </form>
+          <% } %>
+
+          <form action="/applications/<%= application.id %>/delete" method="POST" onsubmit="return confirm('Bu başvuru kaydını kalıcı olarak silmek istediğinize emin misiniz?');">
+            <button type="submit" class="btn btn-secondary" style="width: 100%; color: #dc2626; border-color: #fecaca;">
+              🗑️ Başvuruyu Sil
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Zaman Bilgileri -->
+      <div class="card">
+        <div class="card-body" style="padding: 1rem 1.25rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+          <div><strong>Oluşturulma:</strong> <%= new Date(application.applied_at).toLocaleString('tr-TR') %></div>
+          <div><strong>Son Güncelleme:</strong> <%= new Date(application.updated_at || application.applied_at).toLocaleString('tr-TR') %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

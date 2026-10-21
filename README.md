@@ -297,6 +297,17 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `POST` | `/jobs/:id/delete` | İlanı silme işlemi (D) | Controller -> Redirect `/jobs` |
 | `POST` | `/jobs/:id/apply` | İlana Alumni hesabı ile başvuru yapma | Controller -> Redirect `/jobs/:id` |
 
+#### İş ve Staj Başvuruları (N:M Action Table)
+| HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/applications` | Tüm başvuruların listesi, durum ve ilan/aday filtresi | View (`applications/index.ejs`) |
+| `GET` | `/applications/new` | Yeni başvuru oluşturma formu | View (`applications/new.ejs`) |
+| `POST` | `/applications` | Yeni başvuru gönderme (C - Action) | Controller -> Redirect `/applications/:id` |
+| `GET` | `/applications/:id` | Başvuru detayı, aday ve ilan bilgileri, durum yönetimi | View (`applications/show.ejs`) |
+| `POST` | `/applications/:id/status` | Başvuru durumunu ve değerlendirme notunu güncelleme | Controller -> Redirect `/applications/:id` |
+| `POST` | `/applications/:id/withdraw` | Başvuruyu aday tarafından geri çekme | Controller -> Redirect `/applications/:id` |
+| `POST` | `/applications/:id/delete` | Başvuru kaydını silme | Controller -> Redirect `/applications` |
+
 #### Etkinlikler ve Buluşmalar
 | HTTP Metodu | Rota | Açıklama | Katman / Sonuç |
 | :--- | :--- | :--- | :--- |
@@ -332,6 +343,13 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `DELETE` | `/api/jobs/:id` | İlanı sil | `200 OK` / `404 Not Found` |
 | `POST` | `/api/jobs/:id/apply` | İlana başvuru yap (N:M İlişki) | `201 Created` / `409 Conflict` |
 | `GET` | `/api/jobs/:id/applications` | İlana başvuran tüm adaylar | `200 OK` (JSON) |
+| `GET` | `/api/applications` | Tüm başvuruları listele ve filtrele (?status=&job_id=&user_id=) | `200 OK` (JSON) |
+| `POST` | `/api/applications` | Doğrudan başvuru oluştur (N:M Action) | `201 Created` / `409 Conflict` |
+| `GET` | `/api/applications/:id` | Tekil başvuru detayı, ilişkili ilan ve aday | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/applications/:id` | Başvuru bilgilerini tam güncelle | `200 OK` / `404 Not Found` |
+| `PUT` | `/api/applications/:id/status` | Başvuru durumunu ve notunu güncelle | `200 OK` / `404 Not Found` |
+| `POST` | `/api/applications/:id/withdraw` | Başvuruyu geri çek | `200 OK` / `404 Not Found` |
+| `DELETE` | `/api/applications/:id` | Başvuruyu sil | `200 OK` / `404 Not Found` |
 | `GET` | `/api/events` | Etkinlikleri tarih sırasına göre listele | `200 OK` (JSON) |
 | `POST` | `/api/events` | Yeni etkinlik oluştur | `201 Created` (JSON) |
 | `GET` | `/api/events/:id` | Tekil etkinlik detayları ve organizatör | `200 OK` / `404 Not Found` |

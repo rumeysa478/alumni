@@ -29,6 +29,7 @@ directRouter.get('/', (req, res) => {
       users: '/users',
       announcements: '/announcements',
       jobs: '/jobs',
+      applications: '/applications',
       events: '/events'
     },
     apiDocs: '/api/swagger',

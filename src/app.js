@@ -8,6 +8,7 @@ import apiRouter from './routes/index.js';
 import userRoutes from './routes/user.routes.js';
 import announcementRoutes from './routes/announcement.routes.js';
 import jobRoutes from './routes/job.routes.js';
+import applicationRoutes from './routes/application.routes.js';
 import eventRoutes from './routes/event.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -37,6 +38,7 @@ app.use('/', directRouter);
 app.use('/users', userRoutes);
 app.use('/announcements', announcementRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/applications', applicationRoutes);
 app.use('/events', eventRoutes);
 
 // 3. Mount Central REST API Router at /api

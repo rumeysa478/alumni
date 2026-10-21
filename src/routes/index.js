@@ -13,6 +13,8 @@ import apiAnnouncementRoutes from './apiAnnouncement.routes.js';
 import announcementRoutes from './announcement.routes.js';
 import apiJobRoutes from './apiJob.routes.js';
 import jobRoutes from './job.routes.js';
+import apiApplicationRoutes from './apiApplication.routes.js';
+import applicationRoutes from './application.routes.js';
 import apiEventRoutes from './apiEvent.routes.js';
 import eventRoutes from './event.routes.js';
 import apiProfileRoutes from './apiProfile.routes.js';
@@ -42,16 +44,19 @@ apiRouter.use('/users', apiUserRoutes);
 // 3. Announcements REST API routes (/api/announcements)
 apiRouter.use('/announcements', apiAnnouncementRoutes);
 
-// 4. Job Postings & Applications REST API routes (/api/jobs)
+// 4. Job Postings REST API routes (/api/jobs)
 apiRouter.use('/jobs', apiJobRoutes);
 
-// 5. Events & Attendees REST API routes (/api/events)
+// 5. Applications REST API routes (/api/applications)
+apiRouter.use('/applications', apiApplicationRoutes);
+
+// 6. Events & Attendees REST API routes (/api/events)
 apiRouter.use('/events', apiEventRoutes);
 
-// 6. Alumni Profiles REST API routes (/api/profiles)
+// 7. Alumni Profiles REST API routes (/api/profiles)
 apiRouter.use('/profiles', apiProfileRoutes);
 
-// 7. Mentorships REST API routes (/api/mentorships)
+// 8. Mentorships REST API routes (/api/mentorships)
 apiRouter.use('/mentorships', apiMentorshipRoutes);
 
 export {
@@ -62,6 +67,8 @@ export {
   apiAnnouncementRoutes,
   jobRoutes,
   apiJobRoutes,
+  applicationRoutes,
+  apiApplicationRoutes,
   eventRoutes,
   apiEventRoutes,
   apiProfileRoutes,

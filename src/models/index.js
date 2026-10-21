@@ -8,10 +8,13 @@ import userModel from './user.model.js';
 import alumniProfileModel from './alumniProfile.model.js';
 import announcementModel from './announcement.model.js';
 import jobPostingModel from './jobPosting.model.js';
-import jobApplicationModel from './jobApplication.model.js';
+import applicationModel, { APPLICATION_STATUS, VALID_STATUSES } from './application.model.js';
 import eventModel from './event.model.js';
 import eventAttendeeModel from './eventAttendee.model.js';
 import mentorshipModel from './mentorship.model.js';
+
+// Geriye dönük uyumluluk takma adı (Backward compatibility alias)
+export const jobApplicationModel = applicationModel;
 
 /**
  * 🌟 Sistem Varlık İlişkileri ve Kardinalite Tanımları (Metadata)
@@ -38,21 +41,21 @@ export const RELATIONS = {
       onDelete: 'SET NULL',
       description: 'Kullanıcının sisteme eklediği iş ve staj ilanları.'
     },
-    // 1 : N -> users <=> job_applications (ON DELETE CASCADE)
+    // 1 : N -> users <=> applications (ON DELETE CASCADE)
     applications: {
       type: 'hasMany',
       cardinality: '1:N',
-      model: 'JobApplication',
+      model: 'Application',
       foreignKey: 'user_id',
       onDelete: 'CASCADE',
-      description: 'Kullanıcının yaptığı tüm iş/staj başvuruları.'
+      description: 'Kullanıcının yaptığı tüm iş/staj başvuruları (Aksiyon tablosu).'
     },
-    // N : M -> users <=> job_postings (job_applications üzerinden)
+    // N : M -> users <=> job_postings (applications üzerinden)
     appliedJobs: {
       type: 'belongsToMany',
       cardinality: 'N:M',
       model: 'JobPosting',
-      through: 'JobApplication',
+      through: 'Application',
       foreignKey: 'user_id',
       otherKey: 'job_id',
       onDelete: 'CASCADE',
@@ -123,16 +126,16 @@ export const RELATIONS = {
     applications: {
       type: 'hasMany',
       cardinality: '1:N',
-      model: 'JobApplication',
+      model: 'Application',
       foreignKey: 'job_id',
       onDelete: 'CASCADE',
-      description: 'Bu ilana gelen tüm başvurular.'
+      description: 'Bu ilana gelen tüm başvurular (Aksiyon tablosu).'
     },
     applicants: {
       type: 'belongsToMany',
       cardinality: 'N:M',
       model: 'User',
-      through: 'JobApplication',
+      through: 'Application',
       foreignKey: 'job_id',
       otherKey: 'user_id',
       onDelete: 'CASCADE',
@@ -140,7 +143,26 @@ export const RELATIONS = {
     }
   },
 
-  // 4. job_applications tablosu (Köprü / Pivot) ilişkileri
+  // 4. applications tablosu (N:M Action Table / Associative Entity) ilişkileri
+  Application: {
+    job: {
+      type: 'belongsTo',
+      cardinality: '1:N',
+      model: 'JobPosting',
+      foreignKey: 'job_id',
+      onDelete: 'CASCADE',
+      description: 'Başvurulan iş ilanı.'
+    },
+    applicant: {
+      type: 'belongsTo',
+      cardinality: '1:N',
+      model: 'User',
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE',
+      description: 'Başvuruyu yapan aday kullanıcı.'
+    }
+  },
+  // Geriye dönük uyumluluk takma adı
   JobApplication: {
     job: {
       type: 'belongsTo',
@@ -242,11 +264,11 @@ userModel.getJobPostings = async function (userId) {
 };
 
 userModel.getApplications = async function (userId) {
-  return jobApplicationModel.getByUserId(userId);
+  return applicationModel.getByUserId(userId);
 };
 
 userModel.getAppliedJobs = async function (userId) {
-  const applications = await jobApplicationModel.getByUserId(userId);
+  const applications = await applicationModel.getByUserId(userId);
   const jobs = [];
   for (const app of applications) {
     const job = await jobPostingModel.getById(app.job_id);
@@ -286,11 +308,11 @@ jobPostingModel.getPoster = async function (jobId) {
 };
 
 jobPostingModel.getApplications = async function (jobId) {
-  return jobApplicationModel.getByJobId(jobId);
+  return applicationModel.getByJobId(jobId);
 };
 
 jobPostingModel.getApplicants = async function (jobId) {
-  const applications = await jobApplicationModel.getByJobId(jobId);
+  const applications = await applicationModel.getByJobId(jobId);
   const users = [];
   for (const app of applications) {
     const user = await userModel.getById(app.user_id);
@@ -299,17 +321,29 @@ jobPostingModel.getApplicants = async function (jobId) {
   return users;
 };
 
-// JobApplication Model İlişki Metotları
-jobApplicationModel.getJob = async function (applicationId) {
+// Application Model İlişki Metotları
+applicationModel.getJob = async function (applicationId) {
   const app = await this.getById(applicationId);
   if (!app) return null;
   return jobPostingModel.getById(app.job_id);
 };
 
-jobApplicationModel.getUser = async function (applicationId) {
+applicationModel.getUser = async function (applicationId) {
   const app = await this.getById(applicationId);
   if (!app) return null;
   return userModel.getById(app.user_id);
+};
+
+applicationModel.getJobWithPoster = async function (applicationId) {
+  const app = await this.getById(applicationId);
+  if (!app) return null;
+  const job = await jobPostingModel.getById(app.job_id);
+  if (!job) return null;
+  let poster = null;
+  if (job.posted_by) {
+    poster = await userModel.getById(job.posted_by);
+  }
+  return { ...job, poster };
 };
 
 // Event Model İlişki Metotları
@@ -367,7 +401,8 @@ export const models = {
   AlumniProfile: alumniProfileModel,
   Announcement: announcementModel,
   JobPosting: jobPostingModel,
-  JobApplication: jobApplicationModel,
+  Application: applicationModel,
+  JobApplication: applicationModel,
   Event: eventModel,
   EventAttendee: eventAttendeeModel,
   Mentorship: mentorshipModel
@@ -378,10 +413,12 @@ export {
   alumniProfileModel,
   announcementModel,
   jobPostingModel,
-  jobApplicationModel,
+  applicationModel,
   eventModel,
   eventAttendeeModel,
-  mentorshipModel
+  mentorshipModel,
+  APPLICATION_STATUS,
+  VALID_STATUSES
 };
 
 export default models;

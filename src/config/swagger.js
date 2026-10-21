@@ -37,6 +37,10 @@ export const swaggerDocument = {
       description: 'Duyurular için JSON tabanlı RESTful API Uç Noktaları (CRUD)'
     },
     {
+      name: 'İş ve Staj Başvuruları (N:M Action Table)',
+      description: 'Users ve JobPostings arasındaki N:M başvuru aksiyonlarını ve yaşam döngüsünü yöneten uç noktalar'
+    },
+    {
       name: 'Sistem',
       description: 'Sistem sağlığı ve çalışma durumu uç noktaları'
     }
@@ -875,6 +879,85 @@ export const swaggerDocument = {
           }
         }
       }
+    },
+    '/api/applications': {
+      get: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Başvuru Listesi ve Filtreleme',
+        description: 'Tüm iş ve staj başvurularını getirir. job_id, user_id veya status ile filtrelenebilir.',
+        parameters: [
+          { name: 'job_id', in: 'query', schema: { type: 'integer' }, description: 'İlan ID filtresi' },
+          { name: 'user_id', in: 'query', schema: { type: 'integer' }, description: 'Kullanıcı ID filtresi' },
+          { name: 'status', in: 'query', schema: { type: 'string', enum: ['PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'] } }
+        ],
+        responses: {
+          '200': { description: 'Başvuru listesi başarıyla getirildi.' }
+        }
+      },
+      post: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Yeni Başvuru Yapma (Direct Action)',
+        description: 'Kullanıcının belirtilen ilana başvurmasını sağlar.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/CreateApplicationInput' }
+            }
+          }
+        },
+        responses: {
+          '201': { description: 'Başvuru başarıyla oluşturuldu.' },
+          '409': { description: 'Bu ilana zaten aktif bir başvuru bulunmaktadır.' }
+        }
+      }
+    },
+    '/api/applications/{id}': {
+      get: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Tekil Başvuru Detayı',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        responses: {
+          '200': { description: 'Başvuru detayları getirildi.' },
+          '404': { description: 'Başvuru bulunamadı.' }
+        }
+      },
+      delete: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Başvuruyu Silme',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        responses: {
+          '200': { description: 'Başvuru silindi.' }
+        }
+      }
+    },
+    '/api/applications/{id}/status': {
+      put: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Başvuru Durumunu Güncelleme',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateApplicationStatusInput' }
+            }
+          }
+        },
+        responses: {
+          '200': { description: 'Başvuru durumu güncellendi.' }
+        }
+      }
+    },
+    '/api/applications/{id}/withdraw': {
+      post: {
+        tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
+        summary: 'Başvuruyu Geri Çekme (Withdraw)',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+        responses: {
+          '200': { description: 'Başvuru geri çekildi.' }
+        }
+      }
     }
   },
   components: {
@@ -884,7 +967,7 @@ export const swaggerDocument = {
         properties: {
           id: { type: 'integer', example: 1 },
           email: { type: 'string', format: 'email', example: 'rumeysa.aydin@alumni.edu' },
-          first_name: { type: 'string', example: 'Rümeysa' },
+          first_name: { type: 'string', example: 'Rumeysa' },
           last_name: { type: 'string', example: 'Aydın' },
           role: { type: 'string', enum: ['STUDENT', 'ALUMNI', 'ADMIN'], example: 'ALUMNI' },
           department: { type: 'string', example: 'Yönetim Bilişim Sistemleri' },
@@ -967,6 +1050,45 @@ export const swaggerDocument = {
           author: { type: 'string', example: 'Kariyer Merkezi' },
           target_audience: { type: 'string', enum: ['ALL', 'ALUMNI', 'STUDENT'], example: 'STUDENT' },
           is_active: { type: 'boolean', example: true }
+        }
+      },
+      Application: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1 },
+          job_id: { type: 'integer', example: 2 },
+          user_id: { type: 'integer', example: 2 },
+          cover_letter: { type: 'string', example: 'Staj programınıza katılmak istiyorum.' },
+          resume_url: { type: 'string', example: '/uploads/resumes/ahmet_cv.pdf' },
+          portfolio_url: { type: 'string', example: 'https://github.com/ahmetyilmaz' },
+          expected_salary: { type: 'number', example: 20000 },
+          status: { type: 'string', enum: ['PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'], example: 'REVIEWING' },
+          notes: { type: 'string', nullable: true, example: 'Mülakata davet edildi' },
+          rejection_reason: { type: 'string', nullable: true, example: null },
+          applied_at: { type: 'string', format: 'date-time' },
+          updated_at: { type: 'string', format: 'date-time' }
+        }
+      },
+      CreateApplicationInput: {
+        type: 'object',
+        required: ['job_id', 'user_id'],
+        properties: {
+          job_id: { type: 'integer', example: 2 },
+          user_id: { type: 'integer', example: 1 },
+          cover_letter: { type: 'string', example: 'Pozisyona motivasyonum yüksektir.' },
+          resume_url: { type: 'string', example: 'https://storage.alumni.edu/cv.pdf' },
+          portfolio_url: { type: 'string', example: 'https://github.com/rumeysa478' },
+          expected_salary: { type: 'number', example: 50000 },
+          notes: { type: 'string', example: 'Referans: Prof. Dr. ...' }
+        }
+      },
+      UpdateApplicationStatusInput: {
+        type: 'object',
+        required: ['status'],
+        properties: {
+          status: { type: 'string', enum: ['PENDING', 'REVIEWING', 'INTERVIEW', 'OFFERED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'], example: 'INTERVIEW' },
+          notes: { type: 'string', example: 'Teknik mülakat tarihi belirlendi.' },
+          rejection_reason: { type: 'string', example: null }
         }
       },
       ErrorResponse: {

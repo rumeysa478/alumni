@@ -44,3 +44,12 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval('events_id_seq', (SELECT COALESCE(MAX(id), 1) FROM events));
+
+-- 6. SEED APPLICATIONS (N:M Action Table)
+INSERT INTO applications (id, job_id, user_id, cover_letter, resume_url, portfolio_url, expected_salary, status, notes)
+VALUES
+    (1, 2, 2, 'Staj programınıza katılmayı ve kendimi web teknolojilerinde geliştirmeyi çok istiyorum.', 'https://storage.alumni.edu/resumes/ahmet-cv.pdf', 'https://github.com/ahmetyilmaz', 20000.00, 'REVIEWING', 'Ön elemeden geçti, teknik mülakat planlanabilir.')
+ON CONFLICT (id) DO NOTHING;
+
+SELECT setval('applications_id_seq', (SELECT COALESCE(MAX(id), 1) FROM applications));
+
