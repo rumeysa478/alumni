@@ -667,4 +667,108 @@ test('JobPostingFactory produces valid job postings', () => {
   assert.strictEqual(bulk.length, 3);
 });
 
+// ==========================================
+// MODELS & RELATIONS UNIT TESTS
+// ==========================================
+
+import {
+  models,
+  RELATIONS,
+  userModel,
+  alumniProfileModel,
+  jobPostingModel,
+  jobApplicationModel,
+  eventModel,
+  eventAttendeeModel,
+  mentorshipModel
+} from '../src/models/index.js';
+
+test('Models Registry exports all 8 domain models and valid RELATIONS metadata', () => {
+  assert.ok(models.User);
+  assert.ok(models.AlumniProfile);
+  assert.ok(models.Announcement);
+  assert.ok(models.JobPosting);
+  assert.ok(models.JobApplication);
+  assert.ok(models.Event);
+  assert.ok(models.EventAttendee);
+  assert.ok(models.Mentorship);
+
+  assert.strictEqual(RELATIONS.User.profile.cardinality, '1:1');
+  assert.strictEqual(RELATIONS.User.postedJobs.cardinality, '1:N');
+  assert.strictEqual(RELATIONS.User.appliedJobs.cardinality, 'N:M');
+  assert.strictEqual(RELATIONS.JobPosting.poster.cardinality, '1:N');
+  assert.strictEqual(RELATIONS.Event.participants.cardinality, 'N:M');
+  assert.strictEqual(RELATIONS.Mentorship.mentor.cardinality, '1:N');
+});
+
+test('1:1 Relation: User <=> AlumniProfile', async () => {
+  const profile = await userModel.getProfile(1);
+  assert.ok(profile);
+  assert.strictEqual(profile.user_id, 1);
+  assert.strictEqual(profile.current_company, 'Tech Global Solutions');
+
+  const user = await alumniProfileModel.getUser(1);
+  assert.ok(user);
+  assert.strictEqual(user.id, 1);
+  assert.strictEqual(user.first_name, 'Rumeysa');
+});
+
+test('1:N Relation: User <=> JobPosting (posted_by)', async () => {
+  const jobs = await userModel.getJobPostings(1);
+  assert.ok(Array.isArray(jobs));
+  assert.strictEqual(jobs.length, 1);
+  assert.strictEqual(jobs[0].title, 'Junior Backend Developer');
+
+  const poster = await jobPostingModel.getPoster(jobs[0].id);
+  assert.ok(poster);
+  assert.strictEqual(poster.id, 1);
+  assert.strictEqual(poster.first_name, 'Rumeysa');
+});
+
+test('N:M Relation: User <=> JobPosting through JobApplication', async () => {
+  const apps = await userModel.getAppliedJobs(2);
+  assert.ok(Array.isArray(apps));
+  assert.strictEqual(apps.length, 1);
+  assert.strictEqual(apps[0].title, 'Stajyer Yazılım Geliştirici');
+  assert.strictEqual(apps[0].application.status, 'PENDING');
+
+  const applicants = await jobPostingModel.getApplicants(2);
+  assert.ok(Array.isArray(applicants));
+  assert.strictEqual(applicants.length, 1);
+  assert.strictEqual(applicants[0].id, 2);
+  assert.strictEqual(applicants[0].first_name, 'Ahmet');
+});
+
+test('1:N and N:M Relations: User <=> Event through EventAttendee', async () => {
+  const creator = await eventModel.getCreator(1);
+  assert.ok(creator);
+  assert.strictEqual(creator.id, 3);
+  assert.strictEqual(creator.first_name, 'Zeynep');
+
+  const attendees = await eventModel.getAttendees(1);
+  assert.ok(Array.isArray(attendees));
+  assert.strictEqual(attendees.length, 2);
+
+  const participants = await eventModel.getParticipants(1);
+  assert.strictEqual(participants.length, 2);
+  const participantIds = participants.map(p => p.id);
+  assert.ok(participantIds.includes(1));
+  assert.ok(participantIds.includes(2));
+});
+
+test('1:N Self-referential Relation: Mentorship (mentor & mentee)', async () => {
+  const mentorships = await mentorshipModel.getByUser(1);
+  assert.ok(Array.isArray(mentorships));
+  assert.strictEqual(mentorships.length, 1);
+  assert.strictEqual(mentorships[0].mentor_id, 1);
+  assert.strictEqual(mentorships[0].mentee_id, 2);
+
+  const mentor = await mentorshipModel.getMentor(mentorships[0].id);
+  assert.strictEqual(mentor.id, 1);
+
+  const mentee = await mentorshipModel.getMentee(mentorships[0].id);
+  assert.strictEqual(mentee.id, 2);
+});
+
+
 

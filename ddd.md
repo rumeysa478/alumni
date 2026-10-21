@@ -324,7 +324,9 @@ Deneyimli mezunlar ile öğrenciler veya yeni mezunlar arasındaki mentör-mente
 
 ---
 
-## 4. Kardinalite ve İlişki Kuralları
+## 4. Kardinalite, İlişki Kuralları ve Model Mimarisi
+
+### 4.1. Veritabanı Düzeyi İlişki Tablosu
 
 | Varlık 1 | İlişki Türü | Varlık 2 | Silinme Davranışı (ON DELETE) | Gerekçe |
 | :--- | :---: | :--- | :--- | :--- |
@@ -334,6 +336,44 @@ Deneyimli mezunlar ile öğrenciler veya yeni mezunlar arasındaki mentör-mente
 | `users` | **1 : N** | `events` | `SET NULL` | Etkinliği oluşturan organizatör silinse de etkinlik kaydı korunur. |
 | `users` | **N : M** | `events` | `CASCADE` (`event_attendees` üzerinden) | Etkinlik iptal edilirse tüm katılımcı kayıtları temizlenir. |
 | `users` (mentor) | **1 : N** | `mentorships` | `CASCADE` | Kullanıcı ayrıldığında mentörlük ilişkisi sonlandırılır. |
+| `users` (mentee) | **1 : N** | `mentorships` | `CASCADE` | Kullanıcı ayrıldığında mentörlük ilişkisi sonlandırılır. |
+
+---
+
+### 4.2. Uygulama Katmanı Modelleri ve İlişki Tanımları (`src/models/`)
+
+Veritabanında tanımlanan 8 varlık için Node.js tarafında hibrit mimarili (PostgreSQL havuzu ve offline testler için In-Memory fallback destekli) **Model sınıfları** ve merkezi bir ilişki kütüphanesi ([`src/models/index.js`](./src/models/index.js)) tanımlanmıştır:
+
+| Model Adı | Dosya | Tablo | İlişkiler (Associations) |
+| :--- | :--- | :--- | :--- |
+| `UserModel` | [`user.model.js`](./src/models/user.model.js) | `users` | `hasOne(Profile)`, `hasMany(JobPosting)`, `hasMany(JobApplication)`, `belongsToMany(JobPosting)`, `hasMany(Event)`, `belongsToMany(Event)`, `hasMany(Mentorship)` |
+| `AlumniProfileModel` | [`alumniProfile.model.js`](./src/models/alumniProfile.model.js) | `alumni_profiles` | `belongsTo(User, { foreignKey: 'user_id' })` |
+| `AnnouncementModel` | [`announcement.model.js`](./src/models/announcement.model.js) | `announcements` | Bağımsız genel duyuru modeli |
+| `JobPostingModel` | [`jobPosting.model.js`](./src/models/jobPosting.model.js) | `job_postings` | `belongsTo(User, { as: 'poster' })`, `hasMany(JobApplication)`, `belongsToMany(User, { as: 'applicants' })` |
+| `JobApplicationModel` | [`jobApplication.model.js`](./src/models/jobApplication.model.js) | `job_applications` | `belongsTo(JobPosting)`, `belongsTo(User)` *(N:M Pivot)* |
+| `EventModel` | [`event.model.js`](./src/models/event.model.js) | `events` | `belongsTo(User, { as: 'organizer' })`, `hasMany(EventAttendee)`, `belongsToMany(User, { as: 'participants' })` |
+| `EventAttendeeModel` | [`eventAttendee.model.js`](./src/models/eventAttendee.model.js) | `event_attendees` | `belongsTo(Event)`, `belongsTo(User)` *(N:M Pivot)* |
+| `MentorshipModel` | [`mentorship.model.js`](./src/models/mentorship.model.js) | `mentorships` | `belongsTo(User, { as: 'mentor' })`, `belongsTo(User, { as: 'mentee' })` |
+
+#### Programatik İlişki Gezinimi (Relational Loader Methods):
+```javascript
+import { userModel, jobPostingModel, eventModel, mentorshipModel } from './src/models/index.js';
+
+// 1:1 — Kullanıcının profilini çekme
+const profile = await userModel.getProfile(userId);
+
+// 1:N — İlanı oluşturan mezunu çekme
+const poster = await jobPostingModel.getPoster(jobId);
+
+// N:M — İlana başvuran adayların ve başvuru detaylarının listesi
+const applicants = await jobPostingModel.getApplicants(jobId);
+
+// N:M — Bir etkinliğin kayıtlı katılımcılarını çekme
+const participants = await eventModel.getParticipants(eventId);
+
+// 1:N Self-referential — Kullanıcının aktif mentörlük eşleşmeleri
+const mentorships = await mentorshipModel.getByUser(userId);
+```
 
 ---
 
