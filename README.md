@@ -19,16 +19,23 @@
    - [Dizin ve Dosya Hiyerarşisi](#dizin-ve-dosya-hiyerarşisi)
    - [Klasör ve Dosyaların Sorumlulukları](#klasör-ve-dosyaların-sorumlulukları)
    - [İstek Yaşam Döngüsü ve Veri Akışı](#istek-yaşam-döngüsü-ve-veri-akışı)
-3. [Kullanıcı Modeli ve In-Memory CRUD](#-kullanıcı-modeli-ve-in-memory-crud)
+3. [Modeller ve Doğrulama Kuralları (Data Models)](#-modeller-ve-doğrulama-kuralları-data-models)
+   - [Kullanıcı Modeli ve In-Memory CRUD](#-kullanıcı-modeli-ve-in-memory-crud)
+   - [İş ve Staj İlanı Modeli (JobPosting) ve Doğrulama Kuralları](#iş-ve-staj-i̇lanı-modeli-jobposting-ve-doğrulama-kuralları)
 4. [Kontrolcüler (Controllers)](#-kontrolcüler-controllers)
 5. [View Katmanı (EJS Templates)](#-view-katmanı-ejs-templates)
 6. [Uç Noktalar ve Rotalar (Endpoints)](#-uç-noktalar-ve-rotalar-endpoints)
-7. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
-8. [Veri Tasarımı Dokümantasyonu (ddd.md)](#-veri-tasarımı-dokümantasyonu-dddmd)
-9. [Çevresel Değişkenler (.env ve example.env)](#-çevresel-değişkenler-env-ve-exampleenv)
-10. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
-11. [Docker Desteği ve "The Forgetting Test" Sırrı](#-docker-desteği-ve-the-forgetting-test-sırrı)
-12. [Geliştirici Bilgileri](#-geliştirici-bilgileri)
+7. [Middleware Mimarisi, İstek Günlükleme ve Hata Koruma (Guardians & Logging)](#-middleware-mimarisi-i̇stek-günlükleme-ve-hata-koruma-guardians--logging)
+   - [Logger Middleware (Terminal Formatı)](#1-logger-middleware-srcmiddlewareloggermiddlewarejs)
+   - [404 Guardian Middleware & Generic 404 Sayfası](#2-404-guardian-middleware--generic-404-sayfası)
+   - [5xx Guardian Middleware (Sunucu Hata Yakalayıcısı)](#3-5xx-guardian-middleware-srcmiddlewareservererrorguardianmiddlewarejs)
+   - [Dosya Tabanlı Hata Günlüğü (logs/error.logs)](#4-dosya-tabanlı-hata-günlüğü-logserrorlogs)
+8. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
+9. [Veri Tasarımı Dokümantasyonu (ddd.md)](#-veri-tasarımı-dokümantasyonu-dddmd)
+10. [Çevresel Değişkenler (.env ve example.env)](#-çevresel-değişkenler-env-ve-exampleenv)
+11. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
+12. [Docker Desteği ve "The Forgetting Test" Sırrı](#-docker-desteği-ve-the-forgetting-test-sırrı)
+13. [Geliştirici Bilgileri](#-geliştirici-bilgileri)
 
 ---
 
@@ -42,7 +49,8 @@
   - **RESTful JSON API:** Mobil ve harici istemciler için standart JSON yanıtları üreten API uç noktaları (`/api/users`).
 - **📚 İnteraktif Swagger Dokümantasyonu:** OpenAPI 3.0 standardında tüm Web ve API uç noktalarını listeleyen ve test imkanı sunan Swagger UI (`/api/swagger`).
 - **⚡ In-Memory Veri Modeli:** Harici veritabanı kurulumuna ihtiyaç duymadan tam CRUD işlemlerini destekleyen ve başlangıç örnek verileriyle (seed) gelen model mimarisi.
-- **🧪 Otomatik Test Paketi:** Node.js yerleşik test kütüphanesi (`node:test`) ile 18 adet otomatik uçtan uca test senaryosu.
+- **🛡️ Gelişmiş Middleware & Hata Koruma (Guardians):** Terminal konsoluna biçimlendirilmiş istek loglama (`time method route restype duration`), geçersiz web isteklerini Generic 404 sayfasına yönlendiren 404 Guardian, 5xx sunucu hatalarını gerekçesiyle yakalayan 5xx Guardian ve `logs/error.logs` kalıcı günlükleme sistemi.
+- **🧪 Kapsamlı Otomatik Test Paketi:** Node.js yerleşik test kütüphanesi (`node:test`) ile uçtan uca hazırlanmış **59 adet** otomatik test senaryosu.
 
 ---
 
@@ -89,6 +97,11 @@ alumni/
 ├── Dockerfile                    # Docker imajı yapılandırma dosyası
 ├── docker-compose.yml            # Docker Compose servis tanımı
 ├── README.md                     # Kapsamlı proje ve mimari dokümantasyonu
+├── ddd.md                        # Veri tasarımı ve mimari dokümantasyonu
+│
+├── logs/                         # Hata günlükleri dizini
+│   ├── .gitkeep                  # Git takip dosyası
+│   └── error.logs                # 4xx ve 5xx hata kayıtları günlüğü (git-ignored)
 │
 ├── src/                          # Kaynak kod kök dizini
 │   ├── app.js                    # Express app yapılandırması (Middleware'ler, rotalar)
@@ -96,50 +109,57 @@ alumni/
 │   │
 │   ├── config/                   # Yapılandırma katmanı
 │   │   ├── environment.js        # Port ve çalışma ortamı değişkenleri
-│   │   └── swagger.js            # OpenAPI 3.0 dokümantasyon şeması (Kullanıcı & Duyuru rotaları)
+│   │   └── swagger.js            # OpenAPI 3.0 dokümantasyon şeması (Kullanıcı, Duyuru, İş, Başvuru vb.)
+│   │
+│   ├── middleware/               # MIDDLEWARE KATMANI (İstek/Hata Koruyucuları)
+│   │   ├── index.js              # Middleware dışa aktarım merkezi (registry)
+│   │   ├── logger.middleware.js  # Terminal istek loglayıcısı ve dosya loglayıcı
+│   │   ├── notFoundGuardian.middleware.js   # 404 koruyucusu ve web redirect
+│   │   └── serverErrorGuardian.middleware.js # 5xx merkezi hata yakalayıcısı
 │   │
 │   ├── models/                   # MODEL KATMANI (Veri ve İş Mantığı)
 │   │   ├── user.model.js         # In-memory User modeli ve tam CRUD fonksiyonları
-│   │   └── announcement.model.js # In-memory Announcement modeli ve tam CRUD fonksiyonları
+│   │   ├── announcement.model.js # In-memory Announcement modeli ve tam CRUD
+│   │   ├── jobPosting.model.js   # İş İlanı modeli ve doğrulama kuralları (120 char kısıtı)
+│   │   ├── jobApplication.model.js # N:M Başvuru yaşam döngüsü modeli
+│   │   └── ...                   # Event, Profile, Mentorship modelleri
 │   │
 │   ├── controllers/              # CONTROLLER KATMANI (İstek/Yanıt Yöneticileri)
 │   │   ├── userController.js     # Kullanıcı Web Görünüm Kontrolcüsü (EJS render)
 │   │   ├── apiUserController.js  # Kullanıcı REST API Kontrolcüsü (JSON yanıt)
-│   │   ├── announcementController.js    # Duyuru Web Görünüm Kontrolcüsü (EJS render)
-│   │   ├── apiAnnouncementController.js # Duyuru REST API Kontrolcüsü (JSON yanıt)
-│   │   ├── user.controller.js    # Geriye dönük uyumluluk sarmalayıcısı
-│   │   └── health.controller.js  # Sistem sağlık kontrolü kontrolcüsü
+│   │   ├── jobController.js      # İş İlanı Web Kontrolcüsü
+│   │   ├── apiJobController.js   # İş İlanı REST API Kontrolcüsü
+│   │   ├── announcementController.js    # Duyuru Web Görünüm Kontrolcüsü
+│   │   ├── apiAnnouncementController.js # Duyuru REST API Kontrolcüsü
+│   │   └── ...
 │   │
 │   └── routes/                   # ROTA KATMANI (URL Eşleştirmeleri)
 │       ├── index.js              # API rotaları toplayıcısı ve Swagger mount
+│       ├── direct.routes.js      # Statik sayfalar ve /404 Generic hata sayfası rotası
 │       ├── user.routes.js        # /users Web Görünüm rotaları
 │       ├── apiUser.routes.js     # /api/users REST API rotaları
-│       ├── announcement.routes.js    # /announcements Web Görünüm rotaları
-│       ├── apiAnnouncement.routes.js # /api/announcements REST API rotaları
-│       └── health.routes.js      # /api/health sistem sağlık rotaları
+│       ├── job.routes.js         # /jobs Web rotaları
+│       ├── apiJob.routes.js      # /api/jobs REST API rotaları
+│       └── ...
 │
 ├── views/                        # VIEW KATMANI (EJS Şablonları)
-│   ├── error.ejs                 # Genel hata ve 404 sayfası
+│   ├── 404.ejs                   # Özel tasarlanmış Generic 404 Hata Sayfası
+│   ├── error.ejs                 # Genel sunucu hata sayfası (500 vb.)
 │   ├── partials/                 # Yeniden kullanılabilir parçalı şablonlar
 │   │   ├── header.ejs            # HTML başlık, navigasyon çubuğu ve modern CSS stilleri
 │   │   └── footer.ejs            # Sayfa altlığı ve telif/bağlantı alanı
 │   ├── users/                    # Kullanıcı Yönetimi Görünümleri
-│   │   ├── index.ejs             # [R] Kullanıcı listeleme, arama ve filtreleme tablosu
-│   │   ├── new.ejs               # [C] Yeni kullanıcı oluşturma formu
-│   │   ├── show.ejs              # [R] Tekil kullanıcı detay profil sayfası
-│   │   └── edit.ejs              # [U] Kullanıcı bilgileri düzenleme formu
-│   └── announcements/            # Duyuru Yönetimi Görünümleri
-│       ├── index.ejs             # [R] Duyuru listeleme, arama ve kategori filtreleme
-│       ├── new.ejs               # [C] Yeni duyuru oluşturma formu
-│       ├── show.ejs              # [R] Tekil duyuru detay sayfası
-│       └── edit.ejs              # [U] Duyuru bilgileri düzenleme formu
+│   ├── jobs/                     # İş ve Staj İlanları Görünümleri
+│   ├── applications/             # Başvuru Yönetimi Görünümleri
+│   ├── announcements/            # Duyuru Yönetimi Görünümleri
+│   └── events/                   # Etkinlik Yönetimi Görünümleri
 │
 ├── public/                       # Statik Web Varlıkları
 │   ├── index.html                # Hoş geldiniz ana sayfası ve bağlantı dizini
 │   └── about.html                # Proje ve teknoloji yığını hakkında sayfası
 │
 └── test/                         # Otomatik Test Paketi
-    └── index.test.js             # node:test ile yazılmış 30 adet uçtan uca test
+    └── index.test.js             # node:test ile yazılmış 59 adet uçtan uca test
 ```
 
 ---
@@ -157,6 +177,11 @@ alumni/
 | **Routes** | `src/routes/apiUser.routes.js` | `/api/users` altındaki REST API isteklerini `ApiUserController` fonksiyonlarına yönlendirir. |
 | **Config** | `src/config/swagger.js` | Hem `/users` web rotalarını hem de `/api/users` API rotalarını kapsayan OpenAPI 3.0 dokümantasyon şemasını barındırır. |
 | **Entry Point** | `index.js` | EJS motorunu, middleware'leri (`express.json`, `urlencoded`, `methodOverride`, `static`), rotaları bağlar ve sunucuyu başlatır. |
+| **Middleware** | `src/middleware/logger.middleware.js` | Her HTTP isteğini terminale `time method route restype duration` formatında (örn: `10:20:30 POST /user 201 18ms`) yazar ve hata durumlarında dosyaya yazma fonksiyonunu (`writeErrorLog`) sağlar. |
+| **Middleware** | `src/middleware/notFoundGuardian.middleware.js` | Tanımsız rotaları yakalayan 404 koruyucusudur. Geçersiz web isteklerini `302 Redirect` ile `/404` generic sayfasına yönlendirir, REST API isteklerine `reason` gerekçeli JSON döner ve `logs/error.logs` dosyasına kaydeder. |
+| **Middleware** | `src/middleware/serverErrorGuardian.middleware.js` | Merkezi 5xx Express hata yakalama ara yazılımıdır. Beklenmeyen istisnaları yakalar, sistem çökmesini engeller, açıklayıcı `reason` üretir ve stack trace ile birlikte `logs/error.logs` dosyasına kaydeder. |
+| **View (404)** | `views/404.ejs` | Özel tasarlanmış Generic 404 Hata Sayfası. İstemcinin yönlendirildiği geçersiz URL'yi, hata gerekçesini ve hızlı gezinti butonlarını sunar. |
+| **Logs** | `logs/error.logs` | Uygulamada meydana gelen 4xx ve 5xx hata olaylarının kronolojik olarak saklandığı günlük dosyasıdır. |
 
 ---
 
@@ -182,7 +207,9 @@ alumni/
 
 ---
 
-## 📦 Kullanıcı Modeli ve In-Memory CRUD
+## 📦 Modeller ve Doğrulama Kuralları (Data Models)
+
+### 1. Kullanıcı Modeli (User) ve In-Memory CRUD
 
 `src/models/user.model.js` dosyası herhangi bir harici veritabanına bağlı olmaksızın çalışan saf JavaScript sınıfıdır. Başlangıçta sistemde 3 adet gerçekçi örnek kullanıcı (Rumeysa Aydın, Ahmet Yılmaz, Zeynep Kaya) ile tohumlanır (seed).
 
@@ -214,6 +241,16 @@ alumni/
 - `patch(id, partialData)`: Sadece iletilen alanları günceller.
 - `delete(id)`: Kullanıcı kaydını bellekten siler.
 - `reset()`: Test senaryoları için veriyi başlangıç durumuna döndürür.
+
+### 2. İş ve Staj İlanı Modeli (JobPosting) ve Doğrulama Kuralları
+
+`src/models/jobPosting.model.js` dosyası iş ve staj ilanlarını bellek içinde yönetir. İş kuralları gereği aşağıdaki veri doğrulama kısıtları hem Model hem Controller seviyesinde garanti altına alınmıştır:
+
+- **`title` (İlan Başlığı):** **Zorunlu** (`required`). Maksimum **120 karakter** ile sınırlandırılmıştır (`maxLength: 120`). 120 karakterden uzun başlık girilmesi durumunda `400 Bad Request` hatası döner; EJS formunda `maxlength="120"` HTML özniteliği ile kısıtlanır.
+- **`company` (Firma Adı):** **Zorunlu** (`required`). Boş veya tanımsız bırakılamaz.
+- **`city` (Şehir / Konum):** **İsteğe Bağlı** (`optional`). Belirtilmediğinde varsayılan olarak boş/null kabul edilir.
+- **`description` (İş Tanımı ve Detaylar):** **İsteğe Bağlı** (`optional`). Zorunlu değildir.
+- **`type` (İstihdam Türü):** `FULL_TIME`, `PART_TIME`, `INTERNSHIP`, `REMOTE` seçeneklerini destekler.
 
 ---
 
@@ -377,6 +414,94 @@ Uygulamanın arayüz katmanı `views/` dizininde modern, responsive ve CSS bağ�
 | `GET` | `/hello/:name` | Dinamik isim selamlama yanıtı (`Hello <Name>!`) |
 | `GET` | `/sum/:num1/:num2`| İki sayının toplamını hesaplayan uç nokta (`toplam= <sum>`) |
 | `GET` | `/health` | Doğrudan sistem sağlık durumu kontrolü (`status: UP`) |
+| `GET` | `/404` | Generic 404 Hata Sayfası (`views/404.ejs` - geçersiz web istekleri HTTP 302 ile buraya yönlendirilir) |
+
+---
+
+## 🛡️ Middleware Mimarisi, İstek Günlükleme ve Hata Koruma (Guardians & Logging)
+
+Sistem genelinde güvenilirlik, izlenebilirlik ve kullanıcı deneyimini en üst seviyeye taşımak amacıyla Express katmanında merkezi **Middleware ve Hata Koruma (Guardians)** mimarisi uygulanmıştır:
+
+```mermaid
+flowchart TD
+    Req["HTTP İsteği"] --> Logger["1. Logger Middleware<br/>(Terminal İstek Kaydı)"]
+    Logger --> Router["Express Router & Controllers"]
+    
+    Router -->|Başarılı Yanıt| ClientOk["İstemci (2xx / 3xx)"]
+    Router -->|Tanımsız Rota| Guardian404["2. 404 Guardian Middleware"]
+    Router -->|Sunucu Hatası / Exception| Guardian5xx["3. 5xx Guardian Middleware"]
+    
+    Guardian404 -->|Web İstekleri| Redirect404["302 Redirect -> GET /404<br/>(views/404.ejs Generic View)"]
+    Guardian404 -->|API İstekleri| Json404["JSON 404 Yanıtı (Reason ile)"]
+    Guardian404 -->|Hata Kaydı| FileLogs[("logs/error.logs")]
+    
+    Guardian5xx -->|Hata Yakalama| Json5xx["JSON / HTML 5xx Yanıtı (Reason ile)"]
+    Guardian5xx -->|Stack Trace & Hata Kaydı| FileLogs
+```
+
+### 1. Logger Middleware (`src/middleware/logger.middleware.js`)
+Uygulamaya gelen her HTTP isteğini izler ve yanıt tamamlandığında (`res.on('finish')`) konsola standart bir biçimde yazar:
+- **Biçim:** `time method route restype duration`
+- **Örnek Çıktı:**
+  ```text
+  10:20:30 POST /user 201 18ms
+  11:05:14 GET /jobs 200 12ms
+  11:05:20 GET /bilinmeyen-rota 302 2ms
+  ```
+- **Parametreler:**
+  - `time`: İstek tamamlama saati (`HH:mm:ss`)
+  - `method`: HTTP fiili (`GET`, `POST`, `PUT`, `DELETE`)
+  - `route`: Erişilen URL yolu (`req.originalUrl`)
+  - `restype`: HTTP durum kodu (`res.statusCode`)
+  - `duration`: Yanıt süresi milisaniye cinsinden (`ms`)
+
+### 2. 404 Guardian Middleware & Generic 404 Sayfası
+Tanımlanmamış rotalara veya silinmiş kaynaklara yönelik yapılan istekleri yakalayan koruyucu katmandır (`src/middleware/notFoundGuardian.middleware.js`):
+- **Akıllı Yönlendirme (Smart Redirection for Web):** Tarayıcı üzerinden yapılan geçersiz sayfa isteklerini (`invalid request`) `HTTP 302` geçici yönlendirme ile **Generic 404 Sayfasına** (`/404`) aktarır:
+  ```text
+  Tarayıcı İstegi: GET /eski-sayfa
+  NotFoundGuardian: 302 Redirect -> GET /404?path=%2Feski-sayfa&reason=...
+  Kullanıcı Görünümü: Özel tasarımlı 404 hata ekranı ve gerekçe rozeti
+  ```
+- **REST API Koruması:** `/api/*` uç noktalarında veya JSON bekleyen istemcilerde yönlendirme yerine standart JSON yanıtı üretir:
+  ```json
+  {
+    "success": false,
+    "error": "Not Found",
+    "reason": "Requested route 'GET /api/unknown' does not exist on this server.",
+    "path": "/api/unknown",
+    "redirectUrl": "/404?path=%2Fapi%2Funknown&reason=..."
+  }
+  ```
+- **Generic 404 Görünümü (`views/404.ejs` & `GET /404`):**
+  - Modern Playfair Display tipografisi ve gün batımı gradyan renkli 404 rozeti.
+  - Erişilmeye çalışılan geçersiz URL'nin gösterimi (`path`).
+  - Dinamik hata gerekçesi kutusu (`reason`).
+  - Kullanıcıyı kaybolmaktan kurtaran hızlı navigasyon hap butonları (Ana Sayfa, İlanlar, Mezunlar, Duyurular).
+
+### 3. 5xx Guardian Middleware (`src/middleware/serverErrorGuardian.middleware.js`)
+Sunucuda meydana gelebilecek kontrol dışı istisnaları (veritabanı kesintileri, tanımsız değişkenler, promise rejections) yakalayan 4 parametreli `(err, req, res, next)` merkezi hata yakalayıcıdır:
+- **Gerekçeli Hata Yanıtı (Reason):** Hata durumunda istemciye açıklayıcı bir gerekçe (`reason`) iletir ve sunucunun kilitlenmesini engeller:
+  ```json
+  {
+    "success": false,
+    "error": "Internal Server Error",
+    "message": "Bir sunucu hatası oluştu.",
+    "reason": "Veritabanı bağlantı havuzu tükendi.",
+    "timestamp": "2026-11-11T10:45:00.000Z"
+  }
+  ```
+- **Güvenli Bilgi Maskeleme:** Üretim ortamında hassas sistem çekirdek bilgilerini ve stack trace verilerini gizleyerek güvenliği sağlar.
+
+### 4. Dosya Tabanlı Hata Günlüğü (`logs/error.logs`)
+`loggerMiddleware`, `notFoundGuardian` ve `serverErrorGuardian` tarafından tetiklenen tüm 4xx ve 5xx hata olayları eş zamanlı olarak [`logs/error.logs`](./logs/error.logs) dosyasına kaydedilir (`fs.promises.appendFile`):
+- **Format:** `[ISO-TIMESTAMP] HH:mm:ss LEVEL ROUTE STATUS - ErrorMessage | Reason: Hata Gerekçesi`
+- **Örnek Log Kaydı:**
+  ```text
+  [2026-11-11T08:00:15.123Z] 11:00:15 NOT_FOUND /olmayan-sayfa 404 - Reason: Requested route 'GET /olmayan-sayfa' does not exist on this server.
+  [2026-11-11T08:05:42.567Z] 11:05:42 SERVER /api/jobs 500 - Error: Connection refused | Reason: Veritabanı bağlantısı kurulamadı.
+  ```
+- **Git Takibi:** Repoda yalnızca `logs/.gitkeep` takip edilir; oluşan gerçek log dosyaları gizlilik ve dosya boyutu gerekçesiyle `.gitignore` ile korunur.
 
 ---
 
@@ -499,11 +624,20 @@ Sunucu **5000** portunda dinlemeye başlayacaktır:
 - 🏠 **Ana Sayfa:** [http://localhost:5000/](http://localhost:5000/)
 
 ### 6. Otomatik Testleri Koşun
-Projede yerleşik `node:test` koşucusu ile uçtan uca hazırlanmış **30 adet** otomatik test bulunmaktadır:
+Projede yerleşik `node:test` koşucusu ile uçtan uca hazırlanmış **59 adet** otomatik test bulunmaktadır:
 
 ```bash
 npm test
 ```
+
+Test paketi şunları kapsar:
+- **Kullanıcı & Duyuru CRUD:** Web EJS görünümleri ve REST API yanıtları (200, 201, 302, 404).
+- **İlişkisel Bütünlük:** 1:1, 1:N ve N:M (Etkinlik ve Başvuru) ilişkileri.
+- **İş İlanı (JobPosting) Kuralları:** Başlık zorunluluğu, 120 karakter sınırı, firma zorunluluğu, isteğe bağlı şehir ve açıklama alanları.
+- **Logger Middleware:** Terminal log çıktısı formatı (`time method route restype duration`).
+- **404 Guardian:** Geçersiz web isteklerinin `/404` sayfasına yönlendirilmesi (302) ve API'de `reason` ile 404 JSON yanıtı.
+- **5xx Guardian:** Sunucu hatalarının yakalanması, açıklayıcı `reason` ve sistemin güvenli düşüşü (fallback).
+- **Hata Günlüğü:** Hataların `logs/error.logs` dosyasına eksiksiz yazılması.
 
 ---
 

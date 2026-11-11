@@ -114,6 +114,101 @@
             "description": "Raw OpenAPI 3.0 specification JSON."
           },
           "response": []
+        },
+        {
+          "name": "Generic 404 Page (View)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Response is HTML and contains 404\", function () {",
+                  "    pm.expect(pm.response.text()).to.include(\"404\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/html",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/404?path=%2Fnot-found&reason=Sayfa+bulunamadi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "404"
+              ],
+              "query": [
+                {
+                  "key": "path",
+                  "value": "%2Fnot-found"
+                },
+                {
+                  "key": "reason",
+                  "value": "Sayfa+bulunamadi"
+                }
+              ]
+            },
+            "description": "Generic 404 error view rendered by direct routes and redirected by notFoundGuardian."
+          },
+          "response": []
+        },
+        {
+          "name": "404 Guardian API Catch-all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Response is JSON with error, reason, and redirectUrl\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(false);",
+                  "    pm.expect(jsonData.error).to.eql(\"Not Found\");",
+                  "    pm.expect(jsonData.reason).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.redirectUrl).to.include(\"/404\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/non-existent-endpoint",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "non-existent-endpoint"
+              ]
+            },
+            "description": "404 Guardian interceptor returning structured JSON with reason and redirectUrl for invalid API routes."
+          },
+          "response": []
         }
       ]
     },

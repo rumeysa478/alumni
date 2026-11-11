@@ -26,6 +26,7 @@
    - [Adım Adım Test Senaryosu (Doğrulama Kılavuzu)](#adım-adım-test-senaryosu-doğrulama-kılavuzu)
 8. [PostgreSQL DDL Şema Tanımı (SQL Script)](#8-postgresql-ddl-şema-tanımı-sql-script)
 9. [Migration ve Veritabanı Üretim Sistemi (Automated Migrations)](#9-migration-ve-veritabanı-üretim-sistemi)
+10. [Middleware Mimarisi, İstek Günlükleme ve Hata Koruma (Guardians & Logging)](#10-middleware-mimarisi-i̇stek-günlükleme-ve-hata-koruma)
 
 ---
 
@@ -729,6 +730,39 @@ npm run db:factory
 npm run db:reset
 ```
 - Tüm eski şemayı ve tabloları temizler (`DROP SCHEMA public CASCADE`), ardından migration ve seed işlemlerini sırayla baştan koşturur.
+
+---
+
+## 10. Middleware Mimarisi, İstek Günlükleme ve Hata Koruma
+
+Sistem genelinde veri tutarlılığı, erişim güvenliği, izlenebilirlik ve kullanıcı deneyimini güvenceye almak amacıyla Express uygulama katmanında merkezi **Middleware Mimarisi** yapılandırılmıştır:
+
+### 10.1. Logger Middleware (`src/middleware/logger.middleware.js`)
+Her HTTP isteğini yaşam döngüsünün sonunda (`res.on('finish')`) terminal konsoluna standart formatta yazar:
+- **Format:** `time method route restype duration`
+- **Örnek Çıktı:** `10:20:30 POST /user 201 18ms`
+- **Görev:** İstek süresini (`ms`), HTTP yanıt statüsünü ve yönlenen rotayı anlık izleme imkanı sunar.
+
+### 10.2. 404 Guardian Middleware (`src/middleware/notFoundGuardian.middleware.js`)
+Sistemde tanımlı olmayan rotalara veya silinmiş kaynaklara yapılan erişimleri yakalar:
+- **Geçersiz Web İsteklerini Yönlendirme:** Tarayıcı üzerinden gelen geçersiz web isteklerini (`invalid request`) `HTTP 302` durum koduyla kullanıcı dostu **Generic 404 Sayfasına** (`/404`) yönlendirir:
+  `GET /bilinmeyen-sayfa  --->  302 Redirect  --->  GET /404?path=%2Fbilinmeyen-sayfa&reason=...`
+- **REST API Yanıtı:** API rotalarında (`/api/*`) JSON formatında ve `reason` (gerekçe) parametresiyle `404 Not Found` yanıtı üretir.
+- **Hata Günlüğü:** Oluşan 404 hatalarını gerekçesiyle birlikte dosya sistemine kaydeder.
+
+### 10.3. Generic 404 Sayfası (`views/404.ejs` & `GET /404`)
+Proje arayüz kılavuzuna uygun, Playfair Display tipografisi, gün batımı gradyanlı 404 rozeti, geçersiz kılınan URL adresi ve açıklayıcı gerekçesi ile donatılmış bağımsız hata arayüzüdür. Kullanıcıya Ana Sayfa, İlanlar, Mezunlar ve Duyurulara hızlı dönüş aksiyonları sağlar.
+
+### 10.4. 5xx Guardian Middleware (`src/middleware/serverErrorGuardian.middleware.js`)
+Sunucu tarafında kontrol dışı oluşan beklenmedik istisnaları (veritabanı kesintileri, havuz taşmaları, unhandled promise rejections) yakalayan 4 parametreli `(err, req, res, next)` Express hata yakalama middleware'idir:
+- **Gerekçeli Hata Yanıtı:** İstek sahibine sistemin çökmesini engelleyerek açıklayıcı `reason` içeren `500 Internal Server Error` (veya `502`, `503`) yanıtı döner.
+- **Güvenli Düşüş (Fallback):** Hassas sistem çekirdek bilgilerini maskeleyerek kullanıcıya güvenli mesaj iletir.
+
+### 10.5. Dosyaya Hata Loglama (`logs/error.logs`)
+`loggerMiddleware`, `notFoundGuardian` ve `serverErrorGuardian` bileşenleri tarafından tetiklenen tüm 4xx ve 5xx hata durumları; zaman damgası, HTTP metodu, URL, durum kodu ve hata gerekçesi ile [`logs/error.logs`](./logs/error.logs) dosyasına atomik olarak eklenir (`appendFileSync`):
+```text
+[2026-11-11T07:43:58.717Z] 10:43:58 SERVER /api/error-test 500 - Error: Database connection pool exhausted | Reason: Veritabanı bağlantı havuzu tükendi.
+```
 
 ---
 

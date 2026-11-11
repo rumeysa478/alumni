@@ -880,6 +880,22 @@ export const swaggerDocument = {
         }
       }
     },
+    '/404': {
+      get: {
+        tags: ['Sistem'],
+        summary: 'Generic 404 Hata Sayfası (View)',
+        description: 'Geçersiz web isteklerinin yönlendirildiği (HTTP 302 redirect) kullanıcı dostu hata arayüzü.',
+        parameters: [
+          { name: 'path', in: 'query', required: false, schema: { type: 'string' }, description: 'Erişilemeyen URL yolu', example: '/gecersiz-sayfa' },
+          { name: 'reason', in: 'query', required: false, schema: { type: 'string' }, description: '404 hata gerekçesi', example: 'İstenen sayfa veya kaynak sistemde bulunamadı.' }
+        ],
+        responses: {
+          '404': {
+            description: 'Generic 404 HTML Arayüzü'
+          }
+        }
+      }
+    },
     '/api/applications': {
       get: {
         tags: ['İş ve Staj Başvuruları (N:M Action Table)'],
@@ -1091,12 +1107,36 @@ export const swaggerDocument = {
           rejection_reason: { type: 'string', example: null }
         }
       },
+      JobPosting: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1 },
+          title: { type: 'string', maxLength: 120, example: 'Senior Backend Developer' },
+          company: { type: 'string', example: 'Tech Corp' },
+          city: { type: 'string', nullable: true, example: 'İstanbul' },
+          description: { type: 'string', nullable: true, example: 'Node.js ve PostgreSQL deneyimi...' },
+          type: { type: 'string', enum: ['FULL_TIME', 'PART_TIME', 'INTERNSHIP', 'REMOTE'], example: 'FULL_TIME' }
+        }
+      },
+      CreateJobPostingInput: {
+        type: 'object',
+        required: ['title', 'company'],
+        properties: {
+          title: { type: 'string', maxLength: 120, example: 'Senior Backend Developer' },
+          company: { type: 'string', example: 'Tech Corp' },
+          city: { type: 'string', nullable: true, example: 'İstanbul' },
+          description: { type: 'string', nullable: true, example: 'İş tanımı ve gereksinimler...' }
+        }
+      },
       ErrorResponse: {
         type: 'object',
         properties: {
           success: { type: 'boolean', example: false },
           error: { type: 'string', example: 'Validation Error' },
-          message: { type: 'string', example: 'Hata açıklaması.' }
+          message: { type: 'string', example: 'Hata açıklaması.' },
+          reason: { type: 'string', example: 'İstenen sayfa veya kaynak sistemde bulunamadı.' },
+          path: { type: 'string', example: '/api/unknown' },
+          redirectUrl: { type: 'string', example: '/404?path=%2Fapi%2Funknown&reason=...' }
         }
       }
     }
