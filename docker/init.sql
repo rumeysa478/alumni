@@ -52,9 +52,10 @@ CREATE TABLE IF NOT EXISTS announcements (
 -- 5. JOB POSTINGS TABLE
 CREATE TABLE IF NOT EXISTS job_postings (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
+    title VARCHAR(120) NOT NULL,
     company VARCHAR(150) NOT NULL,
-    description TEXT NOT NULL,
+    city VARCHAR(100),
+    description TEXT,
     requirements TEXT,
     location VARCHAR(100),
     work_model VARCHAR(50) DEFAULT 'HYBRID' CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE')),
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS job_postings (
     view_count INT DEFAULT 0 CHECK (view_count >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_job_title_length CHECK (length(title) <= 120),
     CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 

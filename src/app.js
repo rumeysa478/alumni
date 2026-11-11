@@ -3,6 +3,7 @@ import path from 'path';
 import cors from 'cors';
 import methodOverride from 'method-override';
 import { fileURLToPath } from 'url';
+import { loggerMiddleware, notFoundGuardian, serverErrorGuardian } from './middleware/index.js';
 import directRouter from './routes/direct.routes.js';
 import apiRouter from './routes/index.js';
 import userRoutes from './routes/user.routes.js';
@@ -25,6 +26,7 @@ app.set('views', [
 ]);
 
 // Middlewares
+app.use(loggerMiddleware);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,33 +46,10 @@ app.use('/events', eventRoutes);
 // 3. Mount Central REST API Router at /api
 app.use('/api', apiRouter);
 
-// 404 Handler
-app.use((req, res) => {
-  if (req.accepts('html')) {
-    return res.status(404).render('error', {
-      title: 'Sayfa Bulunamadı (404)',
-      message: `Aradığınız '${req.originalUrl}' sayfası bulunamadı.`
-    });
-  }
-  res.status(404).json({
-    error: 'Not Found',
-    message: `Cannot ${req.method} ${req.originalUrl}`
-  });
-});
+// 4. 404 Guardian Middleware (Bulunamayan rotalar ve kaynaklar)
+app.use(notFoundGuardian);
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled Error:', err);
-  if (req.accepts('html')) {
-    return res.status(err.status || 500).render('error', {
-      title: 'Sunucu Hatası (500)',
-      message: err.message || 'Beklenmeyen bir hata oluştu.'
-    });
-  }
-  res.status(err.status || 500).json({
-    error: 'Internal Server Error',
-    message: err.message || 'An unexpected error occurred'
-  });
-});
+// 5. 5xx Guardian Middleware (Sunucu tarafı hatalar)
+app.use(serverErrorGuardian);
 
 export default app;

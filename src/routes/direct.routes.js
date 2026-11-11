@@ -86,4 +86,28 @@ directRouter.get('/health', (req, res) => {
   });
 });
 
+/**
+ * GET /404 - Generic 404 Bulunamadı Sayfası
+ */
+directRouter.get('/404', (req, res) => {
+  const invalidPath = req.query.path || req.originalUrl;
+  const reason = req.query.reason || `İstenen '${invalidPath}' sayfası bu sunucuda bulunamadı.`;
+
+  if (req.accepts('html')) {
+    return res.status(404).render('404', {
+      title: 'Sayfa Bulunamadı (404)',
+      path: invalidPath,
+      reason: reason
+    });
+  }
+
+  return res.status(404).json({
+    success: false,
+    status: 404,
+    error: 'Not Found',
+    message: `Sayfa bulunamadı: ${invalidPath}`,
+    reason: reason
+  });
+});
+
 export default directRouter;

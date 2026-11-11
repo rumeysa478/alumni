@@ -20,8 +20,10 @@ env
 !.env.example
 
 # Logs
-logs/
+logs/*
+!logs/.gitkeep
 *.log
+*.logs
 
 # Docker
 .docker/

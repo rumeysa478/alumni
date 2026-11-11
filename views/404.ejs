@@ -1,0 +1,47 @@
+<%- include('./partials/header') %>
+
+<div class="card" style="max-width: 680px; margin: 3.5rem auto; text-align: center; padding: 3rem 2rem; border: 2px solid var(--connext-border, #e2e8f0); border-radius: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.06); background: #ffffff;">
+  
+  <!-- 404 Badge with Sunset Gradient -->
+  <div style="font-size: 5rem; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 0.5rem; background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+    404
+  </div>
+
+  <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">🧭</div>
+
+  <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; color: #0f172a;">
+    <%= typeof title !== 'undefined' ? title : 'Sayfa Bulunamadı' %>
+  </h1>
+
+  <p style="color: #64748b; font-size: 1.05rem; line-height: 1.6; margin-bottom: 1rem; max-width: 520px; margin-left: auto; margin-right: auto;">
+    <% if (typeof path !== 'undefined' && path) { %>
+      Aradığınız <code style="background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.95em;"><%= path %></code> adresi bu sunucuda bulunamadı veya taşınmış olabilir.
+    <% } else { %>
+      Ulaşmaya çalıştığınız sayfa veya kaynak mevcut değil, taşınmış veya silinmiş olabilir.
+    <% } %>
+  </p>
+
+  <!-- Reason Box -->
+  <% if (typeof reason !== 'undefined' && reason) { %>
+    <div style="background: #fef2f2; color: #991b1b; padding: 0.85rem 1.15rem; border-radius: 10px; font-size: 0.92rem; margin: 1.25rem auto 1.75rem; border: 1px solid #fecaca; text-align: left; max-width: 540px;">
+      <strong>Nedeni (Reason):</strong> <%= reason %>
+    </div>
+  <% } %>
+
+  <!-- Helpful Action Buttons -->
+  <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;">
+    <a href="/" class="pill-btn pill-peach" style="text-decoration: none;">🏠 Ana Sayfaya Dön</a>
+    <a href="/jobs" class="pill-btn" style="text-decoration: none;">💼 İş & Staj İlanları</a>
+    <a href="/users" class="pill-btn" style="text-decoration: none;">👥 Mezunlar</a>
+    <a href="/announcements" class="pill-btn" style="text-decoration: none;">📢 Duyurular</a>
+  </div>
+
+  <div style="margin-top: 1.75rem;">
+    <button onclick="window.history.back()" style="background: none; border: none; color: #94a3b8; font-size: 0.9rem; cursor: pointer; text-decoration: underline;">
+      ← Bir önceki sayfaya geri dön
+    </button>
+  </div>
+
+</div>
+
+<%- include('./partials/footer') %>

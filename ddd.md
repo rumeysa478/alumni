@@ -103,9 +103,10 @@ erDiagram
 
     JOB_POSTINGS {
         int id PK
-        string title "NOT NULL"
+        string title "NOT NULL, max 120"
         string company "NOT NULL"
-        text description "NOT NULL"
+        string city "OPTIONAL"
+        text description "OPTIONAL"
         text requirements
         string location
         string work_model "ONSITE | HYBRID | REMOTE"
@@ -234,12 +235,19 @@ Koordinatörlük ve yöneticiler tarafından paylaşılan duyuruları, etkinlik 
 ### 3.4. `job_postings` (İş ve Staj İlanları)
 Mezunlar ve işveren partnerler tarafından paylaşılan iş, staj ve kariyer fırsatlarını yönetir. Modern kariyer portalları standartlarına uygun olarak çalışma modeli (hibrit/uzaktan), deneyim seviyesi, sektör, maaş aralığı ve doğrudan başvuru kanalları (harici URL / e-posta) ile zenginleştirilmiştir.
 
+#### 📋 Doğrulama ve İş Kuralları (JobPosting Rules / Business Rules):
+- **`title` (Pozisyon Başlığı):** Zorunludur (`NOT NULL`, required). En fazla **120 karakter** olabilir (`max: 120`). Boş bırakılamaz.
+- **`company` (Firma / Kurum Adı):** Zorunludur (`NOT NULL`, required). Boş bırakılamaz.
+- **`city` (Şehir):** İsteğe bağlı / Opsiyoneldir (`NULL`, optional).
+- **`description` (Açıklama / Görev Tanımı):** İsteğe bağlı / Opsiyoneldir (`NULL`, optional).
+
 | Sütun Adı | Veri Tipi | Kısıtlamalar | Varsayılan | Açıklama |
 | :--- | :--- | :--- | :--- | :--- |
 | `id` | `SERIAL` | `PRIMARY KEY` | Otomatik artan | Benzersiz ilan ID'si |
-| `title` | `VARCHAR(200)`| `NOT NULL` | - | Pozisyon başlığı (örn: Full Stack Developer, Veri Analisti) |
-| `company` | `VARCHAR(150)`| `NOT NULL` | - | İlanı veren firma / kurum adı |
-| `description` | `TEXT` | `NOT NULL` | - | Pozisyon özeti, görev ve sorumluluklar |
+| `title` | `VARCHAR(120)` | `NOT NULL`, `CHECK (length(title) <= 120)` | - | Pozisyon başlığı (**Zorunlu / Required**, Maksimum 120 karakter) |
+| `company` | `VARCHAR(150)` | `NOT NULL` | - | İlanı veren firma / kurum adı (**Zorunlu / Required**) |
+| `city` | `VARCHAR(100)` | - | `NULL` | İlanın geçerli olduğu şehir (**Opsiyonel / Optional**) |
+| `description` | `TEXT` | - | `NULL` | Pozisyon özeti, görev ve sorumluluklar (**Opsiyonel / Optional**) |
 | `requirements` | `TEXT` | - | `NULL` | Aranan teknik yetkinlikler, eğitim şartı ve nitelikler |
 | `location` | `VARCHAR(100)`| - | `NULL` | Şehir ve lokasyon bilgisi (örn: İstanbul, ODTÜ Teknokent) |
 | `work_model` | `VARCHAR(50)` | `CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE'))` | `'HYBRID'` | Çalışma ortamı modeli (Ofisten, Hibrit, Uzaktan) |
@@ -259,6 +267,7 @@ Mezunlar ve işveren partnerler tarafından paylaşılan iş, staj ve kariyer f�
 | `updated_at` | `TIMESTAMPTZ` | `NOT NULL` | `CURRENT_TIMESTAMP` | Son güncelleme tarihi |
 
 *Tablo Kısıtları:*
+- `CONSTRAINT chk_job_title_length CHECK (length(title) <= 120)` — Pozisyon başlığı en fazla 120 karakter olabilir.
 - `CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)` — Minimum maaş, maksimum maaştan büyük olamaz.
 - `work_model` ve `type` alanlarının ayrıştırılması sayesinde istihdam biçimi (`FULL_TIME`, `INTERNSHIP`) ile çalışma lokasyonu modeli (`REMOTE`, `HYBRID`, `ONSITE`) birbirine karışmaz.
 
@@ -591,9 +600,10 @@ CREATE TABLE IF NOT EXISTS announcements (
 -- 4. İŞ VE STAJ İLANLARI TABLOSU
 CREATE TABLE IF NOT EXISTS job_postings (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
+    title VARCHAR(120) NOT NULL,
     company VARCHAR(150) NOT NULL,
-    description TEXT NOT NULL,
+    city VARCHAR(100),
+    description TEXT,
     requirements TEXT,
     location VARCHAR(100),
     work_model VARCHAR(50) DEFAULT 'HYBRID' CHECK (work_model IN ('ONSITE', 'HYBRID', 'REMOTE')),
@@ -611,6 +621,7 @@ CREATE TABLE IF NOT EXISTS job_postings (
     view_count INT DEFAULT 0 CHECK (view_count >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_job_title_length CHECK (length(title) <= 120),
     CONSTRAINT chk_job_salary_range CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max)
 );
 

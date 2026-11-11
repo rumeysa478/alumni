@@ -1200,3 +1200,286 @@ test('REST API /api/applications endpoints support full CRUD and status workflow
 
 
 
+
+
+// ============================================================================
+// NEW TESTS: JOBPOSTING RULES & GUARDIAN / LOGGER MIDDLEWARES
+// ============================================================================
+
+import { loggerMiddleware, notFoundGuardian, serverErrorGuardian } from '../src/middleware/index.js';
+
+test('JobPosting validation rules: title required, max 120 chars, company required, city & description optional', async () => {
+  // 1. Title zorunlu
+  await assert.rejects(
+    async () => {
+      await jobPostingModel.create({
+        company: 'Acme Corp',
+        description: 'Test ilan'
+      });
+    },
+    /title alanı zorunludur/
+  );
+
+  // 2. Title max 120 karakter
+  const longTitle = 'A'.repeat(121);
+  await assert.rejects(
+    async () => {
+      await jobPostingModel.create({
+        title: longTitle,
+        company: 'Acme Corp'
+      });
+    },
+    /title alanı en fazla 120 karakter olabilir/
+  );
+
+  // 3. Company zorunlu
+  await assert.rejects(
+    async () => {
+      await jobPostingModel.create({
+        title: 'Valid Title',
+        company: '   '
+      });
+    },
+    /company alanı zorunludur/
+  );
+
+  // 4. Description ve City opsiyonel, başarıyla oluşturulabilmeli
+  const validJob = await jobPostingModel.create({
+    title: 'Senior Site Reliability Engineer',
+    company: 'Cloud Scale Inc.',
+    city: 'İzmir',
+    work_model: 'REMOTE'
+    // description omitted
+  });
+
+  assert.ok(validJob.id);
+  assert.strictEqual(validJob.title, 'Senior Site Reliability Engineer');
+  assert.strictEqual(validJob.company, 'Cloud Scale Inc.');
+  assert.strictEqual(validJob.city, 'İzmir');
+  assert.strictEqual(validJob.description, '');
+});
+
+test('REST API POST /api/jobs enforces title, company, max 120 chars, and allows optional description', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    // Eksik title
+    const resNoTitle = await fetch(`http://127.0.0.1:${port}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ company: 'Test A.Ş.' })
+    });
+    assert.strictEqual(resNoTitle.status, 400);
+    const bodyNoTitle = await resNoTitle.json();
+    assert.strictEqual(bodyNoTitle.success, false);
+    assert.ok(bodyNoTitle.reason);
+
+    // 120 karakterden uzun title
+    const resLongTitle = await fetch(`http://127.0.0.1:${port}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'B'.repeat(125),
+        company: 'Test A.Ş.'
+      })
+    });
+    assert.strictEqual(resLongTitle.status, 400);
+    const bodyLongTitle = await resLongTitle.json();
+    assert.strictEqual(bodyLongTitle.success, false);
+    assert.ok(bodyLongTitle.reason);
+
+    // Eksik company
+    const resNoCompany = await fetch(`http://127.0.0.1:${port}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Lead AI Engineer' })
+    });
+    assert.strictEqual(resNoCompany.status, 400);
+
+    // Açıklamasız ve şehirli geçerli ilan (description is optional, city is optional)
+    const resValid = await fetch(`http://127.0.0.1:${port}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Platform Engineer (Kubernetes)',
+        company: 'Turkcell Tech',
+        city: 'İstanbul'
+      })
+    });
+    assert.strictEqual(resValid.status, 201);
+    const bodyValid = await resValid.json();
+    assert.strictEqual(bodyValid.success, true);
+    assert.strictEqual(bodyValid.data.title, 'Platform Engineer (Kubernetes)');
+    assert.strictEqual(bodyValid.data.city, 'İstanbul');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('Logger Middleware prints format: time method route restype duration (ex: 10:20:30 POST /user 201 18ms)', () => {
+  const originalLog = console.log;
+  let loggedOutput = '';
+
+  console.log = (msg) => {
+    loggedOutput = msg;
+  };
+
+  try {
+    const listeners = {};
+    const mockReq = { method: 'POST', originalUrl: '/user' };
+    const mockRes = {
+      statusCode: 201,
+      on: (event, cb) => { listeners[event] = cb; }
+    };
+
+    loggerMiddleware(mockReq, mockRes, () => {});
+
+    // İstek tamamlandığında finish eventi tetiklenir
+    listeners['finish']();
+
+    // Format kontrolü: 10:20:30 POST /user 201 18ms (saat:dakika:saniye METOD ROTA STATÜ SÜREms)
+    const logPattern = /^\d{2}:\d{2}:\d{2}\s+POST\s+\/user\s+201\s+\d+ms$/;
+    assert.ok(logPattern.test(loggedOutput), `Beklenen format eşleşmedi. Alınan: ${loggedOutput}`);
+  } finally {
+    console.log = originalLog;
+  }
+});
+
+test('404 Guardian Middleware returns 404 status and reason for unmatched routes (JSON & HTML)', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    // 1. JSON İstemcisi
+    const res = await fetch(`http://127.0.0.1:${port}/api/unmatched-test-endpoint-xyz`, {
+      headers: { Accept: 'application/json' }
+    });
+    assert.strictEqual(res.status, 404);
+    const body = await res.json();
+    assert.strictEqual(body.status, 404);
+    assert.strictEqual(body.error, 'Not Found');
+    assert.ok(body.reason, '404 yanıtı reason alanı içermelidir.');
+    assert.ok(body.reason.includes('/api/unmatched-test-endpoint-xyz'));
+
+    // 2. HTML İstemcisi
+    const htmlRes = await fetch(`http://127.0.0.1:${port}/unmatched-web-page-abc`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(htmlRes.status, 404);
+    const html = await htmlRes.text();
+    assert.ok(html.includes('Sayfa Bulunamadı'));
+    assert.ok(html.includes('Nedeni (Reason):'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('5xx Guardian Middleware returns 5xx status and reason for server errors (JSON & HTML)', async () => {
+  // 1. JSON Hatası
+  let jsonStatus = null;
+  let jsonBody = null;
+  const mockJsonRes = {
+    status: (code) => {
+      jsonStatus = code;
+      return {
+        json: (data) => { jsonBody = data; }
+      };
+    }
+  };
+  const mockJsonReq = {
+    accepts: () => false,
+    originalUrl: '/api/error-test',
+    headers: {}
+  };
+  const serverError = new Error('Database connection pool exhausted');
+  serverError.status = 500;
+  serverError.reason = 'Veritabanı bağlantı havuzu tükendi.';
+
+  serverErrorGuardian(serverError, mockJsonReq, mockJsonRes, () => {});
+
+  assert.strictEqual(jsonStatus, 500);
+  assert.strictEqual(jsonBody.status, 500);
+  assert.strictEqual(jsonBody.error, 'Internal Server Error');
+  assert.strictEqual(jsonBody.reason, 'Veritabanı bağlantı havuzu tükendi.');
+
+  // 2. 503 Servis Kullanılamıyor Senaryosu
+  const serviceUnavailableErr = new Error('Service Unavailable');
+  serviceUnavailableErr.status = 503;
+
+  serverErrorGuardian(serviceUnavailableErr, mockJsonReq, mockJsonRes, () => {});
+  assert.strictEqual(jsonStatus, 503);
+  assert.strictEqual(jsonBody.status, 503);
+  assert.strictEqual(jsonBody.reason, 'Service Unavailable');
+
+  // 3. HTML Hatası
+  let renderView = null;
+  let renderParams = null;
+  let htmlStatus = null;
+  const mockHtmlRes = {
+    status: (code) => {
+      htmlStatus = code;
+      return {
+        render: (view, params) => {
+          renderView = view;
+          renderParams = params;
+        }
+      };
+    }
+  };
+  const mockHtmlReq = {
+    accepts: (type) => type === 'html',
+    originalUrl: '/jobs/fatal',
+    headers: { accept: 'text/html' }
+  };
+
+  serverErrorGuardian(serverError, mockHtmlReq, mockHtmlRes, () => {});
+  assert.strictEqual(htmlStatus, 500);
+  assert.strictEqual(renderView, 'error');
+  assert.strictEqual(renderParams.reason, 'Veritabanı bağlantı havuzu tükendi.');
+});
+
+
+test('Error logging appends error entries to logs/error.logs', async () => {
+  const fs = await import('fs');
+  const path = await import('path');
+  const { writeErrorLog } = await import('../src/middleware/index.js');
+  const logFilePath = path.resolve(process.cwd(), 'logs', 'error.logs');
+
+  writeErrorLog('10:20:30 POST /test-error 500 15ms - Reason: Test failure');
+
+  assert.ok(fs.existsSync(logFilePath), 'logs/error.logs dosyası oluşturulmalıdır.');
+  const content = fs.readFileSync(logFilePath, 'utf8');
+  assert.ok(content.includes('/test-error 500 15ms'), 'Log kaydı logs/error.logs içinde yer almalıdır.');
+});
+
+
+test('Generic 404 Page and invalid request redirection', async () => {
+  const server = app.listen(0);
+  const { port } = server.address();
+
+  try {
+    // 1. Geçersiz web isteğinin /404 rotasına 302 ile yönlendirildiğini (redirect) doğrula
+    const redirectRes = await fetch(`http://127.0.0.1:${port}/some-completely-invalid-url-path`, {
+      headers: { Accept: 'text/html' },
+      redirect: 'manual'
+    });
+    assert.strictEqual(redirectRes.status, 302);
+    const location = redirectRes.headers.get('location');
+    assert.ok(location.startsWith('/404?path='));
+
+    // 2. /404 rotasının doğrudan 404 HTTP statüsü ve generic 404 sayfası döndürdüğünü doğrula
+    const direct404Res = await fetch(`http://127.0.0.1:${port}/404?path=/nonexistent&reason=Bilinmeyen+kaynak`, {
+      headers: { Accept: 'text/html' }
+    });
+    assert.strictEqual(direct404Res.status, 404);
+    const html = await direct404Res.text();
+    assert.ok(html.includes('404'));
+    assert.ok(html.includes('Sayfa Bulunamadı'));
+    assert.ok(html.includes('/nonexistent'));
+    assert.ok(html.includes('Bilinmeyen kaynak'));
+    assert.ok(html.includes('Ana Sayfaya Dön'));
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});

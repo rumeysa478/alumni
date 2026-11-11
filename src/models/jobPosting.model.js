@@ -150,9 +150,10 @@ class JobPostingModel {
       id: row.id,
       title: row.title,
       company: row.company,
-      description: row.description,
+      city: row.city || row.location || null,
+      description: row.description || '',
       requirements: row.requirements || null,
-      location: row.location || '',
+      location: row.location || row.city || '',
       work_model: row.work_model || 'HYBRID',
       type: row.type || 'FULL_TIME',
       experience_level: row.experience_level || 'MID',
@@ -240,8 +241,9 @@ class JobPostingModel {
     const {
       title,
       company,
-      description,
+      description = '',
       requirements = null,
+      city = null,
       location = '',
       work_model = 'HYBRID',
       type = 'FULL_TIME',
@@ -257,9 +259,19 @@ class JobPostingModel {
       is_active = true
     } = data;
 
-    if (!title || !company || !description) {
-      throw new Error('title, company ve description alanları zorunludur.');
+    if (!title || typeof title !== 'string' || !title.trim()) {
+      throw new Error('title alanı zorunludur.');
     }
+
+    if (title.length > 120) {
+      throw new Error('title alanı en fazla 120 karakter olabilir.');
+    }
+
+    if (!company || typeof company !== 'string' || !company.trim()) {
+      throw new Error('company alanı zorunludur.');
+    }
+
+    const resolvedLocation = location || city || '';
 
     try {
       const res = await pool.query(
@@ -270,7 +282,7 @@ class JobPostingModel {
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
         RETURNING *`,
         [
-          title, company, description, requirements, location, work_model,
+          title.trim(), company.trim(), description || '', requirements, resolvedLocation, work_model,
           type, experience_level, sector, salary_min, salary_max,
           currency, application_url, contact_email, deadline, posted_by, is_active
         ]
@@ -285,16 +297,30 @@ class JobPostingModel {
     const numericId = parseInt(id, 10);
     if (isNaN(numericId)) return null;
 
+    if (partialData.title !== undefined) {
+      if (!partialData.title || typeof partialData.title !== 'string' || !partialData.title.trim()) {
+        throw new Error('title alanı boş bırakılamaz.');
+      }
+      if (partialData.title.length > 120) {
+        throw new Error('title alanı en fazla 120 karakter olabilir.');
+      }
+    }
+    if (partialData.company !== undefined) {
+      if (!partialData.company || typeof partialData.company !== 'string' || !partialData.company.trim()) {
+        throw new Error('company alanı boş bırakılamaz.');
+      }
+    }
+
     try {
       const existing = await this.getById(numericId);
       if (!existing) return null;
 
       const updated = {
-        title: partialData.title !== undefined ? partialData.title : existing.title,
-        company: partialData.company !== undefined ? partialData.company : existing.company,
+        title: partialData.title !== undefined ? partialData.title.trim() : existing.title,
+        company: partialData.company !== undefined ? partialData.company.trim() : existing.company,
         description: partialData.description !== undefined ? partialData.description : existing.description,
         requirements: partialData.requirements !== undefined ? partialData.requirements : existing.requirements,
-        location: partialData.location !== undefined ? partialData.location : existing.location,
+        location: partialData.location !== undefined ? partialData.location : (partialData.city !== undefined ? partialData.city : existing.location),
         work_model: partialData.work_model !== undefined ? partialData.work_model : existing.work_model,
         type: partialData.type !== undefined ? partialData.type : existing.type,
         experience_level: partialData.experience_level !== undefined ? partialData.experience_level : existing.experience_level,
@@ -400,13 +426,27 @@ class JobPostingModel {
   }
 
   createInMemory(data) {
+    const title = data.title;
+    const company = data.company;
+
+    if (!title || typeof title !== 'string' || !title.trim()) {
+      throw new Error('title alanı zorunludur.');
+    }
+    if (title.length > 120) {
+      throw new Error('title alanı en fazla 120 karakter olabilir.');
+    }
+    if (!company || typeof company !== 'string' || !company.trim()) {
+      throw new Error('company alanı zorunludur.');
+    }
+
     const newJob = {
       id: this.nextId++,
-      title: data.title,
-      company: data.company,
-      description: data.description,
+      title: title.trim(),
+      company: company.trim(),
+      city: data.city || data.location || null,
+      description: data.description || '',
       requirements: data.requirements || null,
-      location: data.location || '',
+      location: data.location || data.city || '',
       work_model: data.work_model || 'HYBRID',
       type: data.type || 'FULL_TIME',
       experience_level: data.experience_level || 'MID',
@@ -433,7 +473,42 @@ class JobPostingModel {
     const job = this.inMemoryJobs.find(j => j.id === numericId);
     if (!job) return null;
 
-    Object.assign(job, partialData);
+    if (partialData.title !== undefined) {
+      if (!partialData.title || typeof partialData.title !== 'string' || !partialData.title.trim()) {
+        throw new Error('title alanı boş bırakılamaz.');
+      }
+      if (partialData.title.length > 120) {
+        throw new Error('title alanı en fazla 120 karakter olabilir.');
+      }
+      job.title = partialData.title.trim();
+    }
+    if (partialData.company !== undefined) {
+      if (!partialData.company || typeof partialData.company !== 'string' || !partialData.company.trim()) {
+        throw new Error('company alanı boş bırakılamaz.');
+      }
+      job.company = partialData.company.trim();
+    }
+    if (partialData.description !== undefined) {
+      job.description = partialData.description;
+    }
+    if (partialData.city !== undefined) {
+      job.city = partialData.city;
+      if (partialData.location === undefined) job.location = partialData.city;
+    }
+    if (partialData.location !== undefined) {
+      job.location = partialData.location;
+      if (partialData.city === undefined) job.city = partialData.location;
+    }
+
+    Object.assign(job, {
+      ...partialData,
+      title: job.title,
+      company: job.company,
+      description: job.description,
+      city: job.city,
+      location: job.location
+    });
+
     job.updated_at = new Date().toISOString();
     return { ...job };
   }

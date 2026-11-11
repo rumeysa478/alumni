@@ -95,13 +95,23 @@ export const JobController = {
         posted_by
       } = req.body;
 
-      if (!title || !company || !description) {
+      if (!title || typeof title !== 'string' || !title.trim() || !company || typeof company !== 'string' || !company.trim()) {
         const users = await userModel.getAll();
         return res.status(400).render('jobs/new', {
           title: 'Yeni İş / Staj İlanı Yayınla',
           users,
           formData: req.body,
-          errorMessage: 'Başlık, şirket adı ve açıklama alanları zorunludur.'
+          errorMessage: 'Başlık ve şirket adı alanları zorunludur.'
+        });
+      }
+
+      if (title.length > 120) {
+        const users = await userModel.getAll();
+        return res.status(400).render('jobs/new', {
+          title: 'Yeni İş / Staj İlanı Yayınla',
+          users,
+          formData: req.body,
+          errorMessage: 'Başlık en fazla 120 karakter olabilir.'
         });
       }
 
@@ -212,6 +222,16 @@ export const JobController = {
         return res.status(404).render('error', {
           title: 'İlan Bulunamadı',
           message: `ID #${req.params.id} numaralı ilan bulunamadı.`
+        });
+      }
+
+      if (req.body.title && req.body.title.length > 120) {
+        const users = await userModel.getAll().catch(() => []);
+        return res.status(400).render('jobs/edit', {
+          title: 'İlanı Düzenle',
+          job: { ...req.body, id: req.params.id },
+          users,
+          errorMessage: 'Başlık en fazla 120 karakter olabilir.'
         });
       }
 

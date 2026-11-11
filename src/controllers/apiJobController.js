@@ -89,6 +89,7 @@ export const ApiJobController = {
       const {
         title,
         company,
+        city,
         description,
         requirements,
         location,
@@ -106,20 +107,40 @@ export const ApiJobController = {
         is_active
       } = req.body;
 
-      if (!title || !company || !description) {
+      if (!title || typeof title !== 'string' || !title.trim()) {
         return res.status(400).json({
           success: false,
           error: 'Validation Error',
-          message: 'title, company ve description alanları zorunludur.'
+          message: 'title alanı zorunludur.',
+          reason: 'title alanı zorunludur.'
+        });
+      }
+
+      if (title.length > 120) {
+        return res.status(400).json({
+          success: false,
+          error: 'Validation Error',
+          message: 'title alanı en fazla 120 karakter olabilir.',
+          reason: 'title alanı en fazla 120 karakter olabilir.'
+        });
+      }
+
+      if (!company || typeof company !== 'string' || !company.trim()) {
+        return res.status(400).json({
+          success: false,
+          error: 'Validation Error',
+          message: 'company alanı zorunludur.',
+          reason: 'company alanı zorunludur.'
         });
       }
 
       const newJob = await jobPostingModel.create({
         title,
         company,
-        description,
+        city,
+        description: description || '',
         requirements,
-        location,
+        location: location || city || '',
         work_model,
         type,
         experience_level,
@@ -161,6 +182,36 @@ export const ApiJobController = {
           error: 'Not Found',
           message: `ID #${req.params.id} numaralı iş ilanı bulunamadı.`
         });
+      }
+
+      if (req.body.title !== undefined) {
+        if (!req.body.title || typeof req.body.title !== 'string' || !req.body.title.trim()) {
+          return res.status(400).json({
+            success: false,
+            error: 'Validation Error',
+            message: 'title alanı boş bırakılamaz.',
+            reason: 'title alanı boş bırakılamaz.'
+          });
+        }
+        if (req.body.title.length > 120) {
+          return res.status(400).json({
+            success: false,
+            error: 'Validation Error',
+            message: 'title alanı en fazla 120 karakter olabilir.',
+            reason: 'title alanı en fazla 120 karakter olabilir.'
+          });
+        }
+      }
+
+      if (req.body.company !== undefined) {
+        if (!req.body.company || typeof req.body.company !== 'string' || !req.body.company.trim()) {
+          return res.status(400).json({
+            success: false,
+            error: 'Validation Error',
+            message: 'company alanı boş bırakılamaz.',
+            reason: 'company alanı boş bırakılamaz.'
+          });
+        }
       }
 
       const updated = await jobPostingModel.update(req.params.id, req.body);
