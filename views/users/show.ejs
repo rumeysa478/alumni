@@ -1,41 +1,46 @@
 <%- include('../partials/header') %>
 
-<div style="max-width: 900px; margin: 0 auto;">
+<div style="max-width: 960px; margin: 0 auto 3rem;">
   
   <!-- Back Link & Top Bar Actions -->
-  <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-    <a href="/users" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
-      &larr; Kullanıcı Listesine Dön
-    </a>
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div class="parenthetical-eyebrow">
+        <span>(Y)our</span> alumni dossier &middot; Profile Detail
+      </div>
+      <a href="/users" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; Kullanıcı Listesine Dön
+      </a>
+    </div>
 
-    <div style="display: flex; gap: 0.6rem;">
-      <a href="/users/<%= user.id %>/edit" class="pill-btn pill-peach" style="font-size: 0.85rem;">
+    <div style="display: flex; gap: 0.6rem; align-items: center;">
+      <a href="/users/<%= user.id %>/edit" class="pill-btn pill-yellow" style="font-size: 0.85rem;">
         ✏️ Bilgilerini Düzenle
       </a>
       <form action="/users/<%= user.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Bu kullanıcıyı kalıcı olarak silmek istediğinize emin misiniz?');">
-        <button type="submit" class="pill-btn" style="background: #fee2e2; color: #b91c1c; border-color: #f87171; font-size: 0.85rem;">
+        <button type="submit" class="pill-btn btn-danger" style="font-size: 0.85rem; padding: 0.45rem 1rem;">
           🗑️ Sil
         </button>
       </form>
     </div>
   </div>
 
-  <!-- CONNEXT Profile Card (Directly inspired by Photo 1) -->
-  <div class="card" style="border: 2px solid var(--connext-border); box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-radius: 16px; overflow: hidden; margin-bottom: 2rem;">
+  <!-- CONNEXT Profile Command Center Card -->
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); box-shadow: var(--shadow-card-hover); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 2rem;">
     
-    <!-- Top Header Row: Avatar, Name, CN Badge, Department & Connext Emblem -->
-    <div style="padding: 1.75rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1.5px solid var(--connext-border); background: #ffffff;">
-      <div style="display: flex; align-items: center; gap: 1.25rem;">
-        <div style="width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--connext-border); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; background: #fafafa; flex-shrink: 0;">
+    <!-- Top Header Row: Avatar, Name, Verified Emblem -->
+    <div style="padding: 2.25rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1.5px solid var(--color-ash-hairline); background: #ffffff;">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px solid var(--color-forest-abyss); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: var(--color-voltage-lime); color: var(--color-forest-abyss); flex-shrink: 0; box-shadow: 0 4px 12px rgba(211, 251, 82, 0.4);">
           👤
         </div>
         <div>
-          <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 800; color: #111; display: flex; align-items: center; gap: 0.5rem; line-height: 1.1; margin: 0;">
+          <h1 style="font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--color-forest-abyss); display: flex; align-items: center; gap: 0.5rem; line-height: 1.1; margin: 0;">
             <%= user.first_name %> <%= user.last_name %>
-            <span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid #ec4899; color: #ec4899; font-size: 0.72rem; font-weight: bold;">Cn</span>
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--color-forest-abyss); color: var(--color-voltage-lime); font-size: 0.72rem; font-family: var(--font-mono); font-weight: 800;">Cn</span>
           </h1>
-          <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem;">
-            Profil ID: #<%= user.id %> &bull; 
+          <div style="font-size: 0.88rem; color: var(--color-stone-neutral); margin-top: 0.45rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-family: var(--font-mono); font-weight: 700;">Profil ID: #<%= user.id %></span> &bull; 
             <% if (user.role === 'ALUMNI') { %>
               <span class="badge badge-alumni">ALUMNI (Mezun)</span>
             <% } else if (user.role === 'STUDENT') { %>
@@ -47,141 +52,90 @@
             <% } %>
 
             <% if (user.is_verified) { %>
-              <span class="badge badge-verified" style="margin-left: 0.3rem;">✓ Onaylı Profil</span>
+              <span class="badge badge-verified">✓ Onaylı Profil</span>
             <% } else { %>
-              <span class="badge badge-unverified" style="margin-left: 0.3rem;">Onay Bekliyor</span>
+              <span class="badge badge-unverified">Onay Bekliyor</span>
             <% } %>
           </div>
         </div>
       </div>
 
       <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="border: 1.5px solid var(--connext-border); padding: 0.4rem 0.75rem; border-radius: 8px; font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 1.1rem; letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem;">
+        <div style="border: 1.5px solid var(--color-forest-abyss); background: var(--color-mist-surface); padding: 0.45rem 0.95rem; border-radius: 9999px; font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; letter-spacing: 0.12em; display: flex; align-items: center; gap: 0.4rem;">
           🏛️ CONNEXT
         </div>
-        <div style="font-size: 0.95rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 0.4rem;">
-          🎓 <%= user.department || 'Management Information Systems' %>
+      </div>
+    </div>
+
+    <!-- Contact & Meta Strip -->
+    <div style="padding: 1rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; border-bottom: 1.5px solid var(--color-ash-hairline); background: #fbfcfb; font-size: 0.92rem;">
+      <div style="display: flex; gap: 1.75rem; flex-wrap: wrap;">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--color-stone-neutral); text-transform: uppercase;">E-Posta:</span>
+          <strong style="margin-left: 0.35rem; color: var(--color-forest-abyss);"><%= user.email %></strong>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--color-stone-neutral); text-transform: uppercase;">Bölüm:</span>
+          <strong style="margin-left: 0.35rem; color: var(--color-forest-abyss);"><%= user.department || 'Management Information Systems' %></strong>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--color-stone-neutral); text-transform: uppercase;">Dönem / Yıl:</span>
+          <strong style="margin-left: 0.35rem; color: var(--color-forest-abyss);"><%= user.graduation_year || '2024' %></strong>
         </div>
       </div>
-    </div>
-
-    <!-- Sub-bar: Information & Contact Information Strip (Photo 1) -->
-    <div style="padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1.5px solid var(--connext-border); background: #fafafa; font-size: 0.92rem;">
       <div>
-        <strong>Information:</strong> <%= user.bio || 'İstanbul Üniversitesi Mezun Bilgi ve Kariyer Ağı Kaydı' %>
-      </div>
-      <div>
-        <strong>Contact Information:</strong> 
-        <span><%= user.phone || '+90 512 345 6789' %></span>
-        &bull; 
-        <a href="mailto:<%= user.email %>" style="color: #111; font-weight: 600; text-decoration: underline;"><%= user.email %></a>
-      </div>
-    </div>
-
-    <!-- 3x5 Interactive Pills Grid (Photo 1) -->
-    <div style="padding: 2.25rem 1.5rem; background: #ffffff;">
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 600px; margin: 0 auto;">
-        
-        <!-- Row 1 -->
-        <a href="/events" class="pill-btn pill-pink" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          events
-        </a>
-        <button type="button" class="pill-btn pill-peach" onclick="alert('Takip isteği iletildi!')" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          + follow
-        </button>
-        <a href="mailto:<%= user.email %>" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          send DM
-        </a>
-
-        <!-- Row 2 -->
-        <a href="/announcements" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          posts
-        </a>
-        <a href="#details" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          cv
-        </a>
-        <a href="#details" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          languages
-        </a>
-
-        <!-- Row 3 -->
-        <a href="/users" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          contacts
-        </a>
-        <a href="/jobs" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          experience
-        </a>
-        <a href="#details" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          awards
-        </a>
-
-        <!-- Row 4 -->
-        <a href="/jobs" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          favorites
-        </a>
-        <a href="#details" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          education
-        </a>
-        <a href="#details" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          skills
-        </a>
-
-        <!-- Row 5 -->
-        <a href="/announcements" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          reposts
-        </a>
-        <a href="/jobs" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          projects
-        </a>
-        <a href="/events" class="pill-btn pill-peach" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; padding: 0.6rem 1rem;">
-          comments
+        <a href="mailto:<%= user.email %>" class="pill-btn pill-lime" style="padding: 0.35rem 0.95rem; font-size: 0.82rem;">
+          ✉️ İletişime Geç
         </a>
       </div>
     </div>
-  </div>
 
-  <!-- Detailed Metadata Card (CV & Academic Records) -->
-  <div id="details" class="card" style="border: 1.5px solid var(--connext-border); border-radius: 14px;">
-    <div class="card-header" style="background: #fafafa; border-bottom: 1.5px solid var(--connext-border);">
-      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; margin: 0; font-weight: 800;">
-        Akademik ve Sistem Bilgileri
+    <!-- Interactive Pill Matrix (School style 15-button matrix) -->
+    <div style="padding: 1.5rem 2.5rem; border-bottom: 1.5px solid var(--color-ash-hairline); background: #ffffff;">
+      <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--color-stone-neutral); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">
+        Hızlı Profil Menüsü &middot; Quick Actions
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <span class="pill-btn pill-lime" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">+ follow</span>
+        <span class="pill-btn pill-yellow" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">send DM</span>
+        <span class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">cv &middot; resume</span>
+        <span class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">skills</span>
+        <span class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">experience</span>
+        <span class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">education</span>
+        <a href="/jobs" class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">referral jobs</a>
+        <a href="/events" class="pill-btn" style="font-size: 0.8rem; padding: 0.3rem 0.85rem;">events</a>
+      </div>
+    </div>
+
+    <!-- Bio / Information Block -->
+    <div style="padding: 2.25rem 2.5rem;">
+      <div class="parenthetical-eyebrow">
+        <span>(Y)our</span> biography &middot; Overview
+      </div>
+      <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-forest-abyss); margin-bottom: 0.75rem;">
+        Hakkında &amp; Kariyer Özeti
       </h3>
-      <span style="font-size: 0.85rem; color: var(--text-muted);">
-        JSON Uç Noktası: <a href="/api/users/<%= user.id %>" target="_blank" style="color: var(--primary);">/api/users/<%= user.id %></a>
-      </span>
-    </div>
+      <p style="color: var(--color-warm-ink); line-height: 1.7; font-size: 0.98rem; max-width: 780px;">
+        İstanbul Üniversitesi bünyesinde yetişmiş, mezunlar ağı CONNEXT üzerinde aktif bir topluluk üyesidir. Kariyer fırsatları, teknik işbirlikleri ve öğrenci mentorluğu konularında destek vermektedir.
+      </p>
 
-    <div class="card-body">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
-        <div>
-          <div style="color: var(--text-muted); font-size: 0.82rem; font-weight: 700; text-transform: uppercase;">Mezuniyet Yılı</div>
-          <div style="font-size: 1.1rem; font-weight: 700; color: #111; margin-top: 0.2rem;">
-            <%= user.graduation_year ? user.graduation_year : 'Henüz Mezun Değil / Devam Ediyor' %>
+      <div style="margin-top: 1.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+        <div style="padding: 1rem; border-radius: 12px; background: #f8faf8; border: 1px solid var(--color-ash-hairline);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-stone-neutral); text-transform: uppercase;">Üyelik Tarihi</div>
+          <div style="font-weight: 700; color: var(--color-forest-abyss); margin-top: 0.25rem;">
+            <%= user.created_at ? new Date(user.created_at).toLocaleDateString('tr-TR') : '2026' %>
           </div>
         </div>
 
-        <div>
-          <div style="color: var(--text-muted); font-size: 0.82rem; font-weight: 700; text-transform: uppercase;">Fakülte / Bölüm</div>
-          <div style="font-size: 1.1rem; font-weight: 700; color: #111; margin-top: 0.2rem;">
-            <%= user.department || 'Yönetim Bilişim Sistemleri (MIS)' %>
-          </div>
-        </div>
-
-        <div>
-          <div style="color: var(--text-muted); font-size: 0.82rem; font-weight: 700; text-transform: uppercase;">Kayıt Tarihi</div>
-          <div style="font-size: 0.95rem; color: #475569; margin-top: 0.2rem;">
-            <%= user.created_at ? new Date(user.created_at).toLocaleString('tr-TR') : '-' %>
-          </div>
-        </div>
-
-        <div>
-          <div style="color: var(--text-muted); font-size: 0.82rem; font-weight: 700; text-transform: uppercase;">Son Güncelleme</div>
-          <div style="font-size: 0.95rem; color: #475569; margin-top: 0.2rem;">
-            <%= user.updated_at ? new Date(user.updated_at).toLocaleString('tr-TR') : 'Henüz güncellenmedi' %>
+        <div style="padding: 1rem; border-radius: 12px; background: #f8faf8; border: 1px solid var(--color-ash-hairline);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-stone-neutral); text-transform: uppercase;">Ağ Durumu</div>
+          <div style="font-weight: 700; color: var(--color-univ-emerald); margin-top: 0.25rem;">
+            ● Aktif &amp; Ulaşılabilir
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
 </div>

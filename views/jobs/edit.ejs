@@ -1,132 +1,142 @@
 <%- include('../partials/header') %>
 
-<div style="margin-bottom: 1rem;">
-  <a href="/jobs/<%= job.id %>" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-    ← İlan Detayına Dön
-  </a>
-</div>
-
-<div class="card" style="max-width: 800px; margin: 0 auto;">
-  <div class="card-header">
-    <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0;">
-      ✏️ İlanı Düzenle: <%= job.title %>
-    </h1>
+<div style="max-width: 800px; margin: 0 auto 3rem;">
+  <div style="margin-bottom: 1.5rem;">
+    <div class="parenthetical-eyebrow">
+      <span>(Y)our</span> job modifier &middot; Listing Editor
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+      <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--color-forest-abyss); margin: 0;">
+        ✏️ İlanı Düzenle: <%= job.title %>
+      </h1>
+      <a href="/jobs/<%= job.id %>" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; İlan Detayına Dön
+      </a>
+    </div>
+    <p style="color: var(--color-warm-ink); font-size: 0.95rem; margin-top: 0.4rem;">
+      #<%= job.id %> numaralı iş veya staj ilanının bilgilerini güncelleyin.
+    </p>
   </div>
 
-  <div class="card-body">
-    <% if (errorMessage) { %>
-      <div class="alert alert-error" style="margin-bottom: 1.5rem;">
-        ⚠ <%= errorMessage %>
-      </div>
-    <% } %>
-
-    <form action="/jobs/<%= job.id %>" method="POST">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="title">Pozisyon Başlığı * (Maks. 120 Karakter)</label>
-          <input type="text" id="title" name="title" class="form-control" maxlength="120" value="<%= job.title %>" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="company">Firma / Kurum Adı *</label>
-          <input type="text" id="company" name="company" class="form-control" value="<%= job.company %>" required>
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-hover);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline); padding: 1.25rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-canary-yellow); border: 1.5px solid var(--color-forest-abyss);"></div>
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-forest-abyss);">
+          İlan Güncelleme Formu
         </div>
       </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="type">İstihdam Türü</label>
-          <select id="type" name="type" class="form-select">
-            <option value="FULL_TIME" <%= job.type === 'FULL_TIME' ? 'selected' : '' %>>Tam Zamanlı</option>
-            <option value="PART_TIME" <%= job.type === 'PART_TIME' ? 'selected' : '' %>>Yarı Zamanlı</option>
-            <option value="INTERNSHIP" <%= job.type === 'INTERNSHIP' ? 'selected' : '' %>>Staj</option>
-            <option value="CONTRACT" <%= job.type === 'CONTRACT' ? 'selected' : '' %>>Sözleşmeli</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="work_model">Çalışma Modeli</label>
-          <select id="work_model" name="work_model" class="form-select">
-            <option value="HYBRID" <%= job.work_model === 'HYBRID' ? 'selected' : '' %>>Hibrit</option>
-            <option value="REMOTE" <%= job.work_model === 'REMOTE' ? 'selected' : '' %>>Uzaktan</option>
-            <option value="ONSITE" <%= job.work_model === 'ONSITE' ? 'selected' : '' %>>Ofisten</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="experience_level">Deneyim Seviyesi</label>
-          <select id="experience_level" name="experience_level" class="form-select">
-            <option value="INTERN" <%= job.experience_level === 'INTERN' ? 'selected' : '' %>>Stajyer</option>
-            <option value="ENTRY_LEVEL" <%= job.experience_level === 'ENTRY_LEVEL' ? 'selected' : '' %>>Yeni Mezun</option>
-            <option value="JUNIOR" <%= job.experience_level === 'JUNIOR' ? 'selected' : '' %>>Junior</option>
-            <option value="MID" <%= job.experience_level === 'MID' ? 'selected' : '' %>>Mid-Level</option>
-            <option value="SENIOR" <%= job.experience_level === 'SENIOR' ? 'selected' : '' %>>Senior</option>
-            <option value="LEAD" <%= job.experience_level === 'LEAD' ? 'selected' : '' %>>Lead</option>
-          </select>
-        </div>
+      <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral);">
+        ID: #<%= job.id %> &bull; Maks. 120 Karakter Başlık
       </div>
+    </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="location">Konum / Şehir</label>
-          <input type="text" id="location" name="location" class="form-control" value="<%= job.location || '' %>">
+    <div class="card-body" style="padding: 2rem;">
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+          ⚠ <%= errorMessage %>
+        </div>
+      <% } %>
+
+      <form action="/jobs/<%= job.id %>" method="POST">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="title">Pozisyon Başlığı * (Maks. 120 Karakter)</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="form-control"
+              maxlength="120"
+              value="<%= job.title %>"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="company">Firma / Kurum Adı *</label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              class="form-control"
+              value="<%= job.company %>"
+              required
+            >
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="type">İstihdam Türü</label>
+            <select id="type" name="type" class="form-select">
+              <option value="FULL_TIME" <%= job.type === 'FULL_TIME' ? 'selected' : '' %>>Tam Zamanlı</option>
+              <option value="PART_TIME" <%= job.type === 'PART_TIME' ? 'selected' : '' %>>Yarı Zamanlı</option>
+              <option value="INTERNSHIP" <%= job.type === 'INTERNSHIP' ? 'selected' : '' %>>Staj</option>
+              <option value="CONTRACT" <%= job.type === 'CONTRACT' ? 'selected' : '' %>>Sözleşmeli</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="work_model">Çalışma Modeli</label>
+            <select id="work_model" name="work_model" class="form-select">
+              <option value="HYBRID" <%= job.work_model === 'HYBRID' ? 'selected' : '' %>>Hibrit</option>
+              <option value="REMOTE" <%= job.work_model === 'REMOTE' ? 'selected' : '' %>>Uzaktan (Remote)</option>
+              <option value="ONSITE" <%= job.work_model === 'ONSITE' ? 'selected' : '' %>>Ofisten (Onsite)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="experience_level">Deneyim Seviyesi</label>
+            <select id="experience_level" name="experience_level" class="form-select">
+              <option value="INTERN" <%= job.experience_level === 'INTERN' ? 'selected' : '' %>>Stajyer</option>
+              <option value="ENTRY_LEVEL" <%= job.experience_level === 'ENTRY_LEVEL' ? 'selected' : '' %>>Yeni Mezun</option>
+              <option value="MID_LEVEL" <%= job.experience_level === 'MID_LEVEL' ? 'selected' : '' %>>Orta Seviye</option>
+              <option value="SENIOR" <%= job.experience_level === 'SENIOR' ? 'selected' : '' %>>Kıdemli (Senior)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="location">Şehir / Lokasyon</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              class="form-control"
+              value="<%= job.location || '' %>"
+            >
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; padding-top: 1.8rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.92rem;">
+              <input type="checkbox" name="is_active" value="true" <%= job.is_active ? 'checked' : '' %> style="width: 18px; height: 18px;">
+              <span>İlan aktif ve başvurulara açık</span>
+            </label>
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="sector">Sektör</label>
-          <input type="text" id="sector" name="sector" class="form-control" value="<%= job.sector || '' %>">
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label class="form-label" for="description">Pozisyon Tanımı ve Görevler (Opsiyonel)</label>
-        <textarea id="description" name="description" class="form-control" rows="4"><%= job.description || '' %></textarea>
-      </div>
-
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label class="form-label" for="requirements">Aranan Nitelikler & Şartlar</label>
-        <textarea id="requirements" name="requirements" class="form-control" rows="3"><%= job.requirements || '' %></textarea>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="salary_min">Min. Maaş (TRY)</label>
-          <input type="number" id="salary_min" name="salary_min" class="form-control" value="<%= job.salary_min || '' %>">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="salary_max">Maks. Maaş (TRY)</label>
-          <input type="number" id="salary_max" name="salary_max" class="form-control" value="<%= job.salary_max || '' %>">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="deadline">Son Başvuru Tarihi</label>
-          <input type="date" id="deadline" name="deadline" class="form-control" value="<%= job.deadline ? job.deadline.substring(0, 10) : '' %>">
-        </div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-        <div class="form-group">
-          <label class="form-label" for="application_url">Harici Başvuru URL</label>
-          <input type="url" id="application_url" name="application_url" class="form-control" value="<%= job.application_url || '' %>">
+          <label class="form-label" for="description">İlan Açıklaması</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="5"
+            class="form-control"
+          ><%= job.description || '' %></textarea>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="posted_by">İlan Sahibi Mezun</label>
-          <select id="posted_by" name="posted_by" class="form-select">
-            <option value="">-- Mezun / Yetkili Seçin --</option>
-            <% if (typeof users !== 'undefined' && users) { %>
-              <% users.forEach(u => { %>
-                <option value="<%= u.id %>" <%= job.posted_by == u.id ? 'selected' : '' %>><%= u.first_name %> <%= u.last_name %></option>
-              <% }); %>
-            <% } %>
-          </select>
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <a href="/jobs/<%= job.id %>" class="pill-btn" style="background: var(--color-mist-surface);">İptal</a>
+          <button type="submit" class="pill-btn pill-yellow">
+            ✓ Değişiklikleri Kaydet
+          </button>
         </div>
-      </div>
 
-      <div style="display: flex; gap: 0.75rem;">
-        <button type="submit" class="btn btn-primary" style="background-color: #0284c7;">✓ Değişiklikleri Kaydet</button>
-        <a href="/jobs/<%= job.id %>" class="btn btn-secondary">İptal</a>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
 

@@ -1,167 +1,143 @@
 <%- include('../partials/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-  <div>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">📅 Etkinlikler ve Buluşmalar</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT Mezunlar Günü, Kariyer Panelleri ve Networking Buluşmaları</p>
+<!-- Top Hero & Eyebrow Row -->
+<div style="margin-bottom: 2rem;">
+  <div class="parenthetical-eyebrow">
+    <span>(Y)our</span> campus gatherings &middot; Event Directory
   </div>
-  <div style="display: flex; gap: 0.75rem;">
-    <a href="/events/new" class="pill-btn pill-pink">
-      <span>➕</span> Yeni Etkinlik Oluştur
-    </a>
-    <a href="/api/events" target="_blank" class="pill-btn">
-      <span>⚡</span> REST API (JSON)
-    </a>
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--color-forest-abyss); line-height: 1.15; margin: 0;">
+        📅 Etkinlikler ve Buluşmalar
+      </h1>
+      <p style="color: var(--color-warm-ink); font-size: 1rem; margin-top: 0.4rem;">
+        İstanbul Üniversitesi CONNEXT Mezunlar Günü, Kariyer Panelleri ve Networking Toplantıları
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+      <a href="/events/new" class="pill-btn pill-lime">
+        <span>➕</span> Yeni Etkinlik Oluştur
+      </a>
+      <a href="/api/events" target="_blank" class="pill-btn" style="font-family: var(--font-mono); font-size: 0.82rem;">
+        <span>⚡</span> REST API (JSON)
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Arama Kartı (Photo 2 inspired) -->
-<div class="card" style="margin-bottom: 2rem; border: 1.5px solid var(--connext-border);">
-  <div class="card-body" style="padding: 1.25rem 1.5rem;">
+<!-- Arama Kartı (Handshake style) -->
+<div class="card" style="margin-bottom: 2rem; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+  <div class="card-body" style="padding: 1.5rem 1.75rem;">
     <form action="/events" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
       <div style="flex: 2; min-width: 240px;">
-        <label class="form-label" for="search">Etkinlik Başlığı veya Konum Ara</label>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          class="form-control"
-          placeholder="Örn: Reunion, Mezunlar Günü, İstanbul Üniversitesi..."
-          value="<%= filters && filters.search ? filters.search : '' %>"
-        >
+        <label class="form-label" for="search" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Etkinlik Başlığı veya Konum Ara
+        </label>
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            class="form-control"
+            style="border-radius: var(--radius-xl); padding-left: 2.4rem; font-size: 0.95rem;"
+            placeholder="Örn: Mezunlar Günü, Beyazıt Buluşması, Kariyer..."
+            value="<%= filters && filters.search ? filters.search : '' %>"
+          >
+          <span style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.95rem; color: var(--color-stone-neutral);">🔍</span>
+        </div>
       </div>
 
       <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="pill-btn pill-peach">Ara</button>
+        <button type="submit" class="pill-btn pill-yellow">Ara</button>
         <% if (filters && filters.search) { %>
-          <a href="/events" class="pill-btn">Temizle</a>
+          <a href="/events" class="pill-btn" style="background: var(--color-mist-surface);">Temizle</a>
         <% } %>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Etkinlikler Listesi: Periwinkle Poster Kartları (Photo 3 Directly Inspired) -->
+<!-- Events List: Editorial Cards -->
 <% if (events && events.length > 0) { %>
-  <div style="display: grid; gap: 2rem; max-width: 760px; margin: 0 auto;">
+  <div style="display: grid; gap: 1.75rem; max-width: 860px; margin: 0 auto;">
     <% events.forEach(evt => { 
         const dateObj = evt.event_date ? new Date(evt.event_date) : new Date();
-        const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' }).toUpperCase();
+        const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
         const formattedTime = dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
     %>
-      <!-- Event Feed Card (Photo 3) -->
-      <div class="card" style="border: 2px solid var(--connext-border); box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-radius: 16px; overflow: hidden; margin-bottom: 0;">
+      <div class="card" style="border: 2px solid var(--color-forest-abyss); box-shadow: var(--shadow-card-hover); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 0;">
         
-        <!-- Post Header: Creator + Follow Button (Photo 3) -->
-        <div style="padding: 0.9rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--connext-border); background: #ffffff;">
+        <!-- Post Header -->
+        <div style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--color-ash-hairline); background: #ffffff;">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div style="width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--connext-border); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: #fafafa;">
-              👤
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-voltage-lime); color: var(--color-forest-abyss); border: 1.5px solid var(--color-forest-abyss); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: 800;">
+              🎓
             </div>
             <div>
-              <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.05rem; font-weight: 800; color: #111;">
-                <%= evt.creator ? (evt.creator.first_name + ' ' + evt.creator.last_name) : 'Frosty Franklin' %>
+              <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--color-forest-abyss);">
+                <%= evt.creator ? (evt.creator.first_name + ' ' + evt.creator.last_name) : 'İstanbul Üniversitesi Mezunlar Temsilciliği' %>
               </div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">
-                Organizatör &bull; İstanbul Üniversitesi
+              <div style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--color-stone-neutral);">
+                CONNEXT Resmi Organizasyonu
               </div>
             </div>
           </div>
 
-          <button type="button" class="pill-btn pill-pink" onclick="alert('Takip edildi!')" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
-            + Follow
-          </button>
-        </div>
-
-        <!-- Event Subtitle Line (Photo 3) -->
-        <div style="padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--connext-border); background: #fafafa; font-size: 0.92rem;">
-          <div style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700; color: #111;">
-            <span>✨</span>
-            <span>Event: <strong><%= evt.title %></strong></span>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <a href="/events/<%= evt.id %>/edit" class="pill-btn pill-yellow" style="font-size: 0.78rem; padding: 0.25rem 0.75rem;">
+              Düzenle
+            </a>
           </div>
-
-          <a href="/events/<%= evt.id %>" class="pill-btn pill-pink" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
-            + Send Request
-          </a>
         </div>
 
-        <!-- Main Periwinkle Poster Graphic (Photo 3) -->
-        <div style="background-color: #dde4ff; padding: 2.75rem 1.5rem; text-align: center; border-bottom: 1.5px solid var(--connext-border);">
-          
-          <!-- Retro Bold Graphic Title -->
-          <h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Impact', 'Arial Black', sans-serif; font-size: 3.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.01em; color: #dc2626; text-transform: uppercase; margin: 0 0 1.5rem 0;">
-            <%= evt.title && evt.title.length > 25 ? evt.title : 'CLASS OF 2000 REUNION' %>
+        <!-- Poster Banner: Cyber Emerald Aurora with Voltage Lime Lettering -->
+        <div style="background: radial-gradient(at 75% 35%, #7af3ff 0%, #d3fb52 40%, #005b38 85%, #052326 100%); padding: 3rem 2rem; text-align: center; border-bottom: 1.5px solid var(--color-forest-abyss); color: #ffffff;">
+          <h2 style="font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; line-height: 1.1; letter-spacing: -0.01em; color: #ffffff; text-transform: uppercase; margin: 0 0 1.25rem 0; text-shadow: 0 2px 8px rgba(0,0,0,0.4);">
+            <%= evt.title %>
           </h2>
 
-          <!-- Event Meta Row -->
-          <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 800; color: #1e293b; letter-spacing: 0.04em;">
-            <div style="display: flex; align-items: center; gap: 0.35rem;">
-              <span>📅</span>
-              <span><%= formattedDate || '24 KASIM' %></span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.35rem;">
-              <span>🕒</span>
-              <span><%= formattedTime || '17.00' %></span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.35rem;">
-              <span>📍</span>
-              <span><%= (evt.location || 'ISTANBUL UNIVERSITY').toUpperCase() %></span>
-            </div>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--color-voltage-lime); text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+            <div>📅 <%= formattedDate %></div>
+            <div>🕒 <%= formattedTime %></div>
+            <div>📍 <%= (evt.location || 'İSTANBUL ÜNİVERSİTESİ BEYAZIT KAMPÜSÜ').toUpperCase() %></div>
           </div>
 
-          <!-- Tagline -->
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.15rem; font-weight: 800; color: #334155; letter-spacing: 0.08em; text-transform: uppercase;">
-            WE ARE WAITING TO SEE YOU ALL
+          <div style="font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; color: #e2e8f0; letter-spacing: 0.08em; text-transform: uppercase;">
+            Tüm Mezun ve Öğrencilerimiz Davetlidir
           </div>
         </div>
 
-        <!-- Description Snippet -->
-        <div style="padding: 1.25rem 1.5rem; background: #ffffff;">
-          <p style="color: #334155; font-size: 0.94rem; line-height: 1.6; margin-bottom: 1rem;">
-            <%= evt.description || 'İstanbul Üniversitesi Mezunları Buluşması ve networking toplantısı.' %>
-          </p>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-            <div style="font-size: 0.85rem; color: var(--text-muted);">
-              Kontenjan: <strong><%= evt.capacity %> kişi</strong>
+        <!-- Details & Register Footer -->
+        <div style="padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: #ffffff;">
+          <div>
+            <div style="font-size: 0.92rem; color: var(--color-warm-ink); max-width: 520px; line-height: 1.6;">
+              <%= evt.description && evt.description.length > 120 ? evt.description.substring(0, 120) + '...' : evt.description %>
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-              <a href="/events/<%= evt.id %>" class="pill-btn pill-peach" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
-                Detay & Kayıt ↗
-              </a>
-              <a href="/events/<%= evt.id %>/edit" class="pill-btn" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
-                Düzenle
-              </a>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral); margin-top: 0.4rem;">
+              👥 Kontenjan: <%= evt.capacity || '100' %> Kişi &bull; <%= evt.attendeesCount || 0 %> Katılımcı
             </div>
           </div>
-        </div>
 
-        <!-- Bottom Social Interaction Bar (Photo 3) -->
-        <div style="padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1.5px solid var(--connext-border); background: #fafafa;">
-          <div style="display: flex; gap: 1.25rem; align-items: center;">
-            <button type="button" onclick="this.classList.toggle('liked'); alert('Beğenildi!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Beğen">
-              🤍 <span style="font-size: 0.85rem; font-weight: 700;">24</span>
-            </button>
-            <button type="button" onclick="alert('Tekrar paylaşıldı!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Repost">
-              🔁 <span style="font-size: 0.85rem; font-weight: 700;">7</span>
-            </button>
-            <button type="button" onclick="window.location.href='/events/<%= evt.id %>#comments'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Yorum Yap">
-              💬 <span style="font-size: 0.85rem; font-weight: 700;">12</span>
-            </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="/events/<%= evt.id %>" class="pill-btn pill-lime" style="padding: 0.45rem 1.25rem; font-size: 0.88rem;">
+              Etkinlik Detayı &amp; Katıl &rarr;
+            </a>
           </div>
-
-          <button type="button" onclick="alert('Kaydedildi!');" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;" title="Kaydet">
-            🔖
-          </button>
         </div>
 
       </div>
     <% }); %>
   </div>
 <% } else { %>
-  <div class="card" style="padding: 3rem; text-align: center; border: 1.5px solid var(--connext-border);">
-    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.25rem;">Henüz planlanmış bir etkinlik bulunamadı.</p>
-    <a href="/events/new" class="pill-btn pill-pink">+ İlk Etkinliği Oluştur</a>
+  <div class="card" style="text-align: center; padding: 3.5rem 1.5rem; max-width: 600px; margin: 0 auto;">
+    <div style="font-size: 3rem; margin-bottom: 0.75rem;">📅</div>
+    <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-forest-abyss); margin-bottom: 0.4rem;">
+      Planlanan Etkinlik Bulunmuyor
+    </h3>
+    <p style="color: var(--color-stone-neutral); font-size: 0.95rem; margin-bottom: 1.25rem;">
+      Yeni bir mezun buluşması veya panel oluşturmak için aşağıdaki butona tıklayın.
+    </p>
+    <a href="/events/new" class="pill-btn pill-lime">+ Yeni Etkinlik Oluştur</a>
   </div>
 <% } %>
 

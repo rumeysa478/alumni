@@ -1,64 +1,100 @@
 <%- include('../partials/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-  <div>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">🎓 Mezun ve Öğrenci Listesi</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT Mezun Ağı &bull; İstanbul Üniversitesi Kayıtlı Öğrenci & Mezun Rehberi</p>
+<!-- Top Hero & Eyebrow Row -->
+<div style="margin-bottom: 2rem;">
+  <div class="parenthetical-eyebrow">
+    <span>(Y)our</span> alumni &amp; student directory &middot; Directory Index
   </div>
-  <div style="display: flex; gap: 0.75rem;">
-    <a href="/users/new" class="pill-btn pill-pink">
-      <span>➕</span> Yeni Kullanıcı Ekle
-    </a>
-    <a href="/api/users" target="_blank" class="pill-btn">
-      <span>⚡</span> REST API (JSON)
-    </a>
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--color-forest-abyss); line-height: 1.15; margin: 0;">
+        🎓 Mezun ve Öğrenci Listesi
+      </h1>
+      <p style="color: var(--color-warm-ink); font-size: 1rem; margin-top: 0.4rem;">
+        İstanbul Üniversitesi CONNEXT Ağı &bull; Kayıtlı mezunlar, öğrenciler ve akademisyenler
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+      <a href="/users/new" class="pill-btn pill-lime">
+        <span>➕</span> Yeni Kullanıcı Ekle
+      </a>
+      <a href="/api/users" target="_blank" class="pill-btn" style="font-family: var(--font-mono); font-size: 0.82rem;">
+        <span>⚡</span> REST API (JSON)
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Filtreleme ve Arama Kartı (Photo 2 inspired) -->
-<div class="card" style="margin-bottom: 1.5rem; border: 1.5px solid var(--connext-border);">
-  <div class="card-body" style="padding: 1.25rem 1.5rem;">
+<!-- Handshake-style Pillow-Soft Search & Suggestion Chips -->
+<div class="card" style="margin-bottom: 1.75rem; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+  <div class="card-body" style="padding: 1.5rem 1.75rem;">
     <form action="/users" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-      <div style="flex: 2; min-width: 220px;">
-        <label class="form-label" for="search">İsim, E-posta veya Bölüm Ara</label>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          class="form-control"
-          placeholder="Örn: Rumeysa, Bilgisayar, info@..."
-          value="<%= filters && filters.search ? filters.search : '' %>"
-        >
+      
+      <div style="flex: 2; min-width: 240px;">
+        <label class="form-label" for="search" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;">
+          İsim, E-posta veya Bölüm Ara
+        </label>
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            class="form-control"
+            style="border-radius: var(--radius-xl); padding-left: 2.4rem; font-size: 0.95rem; border-color: #cbd5e1;"
+            placeholder="Örn: Rumeysa, Bilgisayar, info@alumni.iu.edu.tr..."
+            value="<%= filters && filters.search ? filters.search : '' %>"
+          >
+          <span style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.95rem; color: var(--color-stone-neutral);">🔍</span>
+        </div>
       </div>
 
-      <div style="flex: 1; min-width: 150px;">
-        <label class="form-label" for="role">Rol Filtrele</label>
-        <select id="role" name="role" class="form-select">
-          <option value="">Tümü</option>
+      <div style="flex: 1; min-width: 160px;">
+        <label class="form-label" for="role" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;">
+          Rol Filtrele
+        </label>
+        <select id="role" name="role" class="form-select" style="border-radius: var(--radius-md);">
+          <option value="">Tümü (Hepsi)</option>
           <option value="ALUMNI" <%= filters && filters.role === 'ALUMNI' ? 'selected' : '' %>>ALUMNI (Mezun)</option>
           <option value="STUDENT" <%= filters && filters.role === 'STUDENT' ? 'selected' : '' %>>STUDENT (Öğrenci)</option>
           <option value="ADMIN" <%= filters && filters.role === 'ADMIN' ? 'selected' : '' %>>ADMIN (Yönetici)</option>
         </select>
       </div>
 
-      <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="pill-btn pill-peach">Filtrele</button>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button type="submit" class="pill-btn pill-yellow">Filtrele</button>
         <% if (filters && (filters.search || filters.role || filters.department)) { %>
-          <a href="/users" class="pill-btn">Temizle</a>
+          <a href="/users" class="pill-btn" style="background: var(--color-mist-surface);">Temizle</a>
         <% } %>
       </div>
     </form>
+
+    <!-- Suggestion Chips (Handshake style) -->
+    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed var(--color-ash-hairline); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <span style="font-size: 0.76rem; font-family: var(--font-mono); font-weight: 700; color: var(--color-stone-neutral); text-transform: uppercase;">
+        Öneri Filtreleri:
+      </span>
+      <a href="/users?role=ALUMNI" class="badge badge-alumni" style="text-decoration: none; padding: 0.35rem 0.8rem;">🎓 Tüm Mezunlar</a>
+      <a href="/users?role=STUDENT" class="badge badge-student" style="text-decoration: none; padding: 0.35rem 0.8rem;">🎒 Öğrenciler</a>
+      <a href="/users?department=Management+Information+Systems" class="badge" style="background: #f8faf8; color: var(--color-forest-abyss); text-decoration: none; padding: 0.35rem 0.8rem;">💻 Yönetim Bilişim Sistemleri</a>
+      <a href="/users?search=Rumeysa" class="badge" style="background: var(--color-voltage-lime); color: var(--color-forest-abyss); text-decoration: none; padding: 0.35rem 0.8rem;">⚡ Rumeysa</a>
+    </div>
   </div>
 </div>
 
-<!-- Kullanıcılar Tablosu / Listesi -->
-<div class="card" style="border: 1.5px solid var(--connext-border);">
-  <div class="card-header" style="border-bottom: 1.5px solid var(--connext-border); background: #ffffff;">
-    <div style="font-weight: 700; color: #1e293b; font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem;">
-      Kayıtlı Kullanıcılar (<%= users ? users.length : 0 %>)
+<!-- Users Table Card (Substack Editorial Density) -->
+<div class="card" style="border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+  <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline);">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-univ-emerald);"></div>
+      <div style="font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: var(--color-forest-abyss);">
+        Kayıtlı Profiller
+      </div>
+      <span class="badge" style="background: var(--color-voltage-lime); color: var(--color-forest-abyss); font-weight: 800;">
+        <%= users ? users.length : 0 %> Kullanıcı
+      </span>
     </div>
-    <div style="font-size: 0.85rem; color: var(--text-muted);">
-      Toplam: <%= users ? users.length : 0 %> profil
+    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral);">
+      Aktif Dizin &bull; 1453 Legacy
     </div>
   </div>
 
@@ -68,11 +104,11 @@
         <table class="table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th style="width: 70px;">ID</th>
               <th>Ad Soyad</th>
               <th>E-Posta</th>
-              <th>Bölüm</th>
-              <th>Rol</th>
+              <th>Bölüm &amp; Derece</th>
+              <th>Sistem Rolü</th>
               <th>Durum</th>
               <th style="text-align: right;">İşlemler</th>
             </tr>
@@ -80,18 +116,23 @@
           <tbody>
             <% users.forEach(u => { %>
               <tr>
-                <td style="font-weight: 700; color: #64748b;">#<%= u.id %></td>
+                <td style="font-family: var(--font-mono); font-weight: 700; color: var(--color-stone-neutral);">
+                  #<%= u.id %>
+                </td>
                 <td>
-                  <a href="/users/<%= u.id %>" style="color: #111; font-weight: 700; text-decoration: none; font-family: 'Playfair Display', Georgia, serif; font-size: 1.05rem;">
+                  <a href="/users/<%= u.id %>" style="color: var(--color-forest-abyss); font-weight: 800; text-decoration: none; font-family: var(--font-display); font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.35rem;">
                     <%= u.first_name %> <%= u.last_name %>
+                    <% if (u.is_verified) { %>
+                      <span title="Doğrulanmış Profil" style="color: var(--color-univ-emerald); font-size: 0.95rem;">✓</span>
+                    <% } %>
                   </a>
                 </td>
                 <td>
-                  <a href="mailto:<%= u.email %>" style="color: #2563eb; text-decoration: none; font-size: 0.9rem;">
+                  <a href="mailto:<%= u.email %>" style="color: var(--color-univ-emerald); text-decoration: none; font-family: var(--font-mono); font-size: 0.86rem;">
                     <%= u.email %>
                   </a>
                 </td>
-                <td style="font-size: 0.9rem; color: #334155;">
+                <td style="font-size: 0.88rem; color: var(--color-warm-ink);">
                   <%= u.department || 'Management Information Systems' %>
                 </td>
                 <td>
@@ -114,10 +155,10 @@
                 </td>
                 <td style="text-align: right;">
                   <div style="display: inline-flex; gap: 0.4rem;">
-                    <a href="/users/<%= u.id %>" class="pill-btn pill-peach" style="padding: 0.2rem 0.65rem; font-size: 0.8rem;">
-                      Profil ↗
+                    <a href="/users/<%= u.id %>" class="pill-btn" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">
+                      Görüntüle
                     </a>
-                    <a href="/users/<%= u.id %>/edit" class="pill-btn" style="padding: 0.2rem 0.65rem; font-size: 0.8rem;">
+                    <a href="/users/<%= u.id %>/edit" class="pill-btn pill-yellow" style="padding: 0.25rem 0.7rem; font-size: 0.78rem;">
                       Düzenle
                     </a>
                   </div>
@@ -128,9 +169,15 @@
         </table>
       </div>
     <% } else { %>
-      <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
-        <p style="font-size: 1.1rem; margin-bottom: 1rem;">Arama kriterlerine uygun kullanıcı bulunamadı.</p>
-        <a href="/users" class="pill-btn">Tüm Kullanıcıları Listele</a>
+      <div style="text-align: center; padding: 3.5rem 1.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">🔍</div>
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-forest-abyss); margin-bottom: 0.4rem;">
+          Kayıtlı Kullanıcı Bulunamadı
+        </h3>
+        <p style="color: var(--color-stone-neutral); font-size: 0.95rem; margin-bottom: 1.25rem;">
+          Aradığınız kriterlere uygun mezun veya öğrenci profili bulunamadı.
+        </p>
+        <a href="/users" class="pill-btn pill-lime">Filtreleri Sıfırla</a>
       </div>
     <% } %>
   </div>

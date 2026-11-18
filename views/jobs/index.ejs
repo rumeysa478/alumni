@@ -1,39 +1,58 @@
 <%- include('../partials/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-  <div>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">💼 İş ve Staj İlanları</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT &bull; İstanbul Üniversitesi Mezun ve Partner Şirket Kariyer Fırsatları</p>
+<!-- Top Hero & Eyebrow Row -->
+<div style="margin-bottom: 2rem;">
+  <div class="parenthetical-eyebrow">
+    <span>(Y)our</span> career spotlight &middot; Job &amp; Internship Board
   </div>
-  <div style="display: flex; gap: 0.75rem;">
-    <a href="/jobs/new" class="pill-btn pill-peach">
-      <span>➕</span> Yeni İlan Yayınla
-    </a>
-    <a href="/api/jobs" target="_blank" class="pill-btn">
-      <span>⚡</span> REST API (JSON)
-    </a>
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--color-forest-abyss); line-height: 1.15; margin: 0;">
+        💼 İş ve Staj İlanları
+      </h1>
+      <p style="color: var(--color-warm-ink); font-size: 1rem; margin-top: 0.4rem;">
+        İstanbul Üniversitesi Mezun Ağı &amp; Partner Teknoloji Şirketleri Kariyer Fırsatları
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+      <a href="/jobs/new" class="pill-btn pill-lime">
+        <span>➕</span> Yeni İlan Yayınla
+      </a>
+      <a href="/api/jobs" target="_blank" class="pill-btn" style="font-family: var(--font-mono); font-size: 0.82rem;">
+        <span>⚡</span> REST API (JSON)
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Filtreleme Kartı (Photo 2 inspired) -->
-<div class="card" style="margin-bottom: 1.5rem; border: 1.5px solid var(--connext-border);">
-  <div class="card-body" style="padding: 1.25rem 1.5rem;">
+<!-- Filtreleme Kartı (Handshake style) -->
+<div class="card" style="margin-bottom: 2rem; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+  <div class="card-body" style="padding: 1.5rem 1.75rem;">
     <form action="/jobs" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-      <div style="flex: 2; min-width: 220px;">
-        <label class="form-label" for="search">Pozisyon, Şirket veya Sektör Ara</label>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          class="form-control"
-          placeholder="Örn: Backend, Frontend, Savunma..."
-          value="<%= filters && filters.search ? filters.search : '' %>"
-        >
+      
+      <div style="flex: 2; min-width: 240px;">
+        <label class="form-label" for="search" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Pozisyon, Şirket veya Yetenek Ara
+        </label>
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            class="form-control"
+            style="border-radius: var(--radius-xl); padding-left: 2.4rem; font-size: 0.95rem;"
+            placeholder="Örn: Junior Backend Developer, Node.js, Fintech..."
+            value="<%= filters && filters.search ? filters.search : '' %>"
+          >
+          <span style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.95rem; color: var(--color-stone-neutral);">🔍</span>
+        </div>
       </div>
 
       <div style="flex: 1; min-width: 140px;">
-        <label class="form-label" for="type">Çalışma Şekli</label>
-        <select id="type" name="type" class="form-select">
+        <label class="form-label" for="type" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Çalışma Şekli
+        </label>
+        <select id="type" name="type" class="form-select" style="border-radius: var(--radius-md);">
           <option value="">Tümü</option>
           <option value="FULL_TIME" <%= filters && filters.type === 'FULL_TIME' ? 'selected' : '' %>>Tam Zamanlı</option>
           <option value="PART_TIME" <%= filters && filters.type === 'PART_TIME' ? 'selected' : '' %>>Yarı Zamanlı</option>
@@ -43,8 +62,10 @@
       </div>
 
       <div style="flex: 1; min-width: 140px;">
-        <label class="form-label" for="work_model">Çalışma Modeli</label>
-        <select id="work_model" name="work_model" class="form-select">
+        <label class="form-label" for="work_model" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Çalışma Modeli
+        </label>
+        <select id="work_model" name="work_model" class="form-select" style="border-radius: var(--radius-md);">
           <option value="">Tümü</option>
           <option value="ONSITE" <%= filters && filters.work_model === 'ONSITE' ? 'selected' : '' %>>Ofisten (Onsite)</option>
           <option value="HYBRID" <%= filters && filters.work_model === 'HYBRID' ? 'selected' : '' %>>Hibrit</option>
@@ -53,68 +74,88 @@
       </div>
 
       <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="pill-btn pill-peach">Filtrele</button>
+        <button type="submit" class="pill-btn pill-yellow">Filtrele</button>
         <% if (filters && (filters.search || filters.type || filters.work_model)) { %>
-          <a href="/jobs" class="pill-btn">Temizle</a>
+          <a href="/jobs" class="pill-btn" style="background: var(--color-mist-surface);">Temizle</a>
         <% } %>
       </div>
     </form>
   </div>
 </div>
 
-<!-- İlanlar Listesi -->
-<% if (jobs && jobs.length > 0) { %>
-  <div style="display: grid; gap: 1.25rem;">
+<!-- Job Postings List -->
+<div style="display: flex; flex-direction: column; gap: 1.25rem;">
+  <% if (jobs && jobs.length > 0) { %>
     <% jobs.forEach(job => { %>
-      <div class="card" style="border: 1.5px solid var(--connext-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-radius: 14px; margin-bottom: 0;">
-        <div class="card-body">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
-                <span class="badge" style="background-color: #e0f2fe; color: #0369a1;"><%= job.type %></span>
-                <span class="badge" style="background-color: #f3e8ff; color: #6b21a8;"><%= job.work_model %></span>
-                <% if (typeof job.applicationsCount !== 'undefined') { %>
-                  <a href="/applications?job_id=<%= job.id %>" style="text-decoration: none;">
-                    <span class="badge" style="background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; cursor: pointer;">
-                      👥 <%= job.applicationsCount %> Başvuru
-                    </span>
-                  </a>
-                <% } %>
-              </div>
-              <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 800; color: #111; margin: 0 0 0.3rem 0;">
-                <a href="/jobs/<%= job.id %>" style="color: inherit; text-decoration: none;">
-                  <%= job.title %>
-                </a>
-              </h2>
-              <div style="color: #64748b; font-size: 0.95rem; margin-bottom: 0.75rem;">
-                🏢 <strong><%= job.company %></strong> &nbsp;•&nbsp; 📍 <%= job.location || 'Konum belirtilmedi' %>
-                <% if (job.salary_min && job.salary_max) { %>
-                  &nbsp;•&nbsp; 💰 <%= Number(job.salary_min).toLocaleString('tr-TR') %> - <%= Number(job.salary_max).toLocaleString('tr-TR') %> <%= job.currency || 'TRY' %>
-                <% } %>
-              </div>
+      <div class="card" style="margin-bottom: 0; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+        <div style="padding: 1.75rem 2.25rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;">
+          
+          <div style="flex: 1; min-width: 280px;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.65rem; flex-wrap: wrap;">
+              <span class="badge" style="background: var(--color-voltage-lime); color: var(--color-forest-abyss); font-weight: 800;">
+                <%= job.type %>
+              </span>
+              <span class="badge" style="background: var(--color-forest-abyss); color: #ffffff;">
+                <%= job.work_model %>
+              </span>
+              <% if (job.is_active) { %>
+                <span class="badge badge-verified">✓ Aktif</span>
+              <% } else { %>
+                <span class="badge badge-inactive">Kapandı</span>
+              <% } %>
             </div>
 
-            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-              <a href="/applications/new?job_id=<%= job.id %>" class="pill-btn pill-pink" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">
-                🚀 Hızlı Başvur
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; margin: 0 0 0.4rem 0;">
+              <a href="/jobs/<%= job.id %>" style="color: var(--color-forest-abyss); text-decoration: none;">
+                <%= job.title %>
               </a>
-              <a href="/jobs/<%= job.id %>" class="pill-btn pill-peach" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">İlanı Gör ↗</a>
-              <a href="/jobs/<%= job.id %>/edit" class="pill-btn" style="font-size: 0.82rem; padding: 0.3rem 0.85rem;">Düzenle</a>
+            </h2>
+
+            <div style="color: var(--color-warm-ink); font-size: 0.95rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+              <span>🏢 <strong><%= job.company %></strong></span>
+              <span>📍 <%= job.location || 'İstanbul / Remote' %></span>
+              <% if (job.salary_min && job.salary_max) { %>
+                <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-univ-emerald);">
+                  💰 <%= Number(job.salary_min).toLocaleString('tr-TR') %> - <%= Number(job.salary_max).toLocaleString('tr-TR') %> <%= job.currency || 'TRY' %>
+                </span>
+              <% } %>
+            </div>
+
+            <p style="color: var(--color-stone-neutral); font-size: 0.92rem; line-height: 1.55; margin: 0; max-width: 680px;">
+              <%= job.description && job.description.length > 180 ? job.description.substring(0, 180) + '...' : job.description %>
+            </p>
+          </div>
+
+          <!-- Right Action Block -->
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; flex-shrink: 0;">
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral);">
+              👥 <%= typeof job.applicationsCount !== 'undefined' ? job.applicationsCount : 0 %> Başvuru
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/applications/new?job_id=<%= job.id %>" class="pill-btn pill-lime" style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                Hemen Başvur &rarr;
+              </a>
+              <a href="/jobs/<%= job.id %>" class="pill-btn" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+                Detay
+              </a>
             </div>
           </div>
 
-          <p style="color: #334155; font-size: 0.94rem; line-height: 1.6; margin: 0.5rem 0 0 0;">
-            <%= job.description && job.description.length > 180 ? job.description.substring(0, 180) + '...' : job.description %>
-          </p>
         </div>
       </div>
     <% }); %>
-  </div>
-<% } else { %>
-  <div class="card" style="padding: 3rem; text-align: center; border: 1.5px solid var(--connext-border);">
-    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.25rem;">Kriterlere uygun iş ilanı bulunamadı.</p>
-    <a href="/jobs" class="pill-btn">Tüm İlanları Listele</a>
-  </div>
-<% } %>
+  <% } else { %>
+    <div class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.75rem;">💼</div>
+      <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-forest-abyss); margin-bottom: 0.4rem;">
+        Açık İlan Bulunamadı
+      </h3>
+      <p style="color: var(--color-stone-neutral); font-size: 0.95rem; margin-bottom: 1.25rem;">
+        Aradığınız kriterlere uygun iş veya staj ilanı bulunamadı.
+      </p>
+      <a href="/jobs/new" class="pill-btn pill-lime">+ Yeni İlan Yayınla</a>
+    </div>
+  <% } %>
+</div>
 
 <%- include('../partials/footer') %>

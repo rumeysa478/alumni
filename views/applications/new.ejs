@@ -1,121 +1,147 @@
 <%- include('../partials/header') %>
 
-<div style="max-width: 800px; margin: 0 auto;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-    <div>
-      <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a;">➕ Yeni İş / Staj Başvurusu Yap</h1>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">Users & JobPostings N:M Aksiyon Kaydı Oluşturma</p>
+<div style="max-width: 800px; margin: 0 auto 3rem;">
+  <div style="margin-bottom: 1.5rem;">
+    <div class="parenthetical-eyebrow">
+      <span>(Y)our</span> candidate application &middot; Quick Apply
     </div>
-    <a href="/applications" class="btn btn-secondary">← Başvurulara Dön</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+      <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--color-forest-abyss); margin: 0;">
+        ➕ Yeni İş / Staj Başvurusu Yap
+      </h1>
+      <a href="/applications" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; Başvurulara Dön
+      </a>
+    </div>
+    <p style="color: var(--color-warm-ink); font-size: 0.95rem; margin-top: 0.4rem;">
+      CONNEXT &bull; Mezun veya öğrenci profilinizle açık pozisyona doğrudan başvuru yapın.
+    </p>
   </div>
 
-  <div class="card">
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-hover);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline); padding: 1.25rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-voltage-lime); border: 1.5px solid var(--color-forest-abyss);"></div>
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-forest-abyss);">
+          Başvuru Formu
+        </div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-stone-neutral);">
+        * Zorunlu Alanlar &bull; N:M İlgi Kaydı
+      </div>
+    </div>
+
     <div class="card-body" style="padding: 2rem;">
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+          ⚠ <%= errorMessage %>
+        </div>
+      <% } %>
+
       <form action="/applications" method="POST">
+        
         <!-- 1. İlan Seçimi -->
-        <div style="margin-bottom: 1.25rem;">
-          <label class="form-label" for="job_id" style="font-weight: 600;">Başvurulacak Pozisyon / İlan *</label>
+        <div class="form-group">
+          <label class="form-label" for="job_id">Başvurulacak Pozisyon / İlan *</label>
           <select id="job_id" name="job_id" class="form-select" required>
             <option value="">-- Bir İlan Seçiniz --</option>
             <% if (typeof jobs !== 'undefined' && jobs) { %>
               <% jobs.forEach(j => { %>
-                <option value="<%= j.id %>" <%= (formData && String(formData.job_id) === String(j.id)) || (typeof selectedJobId !== 'undefined' && String(selectedJobId) === String(j.id)) ? 'selected' : '' %>>
+                <option value="<%= j.id %>" <%= (typeof formData !== 'undefined' && formData && String(formData.job_id) === String(j.id)) || (typeof selectedJobId !== 'undefined' && String(selectedJobId) === String(j.id)) ? 'selected' : '' %>>
                   <%= j.title %> — <%= j.company %> (<%= j.work_model || 'HYBRID' %> / <%= j.type || 'FULL_TIME' %>)
                 </option>
-              <% }) %>
+              <% }); %>
             <% } %>
           </select>
         </div>
 
         <!-- 2. Aday Kullanıcı Seçimi -->
-        <div style="margin-bottom: 1.25rem;">
-          <label class="form-label" for="user_id" style="font-weight: 600;">Başvuran Aday (Kullanıcı) *</label>
+        <div class="form-group">
+          <label class="form-label" for="user_id">Başvuran Aday (Kullanıcı) *</label>
           <select id="user_id" name="user_id" class="form-select" required>
             <option value="">-- Bir Aday Seçiniz --</option>
             <% if (typeof users !== 'undefined' && users) { %>
               <% users.forEach(u => { %>
-                <option value="<%= u.id %>" <%= formData && String(formData.user_id) === String(u.id) ? 'selected' : '' %>>
+                <option value="<%= u.id %>" <%= typeof formData !== 'undefined' && formData && String(formData.user_id) === String(u.id) ? 'selected' : '' %>>
                   <%= u.first_name %> <%= u.last_name %> [<%= u.role %>] (<%= u.email %> - <%= u.department || 'Bölüm belirtilmemiş' %>)
                 </option>
-              <% }) %>
+              <% }); %>
             <% } %>
           </select>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-          <!-- Beklenen Maaş -->
-          <div>
-            <label class="form-label" for="expected_salary" style="font-weight: 600;">Beklenen Aylık Net Maaş (₺)</label>
+        <!-- 3. Beklenen Maaş ve Para Birimi -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="expected_salary">Beklenen Aylık Net Maaş (₺)</label>
             <input
               type="number"
               id="expected_salary"
               name="expected_salary"
               class="form-control"
-              placeholder="Örn: 35000"
+              placeholder="Örn: 55000"
               step="500"
               min="0"
-              value="<%= formData && formData.expected_salary ? formData.expected_salary : '' %>"
+              value="<%= typeof formData !== 'undefined' && formData && formData.expected_salary ? formData.expected_salary : '' %>"
             >
           </div>
 
-          <!-- Portfolyo Bağlantısı -->
-          <div>
-            <label class="form-label" for="portfolio_url" style="font-weight: 600;">Portfolyo / GitHub / LinkedIn</label>
+          <div class="form-group">
+            <label class="form-label" for="currency">Para Birimi</label>
+            <select id="currency" name="currency" class="form-select">
+              <option value="TRY" <%= typeof formData !== 'undefined' && formData && formData.currency === 'TRY' ? 'selected' : '' %>>TRY (₺)</option>
+              <option value="USD" <%= typeof formData !== 'undefined' && formData && formData.currency === 'USD' ? 'selected' : '' %>>USD ($)</option>
+              <option value="EUR" <%= typeof formData !== 'undefined' && formData && formData.currency === 'EUR' ? 'selected' : '' %>>EUR (€)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Özgeçmiş ve Portfolyo Linkleri -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="resume_url">Özgeçmiş / CV Linki</label>
+            <input
+              type="text"
+              id="resume_url"
+              name="resume_url"
+              class="form-control"
+              placeholder="/uploads/resumes/cv.pdf veya Drive linki"
+              value="<%= typeof formData !== 'undefined' && formData && formData.resume_url ? formData.resume_url : '' %>"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="portfolio_url">Portfolyo / GitHub / LinkedIn</label>
             <input
               type="url"
               id="portfolio_url"
               name="portfolio_url"
               class="form-control"
               placeholder="https://github.com/kullaniciadi"
-              value="<%= formData && formData.portfolio_url ? formData.portfolio_url : '' %>"
+              value="<%= typeof formData !== 'undefined' && formData && formData.portfolio_url ? formData.portfolio_url : '' %>"
             >
           </div>
         </div>
 
-        <!-- CV / Özgeçmiş Bağlantısı -->
-        <div style="margin-bottom: 1.25rem;">
-          <label class="form-label" for="resume_url" style="font-weight: 600;">CV / Özgeçmiş Dosya veya Bağlantı Yolu</label>
-          <input
-            type="text"
-            id="resume_url"
-            name="resume_url"
-            class="form-control"
-            placeholder="Örn: /uploads/resumes/ahmet_cv.pdf veya https://storage.alumni.edu/cv.pdf"
-            value="<%= formData && formData.resume_url ? formData.resume_url : '' %>"
-          >
-        </div>
-
-        <!-- Ön Yazı (Cover Letter) -->
-        <div style="margin-bottom: 1.25rem;">
-          <label class="form-label" for="cover_letter" style="font-weight: 600;">Ön Yazı / Niyet Mektubu (Cover Letter)</label>
+        <!-- 5. Niyet Mektubu -->
+        <div class="form-group">
+          <label class="form-label" for="cover_letter">Niyet Mektubu / Ön Yazı (Cover Letter)</label>
           <textarea
             id="cover_letter"
             name="cover_letter"
-            class="form-control"
             rows="5"
-            placeholder="Pozisyona duyduğunuz ilgiyi, yetkinliklerinizi ve motivasyonunuzu özetleyiniz..."
-          ><%= formData && formData.cover_letter ? formData.cover_letter : '' %></textarea>
-        </div>
-
-        <!-- Notlar -->
-        <div style="margin-bottom: 1.5rem;">
-          <label class="form-label" for="notes" style="font-weight: 600;">Aday / İK Özel Notu (İsteğe Bağlı)</label>
-          <input
-            type="text"
-            id="notes"
-            name="notes"
             class="form-control"
-            placeholder="Örn: Haftada 3 gün gelebilirim veya referans: Prof. Dr. ..."
-            value="<%= formData && formData.notes ? formData.notes : '' %>"
-          >
+            placeholder="Bu pozisyon ile neden ilgileniyorsunuz? Projelerinizden ve teknik yetkinliklerinizden bahsedin..."
+          ><%= typeof formData !== 'undefined' && formData && formData.cover_letter ? formData.cover_letter : '' %></textarea>
         </div>
 
-        <div style="display: flex; gap: 1rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
-          <a href="/applications" class="btn btn-secondary">İptal</a>
-          <button type="submit" class="btn btn-primary" style="background-color: #6366f1; padding: 0.6rem 1.5rem;">
-            🚀 Başvuruyu Gönder
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <a href="/applications" class="pill-btn" style="background: var(--color-mist-surface);">İptal</a>
+          <button type="submit" class="pill-btn pill-lime">
+            ✓ Başvuruyu Gönder
           </button>
         </div>
+
       </form>
     </div>
   </div>

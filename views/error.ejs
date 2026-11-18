@@ -1,16 +1,34 @@
 <%- include('./partials/header') %>
 
-<div class="card" style="max-width: 600px; margin: 3.5rem auto; text-align: center; padding: 2.5rem 2rem; border: 2px solid var(--connext-border); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.06);">
-  <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚠️</div>
-  <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; color: #111;"><%= typeof title !== 'undefined' ? title : 'Bir Hata Oluştu' %></h2>
-  <p style="color: #64748b; font-size: 1rem; margin-bottom: 1.25rem;"><%= typeof message !== 'undefined' ? message : 'İstediğiniz sayfa veya işlem gerçekleştirilemedi.' %></p>
+<div class="card" style="max-width: 640px; margin: 3rem auto; text-align: center; padding: 3rem 2rem; border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: 0 16px 36px rgba(5, 35, 38, 0.12); background: #ffffff;">
+  
+  <div class="parenthetical-eyebrow" style="justify-content: center; margin-bottom: 0.75rem;">
+    <span>🛡️</span> (Y)our 5xx guardian &middot; Server Safeguard
+  </div>
+
+  <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">⚠️</div>
+  
+  <h2 style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--color-forest-abyss);">
+    <%= typeof title !== 'undefined' ? title : 'Bir Hata Oluştu' %>
+  </h2>
+  
+  <p style="color: var(--color-warm-ink); font-size: 1rem; margin-bottom: 1.5rem; max-width: 480px; margin-left: auto; margin-right: auto;">
+    <%= typeof message !== 'undefined' ? message : 'İstediğiniz sayfa veya işlem gerçekleştirilirken beklenmedik bir sunucu durumuyla karşılaşıldı.' %>
+  </p>
+
   <% if (typeof reason !== 'undefined' && reason) { %>
-    <div style="background: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1.5rem; border: 1px solid #fecaca; text-align: left;">
-      <strong>Nedeni (Reason):</strong> <%= reason %>
+    <div style="background: #fef2f2; color: #991b1b; padding: 1rem 1.25rem; border-radius: 12px; font-size: 0.92rem; margin: 1.25rem auto 2rem; border: 1.5px solid #fecaca; text-align: left; max-width: 520px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+      <div style="font-family: var(--font-mono); font-weight: 700; margin-bottom: 0.25rem; color: #991b1b; display: flex; align-items: center; gap: 0.4rem;">
+        <span>🛑</span> <strong>Nedeni (Reason):</strong>
+      </div>
+      <div style="line-height: 1.5;">
+        <%= reason %>
+      </div>
     </div>
   <% } %>
+
   <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
-    <a href="/users" class="pill-btn pill-peach">Kullanıcı Listesine Dön</a>
+    <a href="/users" class="pill-btn pill-lime">Kullanıcı Listesine Dön</a>
     <a href="/" class="pill-btn">Ana Sayfa</a>
   </div>
 </div>

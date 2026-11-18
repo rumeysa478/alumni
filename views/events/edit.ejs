@@ -1,72 +1,112 @@
 <%- include('../partials/header') %>
 
-<div style="margin-bottom: 1rem;">
-  <a href="/events/<%= event.id %>" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-    ← Etkinlik Detayına Dön
-  </a>
-</div>
-
-<div class="card" style="max-width: 700px; margin: 0 auto;">
-  <div class="card-header">
-    <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0;">
-      ✏️ Etkinliği Düzenle: <%= event.title %>
-    </h1>
+<div style="max-width: 750px; margin: 0 auto 3rem;">
+  <div style="margin-bottom: 1.5rem;">
+    <div class="parenthetical-eyebrow">
+      <span>(Y)our</span> event modifier &middot; Event Editor
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+      <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--color-forest-abyss); margin: 0;">
+        ✏️ Etkinliği Düzenle: <%= event.title %>
+      </h1>
+      <a href="/events/<%= event.id %>" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; Etkinlik Detayına Dön
+      </a>
+    </div>
+    <p style="color: var(--color-warm-ink); font-size: 0.95rem; margin-top: 0.4rem;">
+      #<%= event.id %> numaralı etkinliğin tarih, kontenjan ve açıklama bilgilerini güncelleyin.
+    </p>
   </div>
 
-  <div class="card-body">
-    <% if (errorMessage) { %>
-      <div class="alert alert-error" style="margin-bottom: 1.5rem;">
-        ⚠ <%= errorMessage %>
-      </div>
-    <% } %>
-
-    <form action="/events/<%= event.id %>" method="POST">
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label class="form-label" for="title">Etkinlik Başlığı *</label>
-        <input type="text" id="title" name="title" class="form-control" value="<%= event.title %>" required>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-        <div class="form-group">
-          <label class="form-label" for="event_date">Etkinlik Tarihi ve Saati *</label>
-          <input type="datetime-local" id="event_date" name="event_date" class="form-control" value="<%= event.event_date ? event.event_date.substring(0, 16) : '' %>" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="capacity">Kontenjan (Kişi)</label>
-          <input type="number" id="capacity" name="capacity" class="form-control" value="<%= event.capacity %>">
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-hover);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline); padding: 1.25rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-canary-yellow); border: 1.5px solid var(--color-forest-abyss);"></div>
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-forest-abyss);">
+          Etkinlik Güncelleme Formu
         </div>
       </div>
+      <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral);">
+        ID: #<%= event.id %>
+      </div>
+    </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+    <div class="card-body" style="padding: 2rem;">
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+          ⚠ <%= errorMessage %>
+        </div>
+      <% } %>
+
+      <form action="/events/<%= event.id %>" method="POST">
+        
+        <div class="form-group">
+          <label class="form-label" for="title">Etkinlik Başlığı *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="form-control"
+            value="<%= event.title %>"
+            required
+          >
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="event_date">Etkinlik Tarihi ve Saati *</label>
+            <input
+              type="datetime-local"
+              id="event_date"
+              name="event_date"
+              class="form-control"
+              value="<%= event.event_date ? (typeof event.event_date === 'string' ? event.event_date.substring(0, 16) : new Date(event.event_date).toISOString().substring(0, 16)) : '' %>"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="capacity">Kontenjan (Kişi)</label>
+            <input
+              type="number"
+              id="capacity"
+              name="capacity"
+              class="form-control"
+              value="<%= event.capacity %>"
+            >
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label" for="location">Yer / Lokasyon</label>
-          <input type="text" id="location" name="location" class="form-control" value="<%= event.location || '' %>">
+          <input
+            type="text"
+            id="location"
+            name="location"
+            class="form-control"
+            value="<%= event.location || '' %>"
+          >
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="created_by">Organizatör</label>
-          <select id="created_by" name="created_by" class="form-select">
-            <option value="">-- Yetkili Seçin --</option>
-            <% if (typeof users !== 'undefined' && users) { %>
-              <% users.forEach(u => { %>
-                <option value="<%= u.id %>" <%= event.created_by == u.id ? 'selected' : '' %>><%= u.first_name %> <%= u.last_name %></option>
-              <% }); %>
-            <% } %>
-          </select>
+          <label class="form-label" for="description">Etkinlik Açıklaması</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="5"
+            class="form-control"
+          ><%= event.description || '' %></textarea>
         </div>
-      </div>
 
-      <div class="form-group" style="margin-bottom: 1.5rem;">
-        <label class="form-label" for="description">Etkinlik Detay ve Programı</label>
-        <textarea id="description" name="description" class="form-control" rows="4"><%= event.description || '' %></textarea>
-      </div>
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <a href="/events/<%= event.id %>" class="pill-btn" style="background: var(--color-mist-surface);">İptal</a>
+          <button type="submit" class="pill-btn pill-yellow">
+            ✓ Değişiklikleri Kaydet
+          </button>
+        </div>
 
-      <div style="display: flex; gap: 0.75rem;">
-        <button type="submit" class="btn btn-primary" style="background-color: #0d9488;">✓ Değişiklikleri Kaydet</button>
-        <a href="/events/<%= event.id %>" class="btn btn-secondary">İptal</a>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
 

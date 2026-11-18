@@ -5,39 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= typeof title !== 'undefined' ? title : 'CONNEXT' %> | İstanbul University Alumni Portal</title>
   
-  <!-- Google Fonts: Playfair Display (Serif), Plus Jakarta Sans (UI Sans) -->
+  <!-- Google Fonts: Playfair Display (Serif), Plus Jakarta Sans (UI Sans), IBM Plex Mono (Data & Eyebrows) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* CONNEXT Brand Color Palette inspired by UI screenshots */
-      --connext-gradient: linear-gradient(90deg, #ffaf9b 0%, #ff8b94 28%, #f7a8b8 62%, #c8b6e2 100%);
-      --connext-sunset-peach: #ffaf9b;
-      --connext-pink: #ffd6e0;
-      --connext-peach: #ffe5d9;
-      --connext-lavender: #dde4ff;
-      --connext-cream: #fff9f5;
-      --connext-dark: #111827;
-      --connext-border: #1a1a1a;
+      /* CONNEXT Yellow & Green Design System Tokens (design.md & brand.md) */
+      --color-voltage-lime: #d3fb52;
+      --color-canary-yellow: #facc15;
+      --color-highlight-yellow: #f9f5a2;
+      --color-univ-emerald: #005b38;
+      --color-forest-abyss: #052326;
+      --color-carbon-ink: #14151c;
+      --color-warm-ink: #363737;
+      --color-stone-neutral: #71717a;
+      --color-ash-hairline: #e5e7eb;
+      --color-mist-surface: #f3f4f6;
+      --color-sage-tint: #f0fdf4;
+      --color-butter-tint: #fefce8;
+      --color-canvas-bg: #f8faf8;
+      --color-paper-canvas: #ffffff;
+
+      /* Semantic mappings */
+      --primary: var(--color-univ-emerald);
+      --primary-accent: var(--color-voltage-lime);
+      --connext-border: #14151c;
       --connext-border-light: #e5e7eb;
-      
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-light: #eff6ff;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --warning: #d97706;
-      --text-main: #18181b;
-      --text-muted: #64748b;
-      --bg-page: #fafafa;
-      --bg-card: #ffffff;
-      --radius: 12px;
+      --text-main: var(--color-carbon-ink);
+      --text-muted: var(--color-stone-neutral);
+      --bg-page: var(--color-canvas-bg);
+      --bg-card: var(--color-paper-canvas);
+
+      /* Typography */
+      --font-display: 'Playfair Display', Charter, Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'IBM Plex Mono', Menlo, Consolas, monospace;
+      --font-serif: 'Spectral', Georgia, serif;
+
+      /* Shapes & Radii */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
       --radius-pill: 9999px;
+
+      /* Elevation & Shadows */
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-      --shadow-card: 0 4px 12px rgba(0,0,0,0.05);
-      --shadow-elevated: 0 10px 25px -5px rgba(0,0,0,0.08);
+      --shadow-card: 0 4px 16px rgba(0,0,0,0.05);
+      --shadow-card-hover: 0 10px 24px rgba(5, 35, 38, 0.08);
+      --shadow-floating-nav: 0 12px 36px rgba(5, 35, 38, 0.22);
     }
 
     * {
@@ -47,12 +65,12 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font-sans);
       background-color: var(--bg-page);
       background-image: 
-        radial-gradient(circle at -4% 30%, rgba(255, 175, 155, 0.40) 0%, transparent 450px),
-        radial-gradient(circle at 104% 35%, rgba(247, 168, 184, 0.40) 0%, transparent 450px),
-        radial-gradient(circle at 50% 0%, rgba(200, 182, 226, 0.18) 0%, transparent 600px);
+        radial-gradient(circle at -4% 15%, rgba(211, 251, 82, 0.22) 0%, transparent 480px),
+        radial-gradient(circle at 104% 20%, rgba(250, 204, 21, 0.20) 0%, transparent 480px),
+        radial-gradient(circle at 50% -5%, rgba(0, 91, 56, 0.12) 0%, transparent 550px);
       background-attachment: fixed;
       color: var(--text-main);
       line-height: 1.6;
@@ -61,25 +79,71 @@
       flex-direction: column;
     }
 
-    /* Serif Display Typography */
+    /* Font utilities */
     .font-serif, h1, h2, .connext-brand-title {
-      font-family: 'Playfair Display', Georgia, serif;
+      font-family: var(--font-display);
     }
 
-    /* Top Gradient Navigation Bar (from Photo 1, 2, 3, 4) */
-    .connext-navbar {
-      background: var(--connext-gradient);
-      border-bottom: 1.5px solid var(--connext-border);
+    .font-mono, .eyebrow-caption {
+      font-family: var(--font-mono);
+    }
+
+    /* School-style parenthetical captions & highlighted letters */
+    .parenthetical-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-univ-emerald);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .letter-highlight {
+      background-color: var(--color-voltage-lime);
+      color: var(--color-forest-abyss);
+      font-weight: 800;
+      padding: 0 0.25rem;
+      border-radius: 4px;
+      display: inline-block;
+      line-height: 1.1;
+    }
+
+    .letter-highlight-yellow {
+      background-color: var(--color-canary-yellow);
+      color: var(--color-forest-abyss);
+      font-weight: 800;
+      padding: 0 0.25rem;
+      border-radius: 4px;
+      display: inline-block;
+      line-height: 1.1;
+    }
+
+    /* Wizz-style Floating Dark Pill Navigation Bar */
+    .navbar-outer-wrapper {
       position: sticky;
-      top: 0;
+      top: 14px;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      padding: 0.6rem 1.5rem;
+      padding: 0 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .connext-navbar {
+      background: var(--color-forest-abyss);
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-floating-nav);
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0.6rem 1.4rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
 
     .navbar-container {
-      max-width: 1360px;
-      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -90,9 +154,9 @@
     .brand-section {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.75rem;
       text-decoration: none;
-      color: var(--connext-dark);
+      color: #ffffff;
     }
 
     /* Istanbul University Alumni Emblem */
@@ -100,25 +164,38 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #005b38;
-      border: 1.5px solid #111;
+      background: var(--color-voltage-lime);
+      border: 1.5px solid #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: var(--color-forest-abyss);
       font-size: 1.15rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 8px rgba(211, 251, 82, 0.35);
       flex-shrink: 0;
+      font-weight: 900;
     }
 
     .connext-logo-text {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.65rem;
+      font-family: var(--font-display);
+      font-size: 1.45rem;
       font-weight: 900;
-      letter-spacing: 0.28em;
-      color: #111;
+      letter-spacing: 0.24em;
+      color: #ffffff;
       text-transform: uppercase;
       line-height: 1;
+    }
+
+    .connext-logo-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: rgba(211, 251, 82, 0.18);
+      color: var(--color-voltage-lime);
+      border: 1px solid var(--color-voltage-lime);
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.05em;
     }
 
     /* Navigation Links */
@@ -131,22 +208,32 @@
     }
 
     .connext-nav-link {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: #111;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #e2e8f0;
       text-decoration: none;
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.85rem;
       border-radius: var(--radius-pill);
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
-    .connext-nav-link:hover, .connext-nav-link.active {
-      background-color: rgba(255, 255, 255, 0.45);
+    .connext-nav-link:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.12);
       transform: translateY(-1px);
     }
 
-    /* Right Controls: Home, TR, Search Pill (Photos 2 & 4) */
+    .connext-nav-link.active {
+      color: var(--color-forest-abyss);
+      background-color: var(--color-voltage-lime);
+      font-weight: 700;
+    }
+
+    /* Right Controls */
     .connext-nav-right {
       display: flex;
       align-items: center;
@@ -155,15 +242,15 @@
     }
 
     .circle-icon-btn {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1.5px solid var(--connext-border);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: #111;
+      color: #ffffff;
       text-decoration: none;
       font-size: 0.95rem;
       cursor: pointer;
@@ -171,26 +258,13 @@
     }
 
     .circle-icon-btn:hover {
-      background: #ffffff;
-      transform: scale(1.06);
+      background: var(--color-voltage-lime);
+      color: var(--color-forest-abyss);
+      transform: scale(1.08);
+      border-color: var(--color-voltage-lime);
     }
 
-    .lang-pill {
-      background: rgba(0, 0, 0, 0.85);
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      padding: 0.25rem 0.65rem;
-      border-radius: var(--radius-pill);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      border: 1.5px solid #111;
-    }
-
-    /* Search Pill with Equalizer and Voice Mic (Photo 2) */
+    /* Pillow-soft Search Bar (Handshake style) */
     .search-pill-container {
       position: relative;
     }
@@ -198,18 +272,18 @@
     .search-pill-bar {
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.75);
-      border: 1.5px solid var(--connext-border);
+      background: rgba(255, 255, 255, 0.09);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
       border-radius: var(--radius-pill);
-      padding: 0.25rem 0.75rem;
-      min-width: 220px;
+      padding: 0.25rem 0.85rem;
+      min-width: 200px;
       transition: all 0.2s;
     }
 
     .search-pill-bar:focus-within {
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
-      border-color: #000;
+      border-color: var(--color-voltage-lime);
+      box-shadow: 0 0 0 3px rgba(211, 251, 82, 0.35);
     }
 
     .search-pill-input {
@@ -217,10 +291,14 @@
       background: transparent;
       outline: none;
       font-family: inherit;
-      font-size: 0.85rem;
-      color: #111;
-      width: 120px;
-      padding: 0.2rem 0.4rem;
+      font-size: 0.84rem;
+      color: #ffffff;
+      width: 130px;
+      padding: 0.25rem 0.4rem;
+    }
+
+    .search-pill-bar:focus-within .search-pill-input {
+      color: var(--color-carbon-ink);
     }
 
     .search-icon-btn {
@@ -228,51 +306,14 @@
       border: none;
       cursor: pointer;
       font-size: 0.85rem;
-      color: #222;
+      color: #cbd5e1;
       display: flex;
       align-items: center;
       padding: 2px;
     }
 
-    /* Interactive Dropdown Filter (Photo 2) */
-    .search-dropdown-menu {
-      position: absolute;
-      top: 115%;
-      right: 0;
-      width: 240px;
-      background: #ffffff;
-      border: 1.5px solid var(--connext-border);
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      display: none;
-      flex-direction: column;
-      z-index: 1050;
-      overflow: hidden;
-    }
-
-    .search-pill-container:focus-within .search-dropdown-menu,
-    .search-dropdown-menu:hover,
-    .search-dropdown-menu.show {
-      display: flex;
-    }
-
-    .dropdown-header-item {
-      padding: 0.6rem 0.9rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #111;
-      border-bottom: 1px solid #f1f5f9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-
-    .dropdown-header-item:hover {
-      background: #fdf2f8;
-      color: #be185d;
+    .search-pill-bar:focus-within .search-icon-btn {
+      color: var(--color-carbon-ink);
     }
 
     /* Page Layout: Side Rails + Central Stage */
@@ -283,61 +324,64 @@
       width: 100%;
       flex: 1;
       position: relative;
+      padding: 0 1rem;
     }
 
-    /* Left & Right Navigation Rails (Photo 1 & 3) */
+    /* Left & Right Navigation Rails */
     .side-nav-rail {
-      width: 64px;
+      width: 58px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 2rem;
-      gap: 1.5rem;
+      padding-top: 1.5rem;
+      gap: 1.25rem;
       position: sticky;
-      top: 70px;
-      height: calc(100vh - 80px);
+      top: 90px;
+      height: calc(100vh - 120px);
       z-index: 50;
       flex-shrink: 0;
     }
 
     .side-nav-rail.left-rail {
-      border-right: 1.5px solid rgba(0, 0, 0, 0.85);
+      border-right: 1.5px solid rgba(20, 21, 28, 0.12);
     }
 
     .side-nav-rail.right-rail {
-      border-left: 1.5px solid rgba(0, 0, 0, 0.85);
+      border-left: 1.5px solid rgba(20, 21, 28, 0.12);
     }
 
     .rail-btn {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: #ffffff;
       border: 1.5px solid var(--connext-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      color: #111;
+      font-size: 1.15rem;
+      color: var(--color-forest-abyss);
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
 
     .rail-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-      background-color: var(--connext-pink);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+      background-color: var(--color-voltage-lime);
+      border-color: var(--color-forest-abyss);
     }
 
     .rail-btn-tooltip {
       position: absolute;
       left: 115%;
-      background: #111;
-      color: #fff;
-      font-size: 0.75rem;
+      background: var(--color-forest-abyss);
+      color: #ffffff;
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
       font-weight: 600;
       white-space: nowrap;
       padding: 0.25rem 0.6rem;
@@ -345,6 +389,8 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s;
+      border: 1px solid rgba(255,255,255,0.15);
+      z-index: 60;
     }
 
     .rail-btn:hover .rail-btn-tooltip {
@@ -359,67 +405,84 @@
     /* Main Container Content Area */
     .container {
       flex: 1;
-      max-width: 1140px;
-      margin: 1.75rem auto;
-      padding: 0 1.75rem;
+      max-width: 1180px;
+      margin: 1rem auto 2.5rem;
+      padding: 0 1.5rem;
       min-width: 0;
     }
 
-    /* CONNEXT Pill Buttons (Core signature aesthetic from screenshots) */
+    /* CONNEXT Pill Buttons (Core signature aesthetic) */
     .pill-btn, .btn-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      padding: 0.45rem 1.25rem;
+      gap: 0.45rem;
+      padding: 0.48rem 1.25rem;
       font-size: 0.88rem;
       font-weight: 700;
       border-radius: var(--radius-pill);
       border: 1.5px solid var(--connext-border);
       text-decoration: none;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       background: #ffffff;
-      color: #111;
+      color: var(--color-carbon-ink);
     }
 
     .pill-btn:hover, .btn-pill:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      background-color: #ffffff;
     }
 
-    /* Pink Pill (like `events`, `+ follow`, `+ Send Request`) */
-    .pill-pink {
-      background-color: var(--connext-pink);
-      color: #111;
-      border: 1.5px solid var(--connext-border);
-    }
-    .pill-pink:hover {
-      background-color: #fbcfe8;
+    /* Voltage Lime Pill (Primary Action) */
+    .pill-lime, .btn-primary {
+      background-color: var(--color-voltage-lime) !important;
+      color: var(--color-forest-abyss) !important;
+      border: 1.5px solid var(--color-forest-abyss) !important;
+      font-weight: 800 !important;
     }
 
-    /* Peach / Cream Pill (like `posts`, `cv`, `experience`, `skills`) */
-    .pill-peach {
-      background-color: var(--connext-peach);
-      color: #111;
-      border: 1.5px solid var(--connext-border);
-    }
-    .pill-peach:hover {
-      background-color: #fed7aa;
+    .pill-lime:hover, .btn-primary:hover {
+      background-color: #c4f134 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(211, 251, 82, 0.45) !important;
     }
 
-    /* Dark Outline Pill (like `Log In`, `Sign In` in Photo 4) */
-    .pill-dark-outline {
-      background: rgba(255, 255, 255, 0.9);
-      color: #111;
-      border: 2px solid var(--connext-border);
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.25rem;
-      padding: 0.6rem 2.8rem;
+    /* Canary Yellow Pill */
+    .pill-yellow, .pill-peach {
+      background-color: var(--color-canary-yellow) !important;
+      color: var(--color-forest-abyss) !important;
+      border: 1.5px solid var(--color-forest-abyss) !important;
+      font-weight: 700 !important;
     }
-    .pill-dark-outline:hover {
-      background: #111;
-      color: #fff;
+
+    .pill-yellow:hover, .pill-peach:hover {
+      background-color: #eab308 !important;
+    }
+
+    /* Emerald Pill */
+    .pill-emerald, .pill-pink {
+      background-color: #dcfce7 !important;
+      color: var(--color-univ-emerald) !important;
+      border: 1.5px solid var(--color-univ-emerald) !important;
+      font-weight: 700 !important;
+    }
+
+    .pill-emerald:hover, .pill-pink:hover {
+      background-color: #bbf7d0 !important;
+    }
+
+    /* Dark Pill (Deep Forest Abyss) */
+    .pill-dark {
+      background-color: var(--color-forest-abyss) !important;
+      color: #ffffff !important;
+      border: 1.5px solid var(--color-forest-abyss) !important;
+    }
+
+    .pill-dark:hover {
+      background-color: #0b393e !important;
+      color: var(--color-voltage-lime) !important;
     }
 
     /* Classic Buttons Compatibility */
@@ -428,7 +491,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      padding: 0.55rem 1.15rem;
+      padding: 0.52rem 1.15rem;
       font-size: 0.88rem;
       font-weight: 700;
       border-radius: var(--radius-pill);
@@ -437,95 +500,106 @@
       text-decoration: none;
       transition: all 0.2s;
     }
-    .btn-primary {
-      background-color: #111827;
-      color: #ffffff;
-      border-color: #111827;
-    }
-    .btn-primary:hover {
-      background-color: #374151;
-      transform: translateY(-1px);
-    }
+
     .btn-secondary {
       background-color: #ffffff;
-      color: #111827;
+      color: var(--color-carbon-ink);
       border-color: var(--connext-border);
     }
+
     .btn-secondary:hover {
-      background-color: #f3f4f6;
+      background-color: var(--color-mist-surface);
     }
+
     .btn-danger {
-      background-color: #dc2626;
-      color: white;
-      border-color: #b91c1c;
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1.5px solid #ef4444;
+      font-weight: 700;
     }
+
     .btn-danger:hover {
-      background-color: #b91c1c;
+      background-color: #ef4444;
+      color: #ffffff;
     }
+
     .btn-sm {
-      padding: 0.3rem 0.75rem;
+      padding: 0.32rem 0.8rem;
       font-size: 0.8rem;
     }
 
-    /* Cards */
+    /* Cards - SpatialChat & Substack style */
     .card {
       background-color: var(--bg-card);
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
       border: 1.5px solid var(--connext-border);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
       margin-bottom: 1.5rem;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
     }
+
+    .card:hover {
+      box-shadow: var(--shadow-card-hover);
+    }
+
     .card-header {
-      padding: 1.1rem 1.4rem;
-      border-bottom: 1.5px solid #f1f5f9;
+      padding: 1.15rem 1.6rem;
+      border-bottom: 1.5px solid var(--color-ash-hairline);
       display: flex;
       justify-content: space-between;
       align-items: center;
       background-color: #ffffff;
     }
+
     .card-body {
-      padding: 1.4rem;
+      padding: 1.6rem;
     }
 
     /* Badges */
     .badge {
-      display: inline-block;
-      padding: 0.25rem 0.65rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.28rem 0.72rem;
       border-radius: var(--radius-pill);
-      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(0,0,0,0.12);
     }
-    .badge-alumni { background-color: #dbeafe; color: #1e40af; }
-    .badge-student { background-color: #fef3c7; color: #92400e; }
-    .badge-admin { background-color: #fce7f3; color: #9d174d; }
-    .badge-verified { background-color: #dcfce7; color: #166534; }
-    .badge-unverified { background-color: #f1f5f9; color: #64748b; }
-    .badge-event { background-color: #f3e8ff; color: #6b21a8; }
-    .badge-career { background-color: #d1fae5; color: #065f46; }
-    .badge-academic { background-color: #fef3c7; color: #92400e; }
-    .badge-general { background-color: #f1f5f9; color: #334155; }
-    .badge-active { background-color: #dcfce7; color: #15803d; }
-    .badge-inactive { background-color: #fee2e2; color: #b91c1c; }
+
+    .badge-alumni { background-color: #dcfce7; color: var(--color-univ-emerald); border-color: #86efac; }
+    .badge-student { background-color: #fef9c3; color: #854d0e; border-color: #fde047; }
+    .badge-admin { background-color: var(--color-forest-abyss); color: var(--color-voltage-lime); border-color: var(--color-forest-abyss); }
+    .badge-verified { background-color: #dcfce7; color: #166534; border-color: #86efac; }
+    .badge-unverified { background-color: #f1f5f9; color: #64748b; border-color: #cbd5e1; }
+    .badge-event { background-color: #fefce8; color: #713f12; border-color: #fef08a; }
+    .badge-career { background-color: #dcfce7; color: #065f46; border-color: #a7f3d0; }
+    .badge-academic { background-color: #fef9c3; color: #854d0e; border-color: #fde047; }
+    .badge-general { background-color: #f3f4f6; color: #334155; border-color: #e5e7eb; }
+    .badge-active { background-color: #dcfce7; color: #15803d; border-color: #86efac; }
+    .badge-inactive { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
 
     /* Forms */
     .form-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.35rem;
     }
+
     .form-label {
       display: block;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.45rem;
       font-weight: 700;
       font-size: 0.88rem;
-      color: #1e293b;
+      color: var(--color-carbon-ink);
     }
+
     .form-control, .form-select {
       width: 100%;
-      padding: 0.65rem 0.9rem;
-      border-radius: 8px;
+      padding: 0.65rem 0.95rem;
+      border-radius: var(--radius-md);
       border: 1.5px solid #d1d5db;
       font-size: 0.92rem;
       background-color: #ffffff;
@@ -533,16 +607,23 @@
       font-family: inherit;
       transition: all 0.2s;
     }
+
     .form-control:focus, .form-select:focus {
       outline: none;
-      border-color: #111827;
-      box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+      border-color: var(--color-forest-abyss);
+      box-shadow: 0 0 0 3px rgba(211, 251, 82, 0.45);
+    }
+
+    .form-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
     }
 
     /* Alerts */
     .alert {
-      padding: 0.9rem 1.25rem;
-      border-radius: 10px;
+      padding: 0.95rem 1.35rem;
+      border-radius: var(--radius-md);
       margin-bottom: 1.5rem;
       font-size: 0.92rem;
       display: flex;
@@ -550,15 +631,53 @@
       gap: 0.75rem;
       border: 1.5px solid transparent;
     }
+
     .alert-success {
-      background-color: #dcfce7;
+      background-color: #f0fdf4;
       color: #15803d;
       border-color: #86efac;
     }
+
     .alert-error {
-      background-color: #fee2e2;
+      background-color: #fef2f2;
       color: #b91c1c;
       border-color: #fca5a5;
+    }
+
+    /* Tables - Substack editorial density */
+    .table-responsive {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .table th {
+      padding: 0.85rem 1.25rem;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-stone-neutral);
+      border-bottom: 1.5px solid var(--color-ash-hairline);
+      background-color: #fbfcfb;
+    }
+
+    .table td {
+      padding: 1rem 1.25rem;
+      font-size: 0.92rem;
+      border-bottom: 1px solid var(--color-ash-hairline);
+      color: var(--color-carbon-ink);
+      vertical-align: middle;
+    }
+
+    .table tr:hover td {
+      background-color: #f8faf8;
     }
 
     /* Responsive adjustments */
@@ -581,82 +700,71 @@
 </head>
 <body>
 
-  <!-- Top CONNEXT Gradient Navbar -->
-  <header class="connext-navbar">
-    <div class="navbar-container">
-      
-      <!-- Brand & University Seal -->
-      <a href="/" class="brand-section">
-        <div class="iu-emblem" title="İstanbul Üniversitesi Mezunları">
-          🎓
-        </div>
-        <div class="connext-logo-text">CONNEXT</div>
-      </a>
+  <!-- Floating Dark Pill Navigation Bar (Wizz + Handshake) -->
+  <div class="navbar-outer-wrapper">
+    <header class="connext-navbar">
+      <div class="navbar-container">
+        
+        <!-- Brand & University Seal -->
+        <a href="/" class="brand-section">
+          <div class="iu-emblem" title="İstanbul Üniversitesi Mezunları">
+            🎓
+          </div>
+          <div>
+            <div class="connext-logo-text">C<span style="color: var(--color-voltage-lime);">O</span>NNEXT</div>
+          </div>
+          <span class="connext-logo-badge">1453</span>
+        </a>
 
-      <!-- Navigation Links -->
-      <nav>
-        <ul class="connext-nav-links">
-          <li><a href="/about" class="connext-nav-link">About Us</a></li>
-          <li><a href="/users" class="connext-nav-link">Kullanıcılar</a></li>
-          <li><a href="/announcements" class="connext-nav-link">Duyurular</a></li>
-          <li><a href="/jobs" class="connext-nav-link">İş İlanları</a></li>
-          <li><a href="/applications" class="connext-nav-link">Başvurular</a></li>
-          <li><a href="/events" class="connext-nav-link">Etkinlikler</a></li>
-          <li><a href="/api/swagger" class="connext-nav-link" target="_blank">API Docs ↗</a></li>
-        </ul>
-      </nav>
+        <!-- Navigation Links -->
+        <nav>
+          <ul class="connext-nav-links">
+            <li><a href="/about" class="connext-nav-link">About Us</a></li>
+            <li><a href="/users" class="connext-nav-link">Kullanıcılar</a></li>
+            <li><a href="/announcements" class="connext-nav-link">Duyurular</a></li>
+            <li><a href="/jobs" class="connext-nav-link">İş İlanları</a></li>
+            <li><a href="/applications" class="connext-nav-link">Başvurular</a></li>
+            <li><a href="/events" class="connext-nav-link">Etkinlikler</a></li>
+            <li><a href="/api/swagger" class="connext-nav-link" target="_blank" style="color: var(--color-voltage-lime);">API Docs ↗</a></li>
+          </ul>
+        </nav>
 
-      <!-- Right Navigation Items: Home, Language, Search Bar & Dropdown -->
-      <div class="connext-nav-right">
-        <a href="/" class="circle-icon-btn" title="Ana Sayfa">🏠</a>
-        <span class="lang-pill" title="Dil / Language">TR ▼</span>
+        <!-- Right Controls: Home, Language, Search Bar -->
+        <div class="connext-nav-right">
+          <a href="/" class="circle-icon-btn" title="Ana Sayfa">🏠</a>
+          <a href="/jobs/new" class="pill-btn pill-lime" style="padding: 0.35rem 0.95rem; font-size: 0.8rem;">
+            + İlan Ver
+          </a>
 
-        <!-- Search Bar with Filter Slider & Voice Icon (Photo 2) -->
-        <div class="search-pill-container">
-          <form action="/users" method="GET" class="search-pill-bar">
-            <span class="search-icon-btn">🔍</span>
-            <input 
-              type="text" 
-              name="search" 
-              class="search-pill-input" 
-              placeholder="Search CONNEXT..." 
-              autocomplete="off"
-            >
-            <span class="search-icon-btn" title="Filtreleme Menüsü">🎚️</span>
-            <span class="search-icon-btn" title="Sesli Arama">🎙️</span>
-          </form>
-
-          <!-- Dropdown Filter Popover (Photo 2) -->
-          <div class="search-dropdown-menu">
-            <a href="/users?department=Management Information Systems" class="dropdown-header-item">
-              <span>Current Department</span>
-              <span>▾</span>
-            </a>
-            <a href="/users?graduation_year=2024" class="dropdown-header-item">
-              <span>Enrollment Year</span>
-              <span>▾</span>
-            </a>
-            <a href="/users?role=ALUMNI" class="dropdown-header-item">
-              <span>Current Term</span>
-              <span>▾</span>
-            </a>
+          <!-- Pillow-soft Search Bar -->
+          <div class="search-pill-container">
+            <form action="/users" method="GET" class="search-pill-bar">
+              <span class="search-icon-btn">🔍</span>
+              <input 
+                type="text" 
+                name="search" 
+                class="search-pill-input" 
+                placeholder="Search..." 
+                autocomplete="off"
+              >
+            </form>
           </div>
         </div>
-      </div>
 
-    </div>
-  </header>
+      </div>
+    </header>
+  </div>
 
   <!-- Page Layout Wrapper with Side Rails -->
   <div class="page-layout-wrapper">
 
-    <!-- Left Vertical Rail (Photo 1 & 3) -->
+    <!-- Left Vertical Rail (Wizz / SpatialChat) -->
     <aside class="side-nav-rail left-rail">
-      <a href="/jobs/new" class="rail-btn" title="Yeni Kayıt Oluştur">
+      <a href="/jobs/new" class="rail-btn" title="Yeni İlan Ekle">
         ➕
-        <span class="rail-btn-tooltip">+ Yeni Ekle</span>
+        <span class="rail-btn-tooltip">+ Yeni İlan</span>
       </a>
-      <a href="/announcements" class="rail-btn" title="Bildirimler & Duyurular">
+      <a href="/announcements" class="rail-btn" title="Duyurular">
         🔔
         <span class="rail-btn-tooltip">Duyurular</span>
       </a>

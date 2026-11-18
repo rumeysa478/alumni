@@ -1,25 +1,39 @@
 <%- include('../partials/header') %>
 
-<div style="max-width: 750px; margin: 0 auto;">
+<div style="max-width: 750px; margin: 0 auto 3rem;">
   <div style="margin-bottom: 1.5rem;">
-    <a href="/announcements" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
-      &larr; Duyuru Listesine Dön
-    </a>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111; margin-top: 0.75rem;">
-      ➕ Yeni Duyuru Oluştur (Create)
-    </h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">
+    <div class="parenthetical-eyebrow">
+      <span>(Y)our</span> campus author &middot; Publish Announcement
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+      <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--color-forest-abyss); margin: 0;">
+        ➕ Yeni Duyuru Oluştur (Create)
+      </h1>
+      <a href="/announcements" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; Duyuru Listesine Dön
+      </a>
+    </div>
+    <p style="color: var(--color-warm-ink); font-size: 0.95rem; margin-top: 0.4rem;">
       CONNEXT &bull; Mezun ve öğrenciler için yeni bir etkinlik, kariyer veya akademik duyuru yayınlayın.
     </p>
   </div>
 
-  <div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06);">
-    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.25rem 2rem;">
-      <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 800; color: #111;">Duyuru Bilgileri</div>
-      <div style="font-size: 0.85rem; color: var(--text-muted);">* Zorunlu Alanlar</div>
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-hover);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline); padding: 1.25rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-voltage-lime); border: 1.5px solid var(--color-forest-abyss);"></div>
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-forest-abyss);">
+          Duyuru Bilgileri
+        </div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-stone-neutral);">
+        * Zorunlu Alanlar
+      </div>
     </div>
+
     <div class="card-body" style="padding: 2rem;">
       <form action="/announcements" method="POST">
+        
         <div class="form-group">
           <label class="form-label" for="title">Duyuru Başlığı *</label>
           <input
@@ -33,20 +47,20 @@
           >
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
           <div class="form-group">
             <label class="form-label" for="category">Kategori *</label>
             <select id="category" name="category" class="form-select" required>
-              <option value="EVENT" <%= typeof formData !== 'undefined' && formData.category === 'EVENT' ? 'selected' : '' %>>EVENT (Etkinlik)</option>
-              <option value="CAREER" <%= typeof formData !== 'undefined' && formData.category === 'CAREER' ? 'selected' : '' %>>CAREER (Kariyer / Staj)</option>
-              <option value="ACADEMIC" <%= typeof formData !== 'undefined' && formData.category === 'ACADEMIC' ? 'selected' : '' %>>ACADEMIC (Akademik)</option>
-              <option value="GENERAL" <%= typeof formData !== 'undefined' && formData.category === 'GENERAL' ? 'selected' : '' %>>GENERAL (Genel)</option>
+              <option value="EVENT" <%= typeof formData !== 'undefined' && formData.category === 'EVENT' ? 'selected' : '' %>>Etkinlik (EVENT)</option>
+              <option value="CAREER" <%= typeof formData !== 'undefined' && formData.category === 'CAREER' ? 'selected' : '' %>>Kariyer (CAREER)</option>
+              <option value="ACADEMIC" <%= typeof formData !== 'undefined' && formData.category === 'ACADEMIC' ? 'selected' : '' %>>Akademik (ACADEMIC)</option>
+              <option value="GENERAL" <%= typeof formData !== 'undefined' && formData.category === 'GENERAL' ? 'selected' : '' %>>Genel (GENERAL)</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="target_audience">Hedef Kitle *</label>
-            <select id="target_audience" name="target_audience" class="form-select" required>
+            <label class="form-label" for="target_audience">Hedef Kitle</label>
+            <select id="target_audience" name="target_audience" class="form-select">
               <option value="ALL" <%= typeof formData !== 'undefined' && formData.target_audience === 'ALL' ? 'selected' : '' %>>Herkes (ALL)</option>
               <option value="ALUMNI" <%= typeof formData !== 'undefined' && formData.target_audience === 'ALUMNI' ? 'selected' : '' %>>Yalnızca Mezunlar</option>
               <option value="STUDENT" <%= typeof formData !== 'undefined' && formData.target_audience === 'STUDENT' ? 'selected' : '' %>>Yalnızca Öğrenciler</option>
@@ -55,35 +69,45 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="author">Yayınlayan / Yazar</label>
-          <input
-            type="text"
-            id="author"
-            name="author"
-            class="form-control"
-            placeholder="Örn: Rektörlük, Mezunlar Kulübü, Rumeysa Aydın..."
-            value="<%= typeof formData !== 'undefined' && formData.author ? formData.author : '' %>"
-          >
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="content">Duyuru İçeriği *</label>
+          <label class="form-label" for="content">Duyuru Metni / İçeriği *</label>
           <textarea
             id="content"
             name="content"
-            required
             rows="6"
+            required
             class="form-control"
-            placeholder="Duyuru metnini ayrıntılı olarak giriniz..."
+            placeholder="Duyuru detayları, tarih, yer ve katılım koşulları..."
           ><%= typeof formData !== 'undefined' && formData.content ? formData.content : '' %></textarea>
         </div>
 
-        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-          <button type="submit" class="pill-btn pill-pink" style="font-size: 0.95rem; padding: 0.6rem 1.75rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="author_name">Yayınlayan Kurum / Kişi</label>
+            <input
+              type="text"
+              id="author_name"
+              name="author_name"
+              class="form-control"
+              placeholder="Örn: Mezunlar Derneği Başkanı"
+              value="<%= typeof formData !== 'undefined' && formData.author_name ? formData.author_name : 'İstanbul Üniversitesi Mezunlar Ofisi' %>"
+            >
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; padding-top: 1.8rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.92rem;">
+              <input type="checkbox" name="is_active" value="true" checked style="width: 18px; height: 18px;">
+              <span>Duyuruyu hemen yayına al</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <a href="/announcements" class="pill-btn" style="background: var(--color-mist-surface);">İptal</a>
+          <button type="submit" class="pill-btn pill-lime">
             ✓ Duyuruyu Yayınla
           </button>
-          <a href="/announcements" class="pill-btn">İptal</a>
         </div>
+
       </form>
     </div>
   </div>

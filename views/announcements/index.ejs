@@ -1,76 +1,98 @@
 <%- include('../partials/header') %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-  <div>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111;">📢 Duyurular ve Etkinlikler</h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">CONNEXT &bull; İstanbul Üniversitesi Resmi Duyuruları, Haberleri ve Akış Paylaşımları</p>
+<!-- Top Hero & Eyebrow Row -->
+<div style="margin-bottom: 2rem;">
+  <div class="parenthetical-eyebrow">
+    <span>(Y)our</span> campus bulletin &middot; Newsroom Stream
   </div>
-  <div style="display: flex; gap: 0.75rem;">
-    <a href="/announcements/new" class="pill-btn pill-pink">
-      <span>➕</span> Yeni Duyuru Ekle
-    </a>
-    <a href="/api/announcements" target="_blank" class="pill-btn">
-      <span>⚡</span> REST API (JSON)
-    </a>
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--color-forest-abyss); line-height: 1.15; margin: 0;">
+        📢 Duyurular ve Etkinlikler
+      </h1>
+      <p style="color: var(--color-warm-ink); font-size: 1rem; margin-top: 0.4rem;">
+        İstanbul Üniversitesi CONNEXT Resmi Haberleri, Etkinlik Çağrıları ve Akademik Paylaşımlar
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+      <a href="/announcements/new" class="pill-btn pill-lime">
+        <span>➕</span> Yeni Duyuru Ekle
+      </a>
+      <a href="/api/announcements" target="_blank" class="pill-btn" style="font-family: var(--font-mono); font-size: 0.82rem;">
+        <span>⚡</span> REST API (JSON)
+      </a>
+    </div>
   </div>
 </div>
 
 <!-- Arama ve Filtreleme Kartı -->
-<div class="card" style="margin-bottom: 1.5rem; border: 1.5px solid var(--connext-border);">
-  <div class="card-body" style="padding: 1.25rem 1.5rem;">
+<div class="card" style="margin-bottom: 2rem; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+  <div class="card-body" style="padding: 1.5rem 1.75rem;">
     <form action="/announcements" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-      <div style="flex: 2; min-width: 220px;">
-        <label class="form-label" for="search">Başlık, İçerik veya Yazar Ara</label>
-        <input
-          type="text"
-          id="search"
-          name="search"
-          class="form-control"
-          placeholder="Örn: Mezunlar günü, Staj, Rektörlük..."
-          value="<%= filters && filters.search ? filters.search : '' %>"
-        >
+      
+      <div style="flex: 2; min-width: 240px;">
+        <label class="form-label" for="search" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Başlık, İçerik veya Yazar Ara
+        </label>
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            class="form-control"
+            style="border-radius: var(--radius-xl); padding-left: 2.4rem; font-size: 0.95rem;"
+            placeholder="Örn: Mezunlar Günü, Kariyer Fuarı, Rektörlük..."
+            value="<%= filters && filters.search ? filters.search : '' %>"
+          >
+          <span style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.95rem; color: var(--color-stone-neutral);">🔍</span>
+        </div>
       </div>
 
       <div style="flex: 1; min-width: 140px;">
-        <label class="form-label" for="category">Kategori</label>
-        <select id="category" name="category" class="form-select">
+        <label class="form-label" for="category" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Kategori
+        </label>
+        <select id="category" name="category" class="form-select" style="border-radius: var(--radius-md);">
           <option value="">Tümü</option>
-          <option value="EVENT" <%= filters && filters.category === 'EVENT' ? 'selected' : '' %>>EVENT (Etkinlik)</option>
-          <option value="CAREER" <%= filters && filters.category === 'CAREER' ? 'selected' : '' %>>CAREER (Kariyer/İş)</option>
-          <option value="ACADEMIC" <%= filters && filters.category === 'ACADEMIC' ? 'selected' : '' %>>ACADEMIC (Akademik)</option>
-          <option value="GENERAL" <%= filters && filters.category === 'GENERAL' ? 'selected' : '' %>>GENERAL (Genel)</option>
+          <option value="EVENT" <%= filters && filters.category === 'EVENT' ? 'selected' : '' %>>Etkinlik (EVENT)</option>
+          <option value="CAREER" <%= filters && filters.category === 'CAREER' ? 'selected' : '' %>>Kariyer (CAREER)</option>
+          <option value="ACADEMIC" <%= filters && filters.category === 'ACADEMIC' ? 'selected' : '' %>>Akademik (ACADEMIC)</option>
+          <option value="GENERAL" <%= filters && filters.category === 'GENERAL' ? 'selected' : '' %>>Genel (GENERAL)</option>
         </select>
       </div>
 
       <div style="flex: 1; min-width: 140px;">
-        <label class="form-label" for="target_audience">Hedef Kitle</label>
-        <select id="target_audience" name="target_audience" class="form-select">
-          <option value="">Tümü</option>
-          <option value="ALL" <%= filters && filters.target_audience === 'ALL' ? 'selected' : '' %>>Herkes (ALL)</option>
-          <option value="ALUMNI" <%= filters && filters.target_audience === 'ALUMNI' ? 'selected' : '' %>>Yalnızca Mezunlar</option>
-          <option value="STUDENT" <%= filters && filters.target_audience === 'STUDENT' ? 'selected' : '' %>>Yalnızca Öğrenciler</option>
+        <label class="form-label" for="target_audience" style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+          Hedef Kitle
+        </label>
+        <select id="target_audience" name="target_audience" class="form-select" style="border-radius: var(--radius-md);">
+          <option value="">Herkes (ALL)</option>
+          <option value="ALUMNI" <%= filters && filters.target_audience === 'ALUMNI' ? 'selected' : '' %>>Mezunlar</option>
+          <option value="STUDENT" <%= filters && filters.target_audience === 'STUDENT' ? 'selected' : '' %>>Öğrenciler</option>
         </select>
       </div>
 
       <div style="display: flex; gap: 0.5rem;">
-        <button type="submit" class="pill-btn pill-peach">Filtrele</button>
+        <button type="submit" class="pill-btn pill-yellow">Filtrele</button>
         <% if (filters && (filters.search || filters.category || filters.target_audience)) { %>
-          <a href="/announcements" class="pill-btn">Temizle</a>
+          <a href="/announcements" class="pill-btn" style="background: var(--color-mist-surface);">Temizle</a>
         <% } %>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Duyuru Listesi -->
-<% if (announcements && announcements.length > 0) { %>
-  <div style="display: grid; gap: 1.25rem;">
-    <% announcements.forEach(a => { %>
-      <div class="card" style="border: 1.5px solid var(--connext-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-radius: 14px; margin-bottom: 0;">
-        <div class="card-body">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+<!-- Substack / Threads Newsroom Feed -->
+<div style="max-width: 960px; margin: 0 auto;">
+  <% if (announcements && announcements.length > 0) { %>
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <% announcements.forEach(a => { %>
+        <article class="card" style="margin-bottom: 0; border: 1.5px solid var(--connext-border); box-shadow: var(--shadow-card);">
+          <div style="padding: 1.75rem 2rem;">
+            
+            <!-- Metadata Row -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
                 <% if (a.category === 'EVENT') { %>
                   <span class="badge badge-event">🎉 Etkinlik</span>
                 <% } else if (a.category === 'CAREER') { %>
@@ -81,45 +103,62 @@
                   <span class="badge badge-general">📢 Genel</span>
                 <% } %>
 
-                <% if (a.target_audience === 'ALUMNI') { %>
-                  <span class="badge badge-alumni">Mezunlar</span>
-                <% } else if (a.target_audience === 'STUDENT') { %>
-                  <span class="badge badge-student">Öğrenciler</span>
-                <% } else { %>
-                  <span class="badge badge-verified">Herkes</span>
-                <% } %>
+                <span class="badge" style="background: #f8faf8; border-color: var(--color-ash-hairline); color: var(--color-stone-neutral);">
+                  <% if (a.target_audience === 'ALUMNI') { %>
+                    🎓 Mezunlara Özel
+                  <% } else if (a.target_audience === 'STUDENT') { %>
+                    🎒 Öğrencilere Özel
+                  <% } else { %>
+                    🌍 Herkese Açık
+                  <% } %>
+                </span>
               </div>
 
-              <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 800; color: #111; margin: 0 0 0.35rem 0;">
-                <a href="/announcements/<%= a.id %>" style="color: inherit; text-decoration: none;">
-                  <%= a.title %>
+              <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-stone-neutral);">
+                <%= a.published_at ? new Date(a.published_at).toLocaleDateString('tr-TR') : '18.11.2026' %> &bull; <%= a.author_name || 'Rektörlük / Mezunlar Ofisi' %>
+              </div>
+            </div>
+
+            <!-- Title -->
+            <h2 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.75rem;">
+              <a href="/announcements/<%= a.id %>" style="color: var(--color-forest-abyss); text-decoration: none;">
+                <%= a.title %>
+              </a>
+            </h2>
+
+            <!-- Excerpt / Body -->
+            <p style="color: var(--color-warm-ink); font-size: 0.98rem; line-height: 1.65; margin-bottom: 1.25rem;">
+              <%= a.content && a.content.length > 220 ? a.content.substring(0, 220) + '...' : a.content %>
+            </p>
+
+            <!-- Bottom Actions -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-ash-hairline); padding-top: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <a href="/announcements/<%= a.id %>" class="pill-btn pill-lime" style="font-size: 0.82rem; padding: 0.35rem 0.95rem;">
+                Devamını Oku &rarr;
+              </a>
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="/announcements/<%= a.id %>/edit" class="pill-btn pill-yellow" style="font-size: 0.78rem; padding: 0.25rem 0.75rem;">
+                  Düzenle
                 </a>
-              </h2>
-
-              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-                Yayınlayan: <strong><%= a.author || 'Sistem' %></strong> &bull;
-                Tarih: <%= a.published_at ? new Date(a.published_at).toLocaleString('tr-TR') : '-' %>
               </div>
             </div>
 
-            <div style="display: flex; gap: 0.5rem;">
-              <a href="/announcements/<%= a.id %>" class="pill-btn pill-peach" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">Detay ↗</a>
-              <a href="/announcements/<%= a.id %>/edit" class="pill-btn" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">Düzenle</a>
-            </div>
           </div>
-
-          <p style="color: #334155; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0 0 0;">
-            <%= a.content && a.content.length > 200 ? a.content.substring(0, 200) + '...' : a.content %>
-          </p>
-        </div>
-      </div>
-    <% }); %>
-  </div>
-<% } else { %>
-  <div class="card" style="padding: 3rem; text-align: center; border: 1.5px solid var(--connext-border);">
-    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.25rem;">Kriterlere uygun duyuru bulunamadı.</p>
-    <a href="/announcements" class="pill-btn">Tüm Duyuruları Göster</a>
-  </div>
-<% } %>
+        </article>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.75rem;">📢</div>
+      <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--color-forest-abyss); margin-bottom: 0.4rem;">
+        Henüz Yayınlanmış Duyuru Yok
+      </h3>
+      <p style="color: var(--color-stone-neutral); font-size: 0.95rem; margin-bottom: 1.25rem;">
+        İlk duyuruyu oluşturmak için aşağıdaki butona tıklayın.
+      </p>
+      <a href="/announcements/new" class="pill-btn pill-lime">+ Yeni Duyuru Ekle</a>
+    </div>
+  <% } %>
+</div>
 
 <%- include('../partials/footer') %>

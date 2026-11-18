@@ -33,6 +33,8 @@
 8. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
 9. [Veri Tasarımı Dokümantasyonu (ddd.md)](#-veri-tasarımı-dokümantasyonu-dddmd)
 10. [Marka Kimliği ve Tasarım Sistemi (brand.md & design.md)](#-marka-kimliği-ve-tasarım-sistemi-brandmd--designmd)
+    - [CONNEXT Marka Kılavuzu (brand.md)](#brandmd)
+    - [Sarı-Yeşil Tasarım Sistemi (design.md)](#designmd)
 11. [Çevresel Değişkenler (.env ve example.env)](#-çevresel-değişkenler-env-ve-exampleenv)
 12. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
 13. [Docker Desteği ve "The Forgetting Test" Sırrı](#-docker-desteği-ve-the-forgetting-test-sırrı)
@@ -533,12 +535,12 @@ Projenin ilişkisel veritabanı şeması, E-R modeli, normalizasyon adımları v
 
 ---
 
-## 🎨 Marka Kimliği ve Tasarım Sistemi (brand.md & design.md)
+## 🎨 Marka Kimliği ve Tasarım Sistemi (brand.md & design.md) <a id="brandmd"></a><a id="brand-md"></a><a id="brand.md"></a><a id="designmd"></a><a id="design-md"></a><a id="design.md"></a>
 
 Projenin görsel marka kimliği, renk paleti, tipografi kuralları ve UI bileşen anatomisi iki kapsamlı rehberde detaylandırılmıştır:
 
-👉 **[CONNEXT Marka ve Görsel Kimlik Kılavuzu (brand.md)](./brand.md)**  
-👉 **[Çoklu İlham Kaynaklı Sarı-Yeşil Tasarım Sistemi (design.md)](./design.md)**
+- 📘 **[CONNEXT Marka ve Görsel Kimlik Kılavuzu (brand.md)](./brand.md)** — Marka vizyonu, logo kuralları ve renk paletleri.
+- 📗 **[Çoklu İlham Kaynaklı Sarı-Yeşil Tasarım Sistemi (design.md)](./design.md)** — Substack editoryal yoğunluğu, Handshake Voltage Lime neonu, SpatialChat ferah düzeni, School daktilo etiketleri ve Wizz yüzen koyu navigasyon bileşen sistemi.
 
 ### Özet Kapsam:
 - **Tasarım Felsefesi:** Substack (editoryal yoğunluk & yalınlık), Handshake (voltage lime & dev tipografi), SpatialChat (ferah yerleşim & %6 hafif gölge), School (parantezli widget etiketleri & harf vurgulama oyunu), Threads (metin odaklı akış & yalın etkileşim) ve Wizz (yüzen koyu hap navigasyon).

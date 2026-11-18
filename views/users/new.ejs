@@ -1,26 +1,40 @@
 <%- include('../partials/header') %>
 
-<div style="max-width: 700px; margin: 0 auto;">
+<div style="max-width: 720px; margin: 0 auto 3rem;">
   <div style="margin-bottom: 1.5rem;">
-    <a href="/users" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
-      &larr; Kullanıcı Listesine Dön
-    </a>
-    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 800; color: #111; margin-top: 0.75rem;">
-      ➕ Yeni Kullanıcı Kaydı (Create)
-    </h1>
-    <p style="color: var(--text-muted); font-size: 0.95rem;">
+    <div class="parenthetical-eyebrow">
+      <span>(Y)our</span> alumni registration &middot; Enrollment Desk
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+      <h1 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--color-forest-abyss); margin: 0;">
+        ➕ Yeni Kullanıcı Kaydı (Create)
+      </h1>
+      <a href="/users" class="pill-btn" style="font-size: 0.82rem; padding: 0.35rem 0.9rem;">
+        &larr; Kullanıcı Listesine Dön
+      </a>
+    </div>
+    <p style="color: var(--color-warm-ink); font-size: 0.95rem; margin-top: 0.4rem;">
       CONNEXT &bull; İstanbul Üniversitesi Mezun ve Öğrenci Ağına Yeni Profil Ekleme
     </p>
   </div>
 
-  <div class="card" style="border: 2px solid var(--connext-border); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06);">
-    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--connext-border); padding: 1.25rem 2rem;">
-      <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 800; color: #111;">Kullanıcı Bilgileri</div>
-      <div style="font-size: 0.85rem; color: var(--text-muted);">* Zorunlu Alanlar</div>
+  <div class="card" style="border: 2px solid var(--color-forest-abyss); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-hover);">
+    <div class="card-header" style="background: #ffffff; border-bottom: 1.5px solid var(--color-ash-hairline); padding: 1.25rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-voltage-lime); border: 1.5px solid var(--color-forest-abyss);"></div>
+        <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-forest-abyss);">
+          Kullanıcı Bilgileri
+        </div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-stone-neutral);">
+        * Zorunlu Alanlar
+      </div>
     </div>
+
     <div class="card-body" style="padding: 2rem;">
       <form action="/users" method="POST">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
           <div class="form-group">
             <label class="form-label" for="first_name">Ad</label>
             <input
@@ -68,11 +82,11 @@
             name="password"
             required
             class="form-control"
-            placeholder="En az 6 karakterli güçlü bir şifre"
+            placeholder="En az 6 karakterli güvenli şifre"
           >
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
           <div class="form-group">
             <label class="form-label" for="role">Sistem Rolü *</label>
             <select id="role" name="role" class="form-select" required>
@@ -83,38 +97,39 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="graduation_year">Mezuniyet Yılı</label>
+            <label class="form-label" for="graduation_year">Mezuniyet / Giriş Yılı</label>
             <input
               type="number"
               id="graduation_year"
               name="graduation_year"
               class="form-control"
-              placeholder="Örn: 2024"
+              placeholder="2024"
               min="1950"
               max="2035"
-              value="<%= typeof formData !== 'undefined' && formData.graduation_year ? formData.graduation_year : '' %>"
+              value="<%= typeof formData !== 'undefined' && formData.graduation_year ? formData.graduation_year : '2024' %>"
             >
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="department">Bölüm / Program</label>
+          <label class="form-label" for="department">Akademik Bölüm</label>
           <input
             type="text"
             id="department"
             name="department"
             class="form-control"
-            placeholder="Örn: Management Information Systems (YBS)"
-            value="<%= typeof formData !== 'undefined' && formData.department ? formData.department : '' %>"
+            placeholder="Örn: Management Information Systems"
+            value="<%= typeof formData !== 'undefined' && formData.department ? formData.department : 'Management Information Systems' %>"
           >
         </div>
 
-        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-          <button type="submit" class="pill-btn pill-pink" style="font-size: 0.95rem; padding: 0.6rem 1.75rem;">
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <a href="/users" class="pill-btn" style="background: var(--color-mist-surface);">İptal</a>
+          <button type="submit" class="pill-btn pill-lime">
             ✓ Kullanıcıyı Kaydet
           </button>
-          <a href="/users" class="pill-btn">İptal</a>
         </div>
+
       </form>
     </div>
   </div>
