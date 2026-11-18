@@ -8,61 +8,61 @@
   <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Spectral, IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       CONNEXT Design System Tokens — Yellow & Green Chromatic Synthesis
-       Inspired by: Substack, Handshake, SpatialChat, School, Threads, Wizz
+       CONNEXT Design System — Liquid Glass (Glassmorphism & Fluid Refraction)
+       Synthesis: Voltage Lime + Canary Yellow + Heritage Emerald + Frosted Glass
        ========================================================================== */
     :root {
-      /* Chromatic Accents — Yellow & Green */
-      --color-voltage-lime: #d3fb52;       /* Primary chromatic spark / Action button fill */
+      /* Chromatic Accents */
+      --color-voltage-lime: #d3fb52;
       --color-voltage-lime-hover: #c4ee3a;
-      --color-canary-yellow: #facc15;      /* Secondary warm accent / Badges / Stars */
-      --color-highlight-yellow: #f9f5a2;   /* School-style flat typographic highlight block */
-      --color-highlight-lime: #d9f99d;     /* Lime typographic highlight block */
-      --color-univ-emerald: #005b38;       /* Istanbul University official heritage green */
+      --color-canary-yellow: #facc15;
+      --color-highlight-yellow: #f9f5a2;
+      --color-highlight-lime: #d9f99d;
+      --color-univ-emerald: #005b38;
       --color-univ-emerald-light: #059669;
-      --color-forest-abyss: #052326;       /* Deep dark teal/forest for floating nav & footer */
-      --color-forest-surface: #0a3337;     /* Hover surface inside dark containers */
+      --color-forest-abyss: #052326;
+      --color-forest-surface: #0a3337;
 
       /* Monochromes & Inks */
-      --color-carbon-ink: #14151c;         /* High-contrast headings, icons, strong borders */
-      --color-warm-ink: #363737;           /* Substack-style editorial body reading ink */
-      --color-stone-neutral: #71717a;      /* Muted metadata, timestamps, helper text */
-      --color-ash-hairline: #e5e7eb;       /* 1px Substack/Threads structural hairlines */
-      --color-mist-surface: #f3f4f6;       /* Recessed search fills, code blocks */
-      --color-paper-canvas: #ffffff;       /* Pure white card and panel surface */
-      --color-canvas-bg: #f8faf8;          /* Warm milk/parchment background */
+      --color-carbon-ink: #14151c;
+      --color-warm-ink: #363737;
+      --color-stone-neutral: #71717a;
+      --color-ash-hairline: rgba(229, 231, 235, 0.7);
+      --color-mist-surface: rgba(243, 244, 246, 0.7);
+      --color-paper-canvas: #ffffff;
+      --color-canvas-bg: #f8faf8;
 
-      /* Supporting Tints */
-      --color-sage-tint: #f0fdf4;          /* Soft green tint for feature highlights */
-      --color-butter-tint: #fefce8;        /* Soft yellow tint for announcements */
-
-      /* Gradients */
-      --gradient-aurora: radial-gradient(at 55% 45%, #7af3ff 0%, #d3fb52 45%, #005b38 85%, #052326 100%);
-      --gradient-spring: linear-gradient(90deg, #d3fb52 0%, #facc15 50%, #10b981 100%);
-      --gradient-hero-overlay: linear-gradient(180deg, rgba(248, 250, 248, 0.4) 0%, rgba(248, 250, 248, 0.92) 85%, #f8faf8 100%);
+      /* Liquid Glass Tokens */
+      --glass-bg-subtle: rgba(255, 255, 255, 0.55);
+      --glass-bg-card: rgba(255, 255, 255, 0.74);
+      --glass-bg-card-hover: rgba(255, 255, 255, 0.88);
+      --glass-bg-nav: rgba(5, 35, 38, 0.75);
+      --glass-border-light: rgba(255, 255, 255, 0.8);
+      --glass-border-dark: rgba(255, 255, 255, 0.22);
+      --glass-specular-edge: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95);
+      --glass-specular-bottom: inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
+      --glass-blur-sm: blur(14px) saturate(180%);
+      --glass-blur-md: blur(24px) saturate(190%);
+      --glass-blur-lg: blur(36px) saturate(200%);
+      --glass-shadow: 0 14px 40px -8px rgba(5, 35, 38, 0.08), 0 4px 16px rgba(0, 0, 0, 0.03);
+      --glass-shadow-hover: 0 22px 50px -10px rgba(0, 91, 56, 0.16), 0 8px 24px rgba(0, 0, 0, 0.06);
 
       /* Typography Families */
       --font-display-serif: 'Playfair Display', Charter, Georgia, serif;
       --font-primary-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --font-editorial-serif: 'Spectral', Charter, Georgia, serif;
-      --font-mono: 'IBM Plex Mono', 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+      --font-mono: 'IBM Plex Mono', 'JetBrains Mono', Menlo, monospace;
 
       /* Shapes & Radii */
       --radius-pill: 9999px;
-      --radius-hero-input: 24px;   /* Handshake pillow-soft input */
-      --radius-card-lg: 20px;      /* School & SpatialChat soft card */
-      --radius-card-md: 16px;
-      --radius-btn: 8px;           /* Handshake compact button radius */
-
-      /* Elevation & Shadows */
-      --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.06);   /* SpatialChat 6% shadow */
-      --shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.09);
-      --shadow-nav: 0 12px 36px rgba(5, 35, 38, 0.22);
-      --shadow-btn-pressed: rgba(255, 255, 255, 0.3) 0 1px 0 0 inset, rgba(0, 0, 0, 0.15) 0 -1px 0 0 inset;
+      --radius-hero-input: 26px;
+      --radius-card-lg: 24px;
+      --radius-card-md: 18px;
+      --radius-btn: 10px;
     }
 
     * {
@@ -81,61 +81,149 @@
       overflow-x: hidden;
       line-height: 1.54;
       -webkit-font-smoothing: antialiased;
+      position: relative;
     }
 
     /* ==========================================================================
-       1. FLOATING DARK NAVIGATION BAR (Wizz + Handshake)
+       AMBIENT LIQUID MESH BACKGROUND (Animated glowing fluid orbs)
+       ========================================================================== */
+    .liquid-background-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .liquid-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.65;
+      mix-blend-mode: multiply;
+      animation: floatOrb 22s infinite alternate ease-in-out;
+    }
+
+    .liquid-orb-1 {
+      width: 580px;
+      height: 580px;
+      background: radial-gradient(circle, rgba(211, 251, 82, 0.85) 0%, rgba(211, 251, 82, 0.1) 70%);
+      top: -120px;
+      left: -100px;
+      animation-duration: 24s;
+    }
+
+    .liquid-orb-2 {
+      width: 620px;
+      height: 620px;
+      background: radial-gradient(circle, rgba(122, 243, 255, 0.75) 0%, rgba(122, 243, 255, 0.1) 70%);
+      top: 15%;
+      right: -150px;
+      animation-duration: 28s;
+      animation-delay: -6s;
+    }
+
+    .liquid-orb-3 {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(250, 204, 21, 0.65) 0%, rgba(250, 204, 21, 0.08) 70%);
+      top: 55%;
+      left: 10%;
+      animation-duration: 20s;
+      animation-delay: -10s;
+    }
+
+    .liquid-orb-4 {
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(0, 91, 56, 0.45) 0%, rgba(0, 91, 56, 0.05) 75%);
+      bottom: -150px;
+      right: 5%;
+      animation-duration: 30s;
+      animation-delay: -4s;
+    }
+
+    @keyframes floatOrb {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translate(60px, 40px) scale(1.12) rotate(15deg);
+      }
+      100% {
+        transform: translate(-40px, 70px) scale(0.95) rotate(-10deg);
+      }
+    }
+
+    /* ==========================================================================
+       1. LIQUID GLASS FLOATING PILL NAVBAR
        ========================================================================== */
     .nav-wrapper {
       position: sticky;
-      top: 14px;
+      top: 16px;
       z-index: 1000;
       width: 100%;
       padding: 0 1.5rem;
-      pointer-events: none; /* Allows click-through outside the pill */
+      pointer-events: none;
     }
 
     .floating-nav-pill {
       pointer-events: auto;
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
-      background: var(--color-forest-abyss);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--glass-bg-nav);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
+      border: 1.5px solid var(--glass-border-dark);
       border-radius: var(--radius-pill);
-      padding: 0.65rem 1.25rem;
+      padding: 0.65rem 1.4rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1.25rem;
-      box-shadow: var(--shadow-nav);
-      backdrop-filter: blur(12px);
-      transition: all 0.25s ease;
+      box-shadow: 0 20px 45px -10px rgba(5, 35, 38, 0.35), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .floating-nav-pill:hover {
+      box-shadow: 0 24px 55px -10px rgba(5, 35, 38, 0.45), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.6);
+      border-color: rgba(211, 251, 82, 0.4);
     }
 
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
       text-decoration: none;
       color: #ffffff;
     }
 
     .iu-seal-circle {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: var(--color-univ-emerald);
-      border: 2px solid var(--color-voltage-lime);
+      background: linear-gradient(135deg, var(--color-voltage-lime) 0%, #10b981 100%);
+      border: 2px solid #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      font-size: 1.25rem;
+      color: var(--color-forest-abyss);
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(211, 251, 82, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+      transition: transform 0.25s ease;
+    }
+
+    .nav-brand:hover .iu-seal-circle {
+      transform: scale(1.08) rotate(5deg);
     }
 
     .brand-title-text {
       font-family: var(--font-display-serif);
-      font-size: 1.6rem;
+      font-size: 1.65rem;
       font-weight: 900;
       letter-spacing: 0.22em;
       color: #ffffff;
@@ -146,168 +234,189 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       list-style: none;
     }
 
     .nav-links a {
       font-size: 0.88rem;
       font-weight: 600;
-      color: #f3f4f6;
+      color: #f1f5f9;
       text-decoration: none;
-      padding: 0.4rem 0.85rem;
+      padding: 0.45rem 0.95rem;
       border-radius: var(--radius-pill);
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
 
     .nav-links a:hover {
-      background: var(--color-forest-surface);
+      background: rgba(255, 255, 255, 0.16);
       color: var(--color-voltage-lime);
+      transform: translateY(-1px);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.75rem;
     }
 
     .btn-ghost-white {
-      font-size: 0.84rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: #ffffff;
       text-decoration: none;
-      padding: 0.45rem 1rem;
+      padding: 0.48rem 1.15rem;
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.2s ease;
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
     }
 
     .btn-ghost-white:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
       border-color: #ffffff;
+      transform: translateY(-1px);
     }
 
     .btn-voltage-lime {
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       font-weight: 800;
-      color: #000000;
-      background: var(--color-voltage-lime);
+      color: var(--color-forest-abyss);
+      background: linear-gradient(135deg, var(--color-voltage-lime) 0%, #bcf336 100%);
       text-decoration: none;
-      padding: 0.5rem 1.25rem;
+      padding: 0.52rem 1.35rem;
       border-radius: var(--radius-pill);
-      box-shadow: var(--shadow-btn-pressed);
-      transition: all 0.2s ease;
+      border: 1.5px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 8px 24px -2px rgba(211, 251, 82, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
     .btn-voltage-lime:hover {
-      background: var(--color-voltage-lime-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(211, 251, 82, 0.4);
+      background: linear-gradient(135deg, #e2ff6b 0%, var(--color-voltage-lime) 100%);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(211, 251, 82, 0.65), inset 0 1.5px 2px rgba(255, 255, 255, 1);
     }
 
     /* ==========================================================================
-       2. HERO SECTION (Handshake Aurora + Substack Editorial + School Highlights)
+       2. HERO SECTION (Cyber Emerald Aurora with Liquid Glass Prism)
        ========================================================================== */
     .hero-aurora-section {
       position: relative;
       overflow: hidden;
-      padding: 5.5rem 2rem 5rem;
-      margin-top: -65px; /* Pull beneath the floating nav */
-      background-color: #e2f8ec;
-      background-image: 
-        var(--gradient-hero-overlay),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' width='1200' height='600'%3E%3Cdefs%3E%3CradialGradient id='aurora' cx='50%25' cy='30%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%237af3ff' stop-opacity='0.65'/%3E%3Cstop offset='45%25' stop-color='%23d3fb52' stop-opacity='0.5'/%3E%3Cstop offset='80%25' stop-color='%23005b38' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%23052326' stop-opacity='0.05'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1200' height='600' fill='url(%23aurora)'/%3E%3C!-- Historical Beyazit University Gate Silhouette --%3E%3Cpath d='M260,560 L260,220 Q260,150 330,150 L870,150 Q940,150 940,220 L940,560 Z' fill='%23005b38' opacity='0.08'/%3E%3Cpath d='M420,560 L420,310 Q600,220 780,310 L780,560 Z' fill='%23005b38' opacity='0.12'/%3E%3Ccircle cx='600' cy='110' r='48' fill='%23052326' opacity='0.07'/%3E%3Ctext x='600' y='185' font-family='serif' font-size='22' fill='%23005b38' text-anchor='middle' font-weight='bold' opacity='0.25'%3EISTANBUL UNIVERSITESI 1453%3C/text%3E%3C/svg%3E");
+      padding: 6rem 2rem 5.5rem;
+      margin-top: -75px;
+      background: radial-gradient(at 50% 30%, rgba(122, 243, 255, 0.4) 0%, rgba(211, 251, 82, 0.3) 40%, rgba(0, 91, 56, 0.15) 80%, rgba(248, 250, 248, 0.8) 100%);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.6);
+      text-align: center;
+    }
+
+    .hero-aurora-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' width='1200' height='600'%3E%3Cdefs%3E%3CradialGradient id='aurora' cx='50%25' cy='30%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%237af3ff' stop-opacity='0.6'/%3E%3Cstop offset='45%25' stop-color='%23d3fb52' stop-opacity='0.45'/%3E%3Cstop offset='80%25' stop-color='%23005b38' stop-opacity='0.2'/%3E%3Cstop offset='100%25' stop-color='%23052326' stop-opacity='0.02'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1200' height='600' fill='url(%23aurora)'/%3E%3C!-- Historical Beyazit Gate Silhouette --%3E%3Cpath d='M260,560 L260,220 Q260,150 330,150 L870,150 Q940,150 940,220 L940,560 Z' fill='%23005b38' opacity='0.08'/%3E%3Cpath d='M420,560 L420,310 Q600,220 780,310 L780,560 Z' fill='%23005b38' opacity='0.12'/%3E%3Ccircle cx='600' cy='110' r='48' fill='%23052326' opacity='0.07'/%3E%3Ctext x='600' y='185' font-family='serif' font-size='22' fill='%23005b38' text-anchor='middle' font-weight='bold' opacity='0.25'%3EISTANBUL UNIVERSITESI 1453%3C/text%3E%3C/svg%3E");
       background-size: cover;
       background-position: center;
-      text-align: center;
-      border-bottom: 1.5px solid var(--color-ash-hairline);
+      opacity: 0.85;
+      z-index: 1;
     }
 
     .hero-content {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
       position: relative;
       z-index: 10;
     }
 
-    /* Wizz-Style Eyebrow Tag */
+    /* Wizz-Style Glass Eyebrow */
     .hero-eyebrow-tag {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      background: var(--color-forest-abyss);
+      gap: 0.6rem;
+      background: rgba(5, 35, 38, 0.75);
+      backdrop-filter: var(--glass-blur-sm);
+      -webkit-backdrop-filter: var(--glass-blur-sm);
       color: var(--color-voltage-lime);
-      font-size: 0.76rem;
-      font-weight: 800;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 0.35rem 1rem;
+      padding: 0.4rem 1.15rem;
       border-radius: var(--radius-pill);
       margin-bottom: 1.5rem;
-      box-shadow: var(--shadow-subtle);
-      border: 1px solid rgba(211, 251, 82, 0.3);
+      border: 1px solid rgba(211, 251, 82, 0.35);
+      box-shadow: 0 8px 24px rgba(5, 35, 38, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3);
     }
 
-    /* Giant Playfair Headline */
+    /* Giant Playfair Headline with Glass Light Reflections */
     .hero-title {
       font-family: var(--font-display-serif);
-      font-size: 3.4rem;
+      font-size: 3.6rem;
       font-weight: 900;
       letter-spacing: -0.015em;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
       line-height: 1.08;
       text-transform: uppercase;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.35rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     }
 
-    /* School-Style Highlighted Letter Blocks */
+    /* Highlighted Letter Blocks */
     .highlight-letter {
       display: inline-block;
-      padding: 0 4px;
+      padding: 0 5px;
       margin: 0 1px;
-      line-height: 1;
+      line-height: 1.05;
       font-weight: 900;
-      border-radius: 2px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .highlight-letter.yellow {
-      background-color: var(--color-highlight-yellow);
-      color: #111;
+      background-color: var(--color-canary-yellow);
+      color: var(--color-forest-abyss);
     }
     .highlight-letter.lime {
       background-color: var(--color-voltage-lime);
-      color: #111;
+      color: var(--color-forest-abyss);
     }
 
     .hero-subtitle {
-      font-size: 1.15rem;
+      font-size: 1.18rem;
       color: var(--color-warm-ink);
       max-width: 740px;
       margin: 0 auto 2.25rem;
-      line-height: 1.55;
+      line-height: 1.6;
       font-weight: 500;
     }
 
-    /* Handshake Pillow-Soft Search Input & Chips */
+    /* Handshake Liquid Glass Pillow Search Box */
     .search-hero-box {
-      max-width: 680px;
+      max-width: 700px;
       margin: 0 auto 1.5rem;
-      background: var(--color-paper-canvas);
-      border: 1.5px solid var(--color-carbon-ink);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
+      border: 1.5px solid var(--glass-border-light);
       border-radius: var(--radius-hero-input);
-      padding: 0.4rem 0.5rem 0.4rem 1.5rem;
+      padding: 0.45rem 0.6rem 0.45rem 1.6rem;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-      transition: all 0.2s ease;
+      gap: 0.85rem;
+      box-shadow: 0 14px 40px -4px rgba(0, 91, 56, 0.12), inset 0 2px 4px 0 rgba(255, 255, 255, 0.95);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .search-hero-box:focus-within {
-      box-shadow: 0 10px 30px rgba(0, 91, 56, 0.15);
-      border-color: var(--color-univ-emerald);
+    .search-hero-box:focus-within, .search-hero-box:hover {
+      box-shadow: 0 20px 48px -4px rgba(0, 91, 56, 0.2), 0 0 0 3px rgba(211, 251, 82, 0.4);
+      border-color: var(--color-voltage-lime);
+      background: rgba(255, 255, 255, 0.88);
+      transform: translateY(-2px);
     }
 
     .search-hero-box input {
@@ -315,7 +424,7 @@
       border: none;
       outline: none;
       font-family: var(--font-primary-sans);
-      font-size: 1rem;
+      font-size: 1.02rem;
       color: var(--color-carbon-ink);
       background: transparent;
     }
@@ -325,127 +434,142 @@
     }
 
     .btn-search-trigger {
-      background: var(--color-voltage-lime);
-      color: #000;
-      border: 1.5px solid var(--color-carbon-ink);
+      background: linear-gradient(135deg, var(--color-voltage-lime) 0%, #bcf336 100%);
+      color: var(--color-forest-abyss);
+      border: 1px solid rgba(255, 255, 255, 0.7);
       border-radius: var(--radius-pill);
-      padding: 0.65rem 1.6rem;
+      padding: 0.7rem 1.75rem;
       font-weight: 800;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
       cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      transition: all 0.2s ease;
+      gap: 0.4rem;
+      box-shadow: 0 4px 16px rgba(211, 251, 82, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-search-trigger:hover {
-      background: var(--color-canary-yellow);
-      transform: scale(1.02);
+      background: linear-gradient(135deg, var(--color-canary-yellow) 0%, var(--color-voltage-lime) 100%);
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(211, 251, 82, 0.6);
     }
 
-    /* Suggestion Chips Row (Handshake 9999px pills) */
+    /* Frosted Suggestion Chips */
     .hero-chips-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       flex-wrap: wrap;
       margin-bottom: 2rem;
     }
 
     .suggestion-chip {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid var(--color-ash-hairline);
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: var(--glass-blur-sm);
+      -webkit-backdrop-filter: var(--glass-blur-sm);
+      border: 1px solid rgba(255, 255, 255, 0.85);
       color: var(--color-carbon-ink);
       font-size: 0.82rem;
       font-weight: 700;
-      padding: 0.35rem 0.95rem;
+      padding: 0.4rem 1rem;
       border-radius: var(--radius-pill);
       text-decoration: none;
-      transition: all 0.15s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .suggestion-chip:hover {
       background: var(--color-voltage-lime);
-      border-color: var(--color-carbon-ink);
-      transform: translateY(-1px);
+      color: var(--color-forest-abyss);
+      border-color: rgba(255, 255, 255, 0.9);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(211, 251, 82, 0.4);
     }
 
     .suggestion-chip.active {
       background: var(--color-voltage-lime);
-      border-color: var(--color-carbon-ink);
-      color: #000;
+      color: var(--color-forest-abyss);
+      border-color: rgba(255, 255, 255, 0.9);
     }
 
-    /* Test Invariant Ribbon */
+    /* Test Invariant Ribbon in Frosted Capsule */
     .system-status-ribbon {
       display: inline-flex;
       align-items: center;
-      gap: 0.65rem;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--color-ash-hairline);
-      padding: 0.35rem 1.25rem;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: var(--glass-blur-sm);
+      -webkit-backdrop-filter: var(--glass-blur-sm);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      padding: 0.4rem 1.4rem;
       border-radius: var(--radius-pill);
       font-size: 0.82rem;
       color: var(--color-stone-neutral);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.95);
     }
 
     .badge-test {
-      background: var(--color-sage-tint);
+      background: rgba(211, 251, 82, 0.35);
       color: var(--color-univ-emerald);
-      border: 1px solid #bbf7d0;
+      border: 1px solid var(--color-voltage-lime);
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: var(--radius-pill);
       font-size: 0.74rem;
+      font-family: var(--font-mono);
     }
 
     /* ==========================================================================
-       3. THREE-COLUMN PERSONAL DESKTOP (School + Substack + Threads)
+       3. THREE-COLUMN PERSONAL DESKTOP (Liquid Frosted Glass Cards)
        ========================================================================== */
     .desktop-grid-section {
-      max-width: 1200px;
-      margin: 3.5rem auto 4rem;
+      max-width: 1220px;
+      margin: 3.5rem auto 4.5rem;
       padding: 0 1.5rem;
     }
 
     .desktop-three-cols {
       display: grid;
-      grid-template-columns: 320px 1fr 340px;
+      grid-template-columns: 330px 1fr 350px;
       gap: 1.75rem;
       align-items: start;
     }
 
-    /* Parenthetical Monospace Caption (School) */
     .parenthetical-caption {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       color: var(--color-univ-emerald);
-      font-weight: 500;
-      margin-bottom: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.85rem;
       display: block;
       text-transform: lowercase;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
     }
 
+    /* Liquid Glass Card */
     .desktop-card {
-      background: var(--color-paper-canvas);
-      border: 1px solid var(--color-ash-hairline);
+      background: var(--glass-bg-card);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
+      border: 1.5px solid var(--glass-border-light);
       border-radius: var(--radius-card-lg);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-subtle);
-      transition: all 0.2s ease;
+      padding: 1.75rem;
+      box-shadow: var(--glass-shadow), var(--glass-specular-edge), var(--glass-specular-bottom);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
 
     .desktop-card:hover {
-      box-shadow: var(--shadow-hover);
-      border-color: #d1d5db;
+      background: var(--glass-bg-card-hover);
+      box-shadow: var(--glass-shadow-hover), var(--glass-specular-edge);
+      transform: translateY(-3px);
+      border-color: rgba(211, 251, 82, 0.7);
     }
 
-    /* Column 1: Profile Spotlight & 15-Pills Matrix */
+    /* Profile mini header */
     .profile-mini-header {
       display: flex;
       align-items: center;
@@ -456,22 +580,24 @@
     }
 
     .avatar-circle-lg {
-      width: 58px;
-      height: 58px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      background: var(--color-voltage-lime);
-      border: 1.5px solid var(--color-carbon-ink);
+      background: linear-gradient(135deg, var(--color-voltage-lime) 0%, #a3e635 100%);
+      border: 2px solid #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
+      font-size: 1.85rem;
+      box-shadow: 0 6px 18px rgba(211, 251, 82, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+      flex-shrink: 0;
     }
 
     .profile-title-name {
       font-family: var(--font-display-serif);
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
       display: flex;
       align-items: center;
       gap: 0.4rem;
@@ -488,9 +614,10 @@
       color: #fff;
       font-size: 0.65rem;
       font-weight: 900;
+      box-shadow: 0 2px 6px rgba(0, 91, 56, 0.3);
     }
 
-    /* 3x5 Interactive Matrix */
+    /* 3x5 Interactive Pills Grid (Frosted Glass Buttons) */
     .pills-matrix-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -503,27 +630,32 @@
       font-size: 0.88rem;
       font-weight: 700;
       color: var(--color-carbon-ink);
-      background: var(--color-mist-surface);
-      border: 1px solid var(--color-ash-hairline);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
       border-radius: var(--radius-pill);
-      padding: 0.45rem 0.2rem;
+      padding: 0.45rem 0.25rem;
       text-align: center;
       text-decoration: none;
-      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .matrix-pill:hover {
       background: var(--color-voltage-lime);
-      border-color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
+      border-color: rgba(255, 255, 255, 0.95);
       transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(211, 251, 82, 0.4);
     }
 
     .matrix-pill.active {
       background: var(--color-voltage-lime);
-      border-color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
+      border-color: rgba(255, 255, 255, 0.95);
     }
 
-    /* Column 2: Center Newsfeed (Threads + Substack) */
+    /* Column 2: Center Newsfeed */
     .feed-header-row {
       display: flex;
       justify-content: space-between;
@@ -535,8 +667,9 @@
 
     .feed-heading {
       font-family: var(--font-display-serif);
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 800;
+      color: var(--color-forest-abyss);
     }
 
     .feed-item {
@@ -557,39 +690,42 @@
     }
 
     .feed-avatar {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: #e5e7eb;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     .feed-author {
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
       color: var(--color-carbon-ink);
     }
 
     .feed-time {
       font-size: 0.76rem;
       color: var(--color-stone-neutral);
+      font-family: var(--font-mono);
     }
 
     .feed-body-text {
-      font-size: 0.95rem;
+      font-size: 0.96rem;
       color: var(--color-warm-ink);
-      line-height: 1.5;
-      margin-bottom: 0.75rem;
+      line-height: 1.55;
+      margin-bottom: 0.85rem;
     }
 
     .feed-action-row {
       display: flex;
       align-items: center;
       gap: 1.25rem;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--color-stone-neutral);
     }
 
@@ -600,12 +736,13 @@
       cursor: pointer;
       text-decoration: none;
       color: inherit;
+      transition: color 0.15s;
     }
     .feed-action-btn:hover {
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
     }
 
-    /* Column 3: Hot Jobs & Verified Highlights */
+    /* Column 3: Compact Job Cards */
     .job-listing-compact {
       display: flex;
       flex-direction: column;
@@ -613,20 +750,23 @@
     }
 
     .compact-job-card {
-      background: var(--color-canvas-bg);
-      border: 1px solid var(--color-ash-hairline);
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
       border-radius: var(--radius-card-md);
-      padding: 0.95rem;
+      padding: 1rem;
       text-decoration: none;
       color: inherit;
-      transition: all 0.15s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9);
     }
 
     .compact-job-card:hover {
-      background: #ffffff;
-      border-color: var(--color-univ-emerald);
-      transform: translateX(3px);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--color-voltage-lime);
+      transform: translateX(4px);
+      box-shadow: 0 8px 20px rgba(0, 91, 56, 0.1);
     }
 
     .job-top-meta {
@@ -648,7 +788,8 @@
       padding: 2px 7px;
       border-radius: var(--radius-pill);
       background: var(--color-voltage-lime);
-      color: #000;
+      color: var(--color-forest-abyss);
+      box-shadow: 0 2px 6px rgba(211, 251, 82, 0.3);
     }
 
     .job-title-line {
@@ -656,7 +797,7 @@
       font-size: 1.05rem;
       font-weight: 800;
       margin-bottom: 0.25rem;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
     }
 
     .job-loc-salary {
@@ -666,10 +807,10 @@
     }
 
     /* ==========================================================================
-       4. TWO-COLUMN FEATURE BLOCK & 2x3 STATS (SpatialChat)
+       4. TWO-COLUMN FEATURE BLOCK & 2x3 STATS (SpatialChat Liquid Glass)
        ========================================================================== */
     .feature-spatial-section {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto 4.5rem;
       padding: 0 1.5rem;
     }
@@ -679,11 +820,14 @@
       grid-template-columns: 1fr 1fr;
       gap: 3.5rem;
       align-items: center;
-      background: var(--color-paper-canvas);
-      border: 1.5px solid var(--color-ash-hairline);
+      background: var(--glass-bg-card);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
+      border: 1.5px solid var(--glass-border-light);
       border-radius: var(--radius-card-lg);
-      padding: 3rem;
-      box-shadow: var(--shadow-subtle);
+      padding: 3.25rem;
+      box-shadow: var(--glass-shadow), var(--glass-specular-edge);
+      position: relative;
     }
 
     .feature-left-stack {
@@ -693,44 +837,46 @@
     }
 
     .feature-eyebrow {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: var(--color-univ-emerald);
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      font-family: var(--font-mono);
     }
 
     .feature-title {
       font-family: var(--font-display-serif);
-      font-size: 2.3rem;
+      font-size: 2.4rem;
       font-weight: 900;
       line-height: 1.15;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
     }
 
     .feature-bullets {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .bullet-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 0.95rem;
+      gap: 0.85rem;
+      font-size: 0.96rem;
       font-weight: 600;
       color: var(--color-warm-ink);
     }
 
     .emerald-bullet-disc {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: var(--color-voltage-lime);
       border: 2px solid var(--color-univ-emerald);
       flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(211, 251, 82, 0.6);
     }
 
     /* 2x3 Stat Grid */
@@ -745,26 +891,27 @@
 
     .stat-metric-num {
       font-family: var(--font-display-serif);
-      font-size: 1.85rem;
+      font-size: 1.95rem;
       font-weight: 900;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
       line-height: 1;
     }
 
     .stat-metric-label {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--color-stone-neutral);
-      margin-top: 0.25rem;
+      margin-top: 0.3rem;
     }
 
     /* Right UI Showcase Card */
     .ui-showcase-card {
-      background: linear-gradient(135deg, var(--color-sage-tint) 0%, #ffffff 100%);
-      border: 1.5px solid var(--color-univ-emerald);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: var(--glass-blur-sm);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
       border-radius: var(--radius-card-md);
-      padding: 1.75rem;
-      box-shadow: 0 8px 30px rgba(0, 91, 56, 0.08);
+      padding: 1.85rem;
+      box-shadow: 0 12px 32px rgba(0, 91, 56, 0.1), inset 0 1px 2px rgba(255, 255, 255, 1);
     }
 
     .mockup-header-row {
@@ -782,6 +929,7 @@
       font-weight: 700;
       padding: 3px 9px;
       border-radius: var(--radius-pill);
+      border: 1px solid rgba(211, 251, 82, 0.3);
     }
 
     .app-status-tracker {
@@ -791,54 +939,58 @@
     }
 
     .status-step-row {
-      background: #ffffff;
-      border: 1px solid var(--color-ash-hairline);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
       border-radius: 12px;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
     .status-step-title {
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
+      color: var(--color-forest-abyss);
     }
 
     .status-pill-badge {
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
     }
     .status-pill-badge.green {
       background: var(--color-voltage-lime);
-      color: #000;
+      color: var(--color-forest-abyss);
     }
     .status-pill-badge.yellow {
       background: var(--color-canary-yellow);
-      color: #000;
+      color: var(--color-forest-abyss);
     }
 
     /* ==========================================================================
        5. PORTAL DIRECTORY GRID (6 Core Modules)
        ========================================================================== */
     .portal-section {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto 4.5rem;
       padding: 0 1.5rem;
     }
 
     .section-center-heading {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.25rem;
     }
 
     .section-center-heading h2 {
       font-family: var(--font-display-serif);
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       font-weight: 900;
-      color: var(--color-carbon-ink);
+      color: var(--color-forest-abyss);
     }
 
     .portal-cards-grid {
@@ -848,17 +1000,19 @@
     }
 
     .module-card {
-      background: var(--color-paper-canvas);
-      border: 1.5px solid var(--color-ash-hairline);
+      background: var(--glass-bg-card);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
+      border: 1.5px solid var(--glass-border-light);
       border-radius: var(--radius-card-md);
-      padding: 1.75rem;
+      padding: 1.85rem;
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: all 0.2s ease;
-      box-shadow: var(--shadow-subtle);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--glass-shadow), var(--glass-specular-edge);
       position: relative;
       overflow: hidden;
     }
@@ -870,82 +1024,88 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: var(--color-ash-hairline);
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.8);
+      transition: all 0.25s ease;
     }
 
     .module-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--color-univ-emerald);
+      background: var(--glass-bg-card-hover);
+      box-shadow: var(--glass-shadow-hover), var(--glass-specular-edge);
+      border-color: rgba(211, 251, 82, 0.8);
     }
 
     .module-card:hover::before {
-      background: var(--color-voltage-lime);
+      background: linear-gradient(90deg, var(--color-voltage-lime) 0%, var(--color-canary-yellow) 100%);
     }
 
     .module-icon-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: var(--color-sage-tint);
-      border: 1px solid #bbf7d0;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(211, 251, 82, 0.4) 0%, rgba(122, 243, 255, 0.3) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
+      font-size: 1.75rem;
+      margin-bottom: 1.15rem;
+      box-shadow: 0 4px 14px rgba(0, 91, 56, 0.08), inset 0 1px 1px rgba(255, 255, 255, 1);
     }
 
     .module-card h3 {
       font-family: var(--font-display-serif);
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 800;
+      color: var(--color-forest-abyss);
       margin-bottom: 0.5rem;
     }
 
     .module-card p {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--color-warm-ink);
-      line-height: 1.5;
+      line-height: 1.55;
       margin-bottom: 1.25rem;
     }
 
     .module-action-link {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 800;
       color: var(--color-univ-emerald);
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
     /* ==========================================================================
-       6. SYSTEM DOCK & GUARDIAN HEALTH (Substack + SpatialChat)
+       6. SYSTEM DOCK & GUARDIAN HEALTH (Liquid Glass Dock)
        ========================================================================== */
     .system-dock-section {
-      max-width: 1200px;
-      margin: 0 auto 4rem;
+      max-width: 1220px;
+      margin: 0 auto 4.5rem;
       padding: 0 1.5rem;
     }
 
     .system-dock-card {
-      background: var(--color-forest-abyss);
+      background: var(--glass-bg-nav);
+      backdrop-filter: var(--glass-blur-md);
+      -webkit-backdrop-filter: var(--glass-blur-md);
       color: #ffffff;
+      border: 1.5px solid var(--glass-border-dark);
       border-radius: var(--radius-card-md);
-      padding: 1.25rem 2rem;
+      padding: 1.35rem 2.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1.25rem;
-      box-shadow: var(--shadow-subtle);
+      box-shadow: 0 18px 45px -8px rgba(5, 35, 38, 0.35), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
     }
 
     .dock-status-indicator {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.95rem;
     }
 
     .pulsing-emerald-dot {
@@ -953,13 +1113,13 @@
       height: 12px;
       border-radius: 50%;
       background: var(--color-voltage-lime);
-      box-shadow: 0 0 10px rgba(211, 251, 82, 0.8);
+      box-shadow: 0 0 14px rgba(211, 251, 82, 0.9);
       animation: pulse-glow 2s infinite ease-in-out;
     }
 
     @keyframes pulse-glow {
       0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.7; }
+      50% { transform: scale(1.25); opacity: 0.65; }
     }
 
     .dock-pills-row {
@@ -971,37 +1131,40 @@
 
     .dock-pill-btn {
       font-family: var(--font-mono);
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: #ffffff;
       background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: var(--radius-pill);
-      padding: 0.35rem 0.85rem;
+      padding: 0.4rem 0.95rem;
       text-decoration: none;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
     }
 
     .dock-pill-btn:hover {
       background: var(--color-voltage-lime);
-      color: #000;
+      color: var(--color-forest-abyss);
       border-color: var(--color-voltage-lime);
+      transform: translateY(-1px);
     }
 
     /* ==========================================================================
-       7. FOOTER (Deep Forest Abyss #052326)
+       7. FOOTER (Deep Forest Abyss with Liquid Gloss)
        ========================================================================== */
     footer {
       background: var(--color-forest-abyss);
       color: #94a3b8;
-      border-top: 1.5px solid rgba(255, 255, 255, 0.1);
-      padding: 2.5rem 2rem;
+      border-top: 1.5px solid rgba(255, 255, 255, 0.15);
+      padding: 2.75rem 2rem;
       margin-top: auto;
       font-size: 0.88rem;
+      position: relative;
     }
 
     .footer-inner {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -1013,7 +1176,7 @@
     .footer-brand-meta {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .footer-links {
@@ -1047,8 +1210,8 @@
 
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .hero-title { font-size: 2.3rem; }
-      .search-hero-box { flex-direction: column; padding: 0.75rem; }
+      .hero-title { font-size: 2.4rem; }
+      .search-hero-box { flex-direction: column; padding: 0.85rem; }
       .btn-search-trigger { width: 100%; justify-content: center; }
       .stats-2x3-grid { grid-template-columns: 1fr; }
       .system-dock-card { flex-direction: column; text-align: center; }
@@ -1057,8 +1220,16 @@
 </head>
 <body>
 
+  <!-- Ambient Liquid Mesh Background Canvas -->
+  <div class="liquid-background-canvas">
+    <div class="liquid-orb liquid-orb-1"></div>
+    <div class="liquid-orb liquid-orb-2"></div>
+    <div class="liquid-orb liquid-orb-3"></div>
+    <div class="liquid-orb liquid-orb-4"></div>
+  </div>
+
   <!-- ========================================================================
-       1. FLOATING DARK NAVIGATION PILL (Wizz + Handshake)
+       1. FLOATING DARK NAVIGATION PILL (Wizz + Liquid Glass)
        ======================================================================== -->
   <div class="nav-wrapper">
     <header class="floating-nav-pill">
@@ -1070,7 +1241,7 @@
       <nav>
         <ul class="nav-links">
           <li><a href="/users">Mezunlar</a></li>
-          <li><a href="/jobs">İş & Staj</a></li>
+          <li><a href="/jobs">İş &amp; Staj</a></li>
           <li><a href="/applications">Başvurular</a></li>
           <li><a href="/events">Buluşmalar</a></li>
           <li><a href="/announcements">Duyurular</a></li>
@@ -1130,7 +1301,7 @@
         <span>&bull;</span>
         <span>Lead Developer: <strong>Rumeysa Aydın</strong></span>
         <span>&bull;</span>
-        <span>Theme: <strong>Yellow & Green Minimalist Newsroom</strong></span>
+        <span>Theme: <strong>Liquid Glass &amp; Yellow-Green Chromatic</strong></span>
       </div>
     </div>
   </section>
@@ -1151,18 +1322,18 @@
             <div class="profile-title-name">
               Frosty Franklin <span class="verified-tick" title="Onaylı Mezun">✓</span>
             </div>
-            <div style="font-size: 0.8rem; color: var(--color-stone-neutral); font-weight: 600;">
+            <div style="font-size: 0.8rem; color: var(--color-stone-neutral); font-weight: 600; font-family: var(--font-mono);">
               YBS '24 &bull; Temsilci Profil ID: #101
             </div>
           </div>
         </div>
 
-        <p style="font-size: 0.88rem; color: var(--color-warm-ink); line-height: 1.45; margin-bottom: 1rem;">
+        <p style="font-size: 0.88rem; color: var(--color-warm-ink); line-height: 1.5; margin-bottom: 1rem;">
           İstanbul Üniversitesi Mezunlar Ağı koordinatörü ve mentör. Kariyer danışmanlığı ve staj eşleşmeleri aktif.
         </p>
 
         <!-- 3x5 Interactive Pills Grid -->
-        <span style="font-size: 0.75rem; font-weight: 800; color: var(--color-stone-neutral); text-transform: uppercase;">
+        <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-stone-neutral); text-transform: uppercase; font-family: var(--font-mono);">
           Hızlı Aksiyon Matrisi
         </span>
         <div class="pills-matrix-grid">
@@ -1193,7 +1364,7 @@
         <span class="parenthetical-caption">(Y)our newsroom feed.</span>
         
         <div class="feed-header-row">
-          <h2 class="feed-heading">Kampüs & Kariyer Akışı</h2>
+          <h2 class="feed-heading">Kampüs &amp; Kariyer Akışı</h2>
           <a href="/announcements" style="font-size: 0.82rem; font-weight: 700; color: var(--color-univ-emerald); text-decoration: none;">Tümü &rarr;</a>
         </div>
 
@@ -1275,7 +1446,7 @@
             <div class="job-loc-salary">📍 Gebze Teknopark &bull; ₺95.000+</div>
           </a>
 
-          <a href="/jobs/new" class="btn-voltage-lime" style="justify-content: center; width: 100%; font-size: 0.84rem;">
+          <a href="/jobs/new" class="btn-voltage-lime" style="justify-content: center; width: 100%; font-size: 0.84rem; margin-top: 0.5rem;">
             + İlan Yayınla
           </a>
         </div>
@@ -1285,7 +1456,7 @@
   </section>
 
   <!-- ========================================================================
-       4. TWO-COLUMN FEATURE BLOCK & 2x3 STAT GRID (SpatialChat)
+       4. TWO-COLUMN FEATURE BLOCK & 2x3 STAT GRID (SpatialChat Liquid Glass)
        ======================================================================== -->
   <section class="feature-spatial-section">
     <div class="feature-two-col">
@@ -1295,7 +1466,7 @@
         <h2 class="feature-title">
           Köklü Üniversite Mirası, Geleceğe Açılan Kariyer Ağı
         </h2>
-        <p style="font-size: 1rem; color: var(--color-warm-ink); line-height: 1.6;">
+        <p style="font-size: 1.02rem; color: var(--color-warm-ink); line-height: 1.65;">
           İstanbul Üniversitesi mezunları ile öğrencilerini aynı dijital çalışma masasında buluşturuyor; şeffaf iş başvuruları, mentörlük eşleşmeleri ve doğrulanmış profillerle kariyer yolculuklarını hızlandırıyoruz.
         </p>
 
@@ -1318,7 +1489,7 @@
         <div class="stats-2x3-grid">
           <div>
             <div class="stat-metric-num">12,450+</div>
-            <div class="stat-metric-label">Kayıtlı Mezun & Öğrenci</div>
+            <div class="stat-metric-label">Kayıtlı Mezun &amp; Öğrenci</div>
           </div>
           <div>
             <div class="stat-metric-num">850+</div>
@@ -1334,7 +1505,7 @@
       <!-- Right: UI Showcase Mockup -->
       <div class="ui-showcase-card">
         <div class="mockup-header-row">
-          <span style="font-weight: 800; font-size: 0.95rem;">Canlı Başvuru Durum Takibi</span>
+          <span style="font-weight: 800; font-size: 0.95rem; color: var(--color-forest-abyss);">Canlı Başvuru Durum Takibi</span>
           <span class="mockup-tag">N:M ACTION TABLE</span>
         </div>
 
@@ -1342,7 +1513,7 @@
           <div class="status-step-row">
             <div>
               <div class="status-step-title">Senior Full-Stack Node.js Engineer</div>
-              <div style="font-size: 0.78rem; color: var(--color-stone-neutral);">TechVentures &bull; Aday: Ahmet Yılmaz</div>
+              <div style="font-size: 0.78rem; color: var(--color-stone-neutral); font-family: var(--font-mono);">TechVentures &bull; Aday: Ahmet Yılmaz</div>
             </div>
             <span class="status-pill-badge green">INTERVIEW</span>
           </div>
@@ -1350,7 +1521,7 @@
           <div class="status-step-row">
             <div>
               <div class="status-step-title">Veri Analitiği Stajyeri</div>
-              <div style="font-size: 0.78rem; color: var(--color-stone-neutral);">FinTech Global &bull; Aday: Zeynep Kaya</div>
+              <div style="font-size: 0.78rem; color: var(--color-stone-neutral); font-family: var(--font-mono);">FinTech Global &bull; Aday: Zeynep Kaya</div>
             </div>
             <span class="status-pill-badge yellow">REVIEWING</span>
           </div>
@@ -1358,14 +1529,14 @@
           <div class="status-step-row">
             <div>
               <div class="status-step-title">Yapay Zeka Araştırmacısı</div>
-              <div style="font-size: 0.78rem; color: var(--color-stone-neutral);">AI Lab &bull; Aday: Rumeysa Aydın</div>
+              <div style="font-size: 0.78rem; color: var(--color-stone-neutral); font-family: var(--font-mono);">AI Lab &bull; Aday: Rumeysa Aydın</div>
             </div>
             <span class="status-pill-badge green">OFFERED</span>
           </div>
         </div>
 
-        <div style="margin-top: 1.25rem; text-align: center;">
-          <a href="/applications" class="btn-voltage-lime" style="font-size: 0.82rem; padding: 0.45rem 1.2rem;">
+        <div style="margin-top: 1.5rem; text-align: center;">
+          <a href="/applications" class="btn-voltage-lime" style="font-size: 0.84rem; padding: 0.5rem 1.35rem;">
             Tüm Başvuruları İncele &rarr;
           </a>
         </div>
@@ -1374,12 +1545,12 @@
   </section>
 
   <!-- ========================================================================
-       5. PORTAL DIRECTORY (6 Core Modules)
+       5. PORTAL DIRECTORY (6 Core Modules in Liquid Glass Tiles)
        ======================================================================== -->
   <section class="portal-section">
     <div class="section-center-heading">
       <span class="parenthetical-caption">(Y)our modular directory.</span>
-      <h2>Alumni Portalı Modülleri & Hizmetler</h2>
+      <h2>Alumni Portalı Modülleri &amp; Hizmetler</h2>
     </div>
 
     <div class="portal-cards-grid">
@@ -1387,7 +1558,7 @@
       <a href="/users" class="module-card">
         <div>
           <div class="module-icon-wrap">🎓</div>
-          <h3>Mezun & Öğrenci Yönetimi</h3>
+          <h3>Mezun &amp; Öğrenci Yönetimi</h3>
           <p>Kullanıcı profilleri, bölüm ve mezuniyet yılı bazlı filtreleme, tam CRUD işlemleri.</p>
         </div>
         <div class="module-action-link">Kullanıcıları Keşfet &rarr;</div>
@@ -1407,7 +1578,7 @@
       <a href="/applications" class="module-card">
         <div>
           <div class="module-icon-wrap">📝</div>
-          <h3>Başvurular & Değerlendirme</h3>
+          <h3>Başvurular &amp; Değerlendirme</h3>
           <p>N:M aksiyon tablosu, durum geçişleri (Mülakat, Teklif, Kabul) ve aday takibi.</p>
         </div>
         <div class="module-action-link">Başvuruları Yönet &rarr;</div>
@@ -1417,8 +1588,8 @@
       <a href="/events" class="module-card">
         <div>
           <div class="module-icon-wrap">📅</div>
-          <h3>Buluşmalar & Reunion</h3>
-          <p>Class of 2000 & 2026 buluşmaları, networking etkinlikleri ve katılım yönetimi.</p>
+          <h3>Buluşmalar &amp; Reunion</h3>
+          <p>Class of 2000 &amp; 2026 buluşmaları, networking etkinlikleri ve katılım yönetimi.</p>
         </div>
         <div class="module-action-link">Etkinliklere Katıl &rarr;</div>
       </a>
@@ -1437,7 +1608,7 @@
       <a href="/api/swagger" target="_blank" class="module-card">
         <div>
           <div class="module-icon-wrap">⚡</div>
-          <h3>Swagger API & Testler</h3>
+          <h3>Swagger API &amp; Testler</h3>
           <p>OpenAPI 3.0 standartlarında RESTful uç noktalar, JSON şemaları ve interaktif UI.</p>
         </div>
         <div class="module-action-link">API Dokümanını Aç ↗</div>
@@ -1446,7 +1617,7 @@
   </section>
 
   <!-- ========================================================================
-       6. SYSTEM HEALTH & GUARDIAN STATUS DOCK (Substack + SpatialChat)
+       6. SYSTEM HEALTH & GUARDIAN STATUS DOCK (Liquid Glass Dock)
        ======================================================================== -->
   <section class="system-dock-section">
     <div class="system-dock-card">
@@ -1467,7 +1638,7 @@
   </section>
 
   <!-- ========================================================================
-       7. FOOTER (Deep Forest Abyss #052326)
+       7. FOOTER (Deep Forest Abyss with Liquid Gloss)
        ======================================================================== -->
   <footer>
     <div class="footer-inner">

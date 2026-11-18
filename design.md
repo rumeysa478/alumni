@@ -119,24 +119,56 @@ The design intentionally contrasts **pillow-soft containers** with **crisp, comp
 | **Hero Containers & Showcase Cards**| `24px` | Large architectural radius framing featured content. |
 | **Avatars & Crest Badges** | `9999px` | Pure circular user identities. |
 
+### 💧 Tokens — Liquid Glass & Fluid Refraction System
+
+The interface elevates traditional flat cards into **Liquid Glass (Glassmorphism & Specular Refraction)**:
+
+| Glass Token | Value | Role & Visual Impact |
+|:---|:---|:---|
+| `--glass-bg-subtle` | `rgba(255, 255, 255, 0.55)` | Ultra-sheer frosted overlay for chips and secondary filters. |
+| `--glass-bg-card` | `rgba(255, 255, 255, 0.74)` | Dominant frosted glass card surface with specular refraction. |
+| `--glass-bg-card-hover`| `rgba(255, 255, 255, 0.88)` | Illuminated card focus surface upon cursor hover. |
+| `--glass-bg-nav` | `rgba(5, 35, 38, 0.75)` | Deep Forest frosted glass for the floating navigation pill. |
+| `--glass-border-light` | `rgba(255, 255, 255, 0.80)` | Crisp crystalline border highlight on light surfaces. |
+| `--glass-border-dark` | `rgba(255, 255, 255, 0.22)` | Luminous perimeter rim on dark floating nav and dock bars. |
+| `--glass-specular-edge`| `inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95)` | Top refraction gleam simulating light through glass edge. |
+| `--glass-blur-sm` | `blur(14px) saturate(180%)` | Subtle glass frosting for badges, chips, and tooltips. |
+| `--glass-blur-md` | `blur(24px) saturate(190%)` | Standard liquid glass frosting for desktop cards and nav. |
+| `--glass-blur-lg` | `blur(36px) saturate(200%)` | Deep crystal refraction for modal sheets and hero prisms. |
+
+```css
+/* Liquid Glass Recipe */
+.glass-surface {
+  background: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1.5px solid var(--glass-border-light);
+  border-radius: var(--radius-card-lg);
+  box-shadow: 
+    0 14px 40px -8px rgba(5, 35, 38, 0.08),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
+}
+```
+
 ### Elevation & Depth System
 
-Surfaces stay largely flat to maintain newsroom speed, with carefully rationed elevation:
+Surfaces balance frosted glass refraction with disciplined newsroom speed:
 
 ```css
 :root {
-  /* SpatialChat 6%-opacity subtle card float */
-  --shadow-card-subtle: 0 4px 16px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 10px 28px rgba(0, 0, 0, 0.09);
+  /* Liquid glass depth & float */
+  --shadow-card-subtle: 0 14px 40px -8px rgba(5, 35, 38, 0.08), 0 4px 16px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 22px 50px -10px rgba(0, 91, 56, 0.16), 0 8px 24px rgba(0, 0, 0, 0.06);
 
   /* Threads container spread halo */
   --shadow-feed-halo: 0 0 12px rgba(0, 0, 0, 0.04), 0 0 0 48px #f8faf8;
 
-  /* Handshake button inset pressed-paper feel */
-  --shadow-btn-pressed: rgba(255, 255, 255, 0.25) 0 1px 0 0 inset, rgba(0, 0, 0, 0.12) 0 -1px 0 0 inset;
+  /* Voltage lime liquid button glow */
+  --shadow-btn-lime: 0 8px 24px -2px rgba(211, 251, 82, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.9);
 
   /* Floating dark nav shadow */
-  --shadow-nav-floating: 0 8px 32px rgba(5, 35, 38, 0.18);
+  --shadow-nav-floating: 0 20px 45px -10px rgba(5, 35, 38, 0.35), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.45);
 }
 ```
 
