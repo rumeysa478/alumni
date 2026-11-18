@@ -32,7 +32,7 @@
    - [Dosya Tabanlı Hata Günlüğü (logs/error.logs)](#4-dosya-tabanlı-hata-günlüğü-logserrorlogs)
 8. [Swagger & OpenAPI Dokümantasyonu](#-swagger--openapi-dokümantasyonu)
 9. [Veri Tasarımı Dokümantasyonu (ddd.md)](#-veri-tasarımı-dokümantasyonu-dddmd)
-10. [Git Dal Yönetimi ve Dal Dokümantasyonu (branch.md)](#-git-dal-yönetimi-ve-dal-dokümantasyonu-branchmd)
+10. [Marka Kimliği ve Tasarım Sistemi (brand.md)](#-marka-kimliği-ve-tasarım-sistemi-brandmd)
 11. [Çevresel Değişkenler (.env ve example.env)](#-çevresel-değişkenler-env-ve-exampleenv)
 12. [Kurulum, Çalıştırma ve Testler](#-kurulum-çalıştırma-ve-testler)
 13. [Docker Desteği ve "The Forgetting Test" Sırrı](#-docker-desteği-ve-the-forgetting-test-sırrı)
@@ -99,7 +99,7 @@ alumni/
 ├── docker-compose.yml            # Docker Compose servis tanımı
 ├── README.md                     # Kapsamlı proje ve mimari dokümantasyonu
 ├── ddd.md                        # Veri tasarımı ve mimari dokümantasyonu
-├── branch.md                     # Git dal yönetimi ve geçici dallar dokümantasyonu
+├── brand.md                      # CONNEXT marka kimliği, renkler, tipografi ve tasarım sistemi
 │
 ├── logs/                         # Hata günlükleri dizini
 │   ├── .gitkeep                  # Git takip dosyası
@@ -184,7 +184,7 @@ alumni/
 | **Middleware** | `src/middleware/serverErrorGuardian.middleware.js` | Merkezi 5xx Express hata yakalama ara yazılımıdır. Beklenmeyen istisnaları yakalar, sistem çökmesini engeller, açıklayıcı `reason` üretir ve stack trace ile birlikte `logs/error.logs` dosyasına kaydeder. |
 | **View (404)** | `views/404.ejs` | Özel tasarlanmış Generic 404 Hata Sayfası. İstemcinin yönlendirildiği geçersiz URL'yi, hata gerekçesini ve hızlı gezinti butonlarını sunar. |
 | **Logs** | `logs/error.logs` | Uygulamada meydana gelen 4xx ve 5xx hata olaylarının kronolojik olarak saklandığı günlük dosyasıdır. |
-| **Git Docs** | `branch.md` | Projede uygulanan Git dallanma stratejisini (branching strategy), oluşturulan geçici dalları (`temp-homepage-design`) ve dal yönetim komutlarını belgeler. |
+| **Brand & Design** | `brand.md` | CONNEXT marka kimliğini, renk paletini (`--connext-gradient`, pastel tonlar), Playfair Display ve Plus Jakarta Sans tipografi sistemini ve UI bileşen anatomisini belgeler. |
 
 ---
 
@@ -532,16 +532,18 @@ Projenin ilişkisel veritabanı şeması, E-R modeli, normalizasyon adımları v
 
 ---
 
-## 🌿 Git Dal Yönetimi ve Dal Dokümantasyonu (branch.md)
+## 🎨 Marka Kimliği ve Tasarım Sistemi (brand.md)
 
-Projenin sürüm kontrolü ve özellik geliştirme yaşam döngüsü profesyonel **Git Dal Yönetimi (Branching Strategy)** kurallarına göre yürütülmektedir:
+Projenin görsel marka kimliği, renk paleti, tipografi kuralları ve UI bileşen anatomisi özel olarak hazırlanan **Marka ve Tasarım Kılavuzu**'nda belgelenmiştir:
 
-👉 **[Kapsamlı Git Dal Yönetim Rehberini İnceleyin (branch.md)](./branch.md)**
+👉 **[Kapsamlı Marka ve Tasarım Sistemini İnceleyin (brand.md)](./brand.md)**
 
 ### Özet Kapsam:
-- **`main` Dalı:** Canlı ortamda çalışan kararlı (production-ready) ana dal.
-- **`temp-homepage-design` Geçici Dalı (Temporary Branch):** Ana sayfanın modern istatistik kartları (`12,450+ Mezun`, `850+ İlan`), hızlı eylem hapları ve iş/etkinlik vitrin modülleri ile görsel olarak zenginleştirilmesi amacıyla açılmış ve doğrulanmış geçici özellik dalı.
-- **Dal Yaşam Döngüsü & Komutlar:** Dallar arası geçiş (`checkout`), fark inceleme (`diff`), birleştirme (`merge`) ve temizleme yönergeleri.
+- **Marka & Tema:** `CONNEXT` (Retro-Modern Akademik Füzyon & Tarihi Beyazıt Kapısı silüeti).
+- **Renk Paleti & Degrade:** Gün batımı degrade (`--connext-gradient`), pudra pembe (`#ffd6e0`), şeftali krem (`#ffe5d9`), lavanta (`#dde4ff`) ve koyu kenarlık (`#1a1a1a`).
+- **Tipografi Sistemi:** Başlıklarda `Playfair Display` (Serif 700-900), gövde metinlerinde `Plus Jakarta Sans` (Sans-serif 400-700).
+- **UI Bileşenleri:** Yuvarlatılmış hap butonlar (pill buttons), 3x5 interaktif buton matrisi, canlı istatistik sayaçları ve ikili vitrin kartları.
+- **Tasarım Dalı:** Tasarımın canlı uygulandığı geçici dal: [`temp-homepage-design`](./brand.md#6-ana-sayfa-tasarım-uygulaması-temp-homepage-design).
 
 ---
 
@@ -720,5 +722,5 @@ Detaylı teknik izah ve SQL adımları için 👉 [ddd.md Bölüm 7'ye bakınız
 - **Ders:** Web Programlama / Web Programming (3. Sınıf)
 - **GitHub Deposu:** [https://github.com/rumeysa478/alumni](https://github.com/rumeysa478/alumni)
 - **Veri Tasarımı:** [Data Design Documentation (ddd.md)](./ddd.md)
-- **Dal Yönetimi:** [Git Branching Strategy (branch.md)](./branch.md)
+- **Marka & Tasarım:** [CONNEXT Brand & Design System (brand.md)](./brand.md)
 - **Lisans:** [MIT Lisansı](https://opensource.org/licenses/MIT)
