@@ -12,13 +12,20 @@
 
   <style>
     :root {
-      --connext-gradient: linear-gradient(90deg, #ffaf9b 0%, #ff8b94 30%, #f7a8b8 65%, #c8b6e2 100%);
+      --connext-gradient: linear-gradient(135deg, #ffaf9b 0%, #ff8b94 25%, #f7a8b8 50%, #c8b6e2 75%, #a8c0ff 100%);
+      --connext-gradient-alt: linear-gradient(90deg, #ffaf9b 0%, #ff8b94 30%, #f7a8b8 65%, #c8b6e2 100%);
       --connext-pink: #ffd6e0;
       --connext-peach: #ffe5d9;
       --connext-lavender: #dde4ff;
+      --connext-mint: #d1fae5;
+      --connext-yellow: #fef3c7;
       --connext-dark: #111827;
       --connext-border: #1a1a1a;
       --radius-pill: 9999px;
+      --radius-card: 20px;
+      --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+      --shadow-md: 0 10px 25px rgba(0,0,0,0.07);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
     }
 
     * {
@@ -35,21 +42,22 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      line-height: 1.5;
     }
 
-    /* Top Gradient Navigation Bar (Photo 4) */
+    /* Top Gradient Navigation Bar */
     .connext-topbar {
-      background: var(--connext-gradient);
-      border-bottom: 1.5px solid var(--connext-border);
-      padding: 0.65rem 2rem;
+      background: var(--connext-gradient-alt);
+      border-bottom: 2px solid var(--connext-border);
+      padding: 0.75rem 2rem;
       position: sticky;
       top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
     .topbar-inner {
-      max-width: 1360px;
+      max-width: 1400px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -64,28 +72,32 @@
       gap: 0.85rem;
       text-decoration: none;
       color: #111;
+      transition: transform 0.2s;
+    }
+    .brand-group:hover {
+      transform: scale(1.02);
     }
 
     .iu-emblem {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: #005b38;
-      border: 1.5px solid #111;
+      border: 2px solid #111;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .connext-brand-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.75rem;
+      font-size: 1.9rem;
       font-weight: 900;
-      letter-spacing: 0.32em;
+      letter-spacing: 0.3em;
       color: #111;
       text-transform: uppercase;
       line-height: 1;
@@ -105,33 +117,42 @@
       font-weight: 700;
       color: #111;
       text-decoration: none;
-      transition: all 0.2s;
-      padding: 0.25rem 0.6rem;
+      transition: all 0.2s ease;
+      padding: 0.35rem 0.85rem;
       border-radius: var(--radius-pill);
+      border: 1px solid transparent;
     }
 
     .topbar-nav a:hover {
-      background-color: rgba(255, 255, 255, 0.45);
+      background-color: rgba(255, 255, 255, 0.7);
+      border-color: var(--connext-border);
+      transform: translateY(-1px);
     }
 
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.75rem;
     }
 
     .circle-icon-btn {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid var(--connext-border);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #111;
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .circle-icon-btn:hover {
+      background: #111;
+      color: #fff;
+      transform: translateY(-2px);
     }
 
     .lang-pill {
@@ -139,7 +160,7 @@
       color: #fff;
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.25rem 0.65rem;
+      padding: 0.35rem 0.75rem;
       border-radius: var(--radius-pill);
       letter-spacing: 0.05em;
     }
@@ -147,11 +168,12 @@
     .search-pill {
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.9);
       border: 1.5px solid var(--connext-border);
       border-radius: var(--radius-pill);
-      padding: 0.25rem 0.75rem;
-      gap: 0.4rem;
+      padding: 0.3rem 0.85rem;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
     }
 
     .search-pill input {
@@ -159,68 +181,103 @@
       background: transparent;
       outline: none;
       font-size: 0.85rem;
-      width: 110px;
+      width: 130px;
+      font-family: inherit;
     }
 
-    /* Hero Section: Vintage Beyazıt Gate Background (Photo 4) */
+    /* Hero Section with Beyazıt Gate Backdrop & Glass Effect */
     .hero-vintage-section {
       position: relative;
       background-color: #e2e8f0;
       background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.75)),
+        linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.8)),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' width='1200' height='600'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23cbd5e1'/%3E%3Cstop offset='100%25' stop-color='%2394a3b8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='600' fill='url(%23sky)'/%3E%3C!-- Arch of Beyazit Istanbul University Gate --%3E%3Cpath d='M250,550 L250,220 Q250,160 310,160 L890,160 Q950,160 950,220 L950,550 Z' fill='%2364748b' opacity='0.35'/%3E%3Cpath d='M420,550 L420,320 Q600,240 780,320 L780,550 Z' fill='%23475569' opacity='0.45'/%3E%3Ccircle cx='600' cy='120' r='45' fill='%23334155' opacity='0.3'/%3E%3Ctext x='600' y='210' font-family='serif' font-size='26' fill='%231e293b' text-anchor='middle' font-weight='bold' opacity='0.6'%3EISTANBUL UNIVERSITESI%3C/text%3E%3C/svg%3E");
       background-size: cover;
       background-position: center;
-      padding: 4.5rem 2rem 5.5rem;
+      padding: 5rem 2rem 6.5rem;
       text-align: center;
       border-bottom: 2px solid var(--connext-border);
     }
 
+    .hero-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1.5px solid var(--connext-border);
+      padding: 0.35rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
     .hero-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 2.8rem;
+      font-size: 3.2rem;
       font-weight: 900;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       color: #111827;
       text-transform: uppercase;
-      margin-bottom: 2.5rem;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(255,255,255,0.9);
+      line-height: 1.15;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: #334155;
+      max-width: 780px;
+      margin: 0 auto 2.5rem;
+      font-weight: 500;
     }
 
     .hero-btn-group {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       gap: 1.25rem;
       margin-bottom: 2rem;
+      flex-wrap: wrap;
     }
 
     .hero-pill-btn {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      padding: 0.75rem 4rem;
+      padding: 0.85rem 3.5rem;
       border-radius: var(--radius-pill);
       border: 2px solid var(--connext-border);
       background: rgba(255, 255, 255, 0.95);
       color: #111;
       text-decoration: none;
-      min-width: 290px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      transition: all 0.25s ease;
+      min-width: 240px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-block;
     }
 
-    .hero-pill-btn:hover {
+    .hero-pill-btn.primary {
       background: #111;
       color: #fff;
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .hero-pill-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+
+    .hero-pill-btn.primary:hover {
+      background: #2563eb;
+      border-color: #2563eb;
     }
 
     .hero-sublink {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       color: #111;
       font-weight: 700;
       margin-top: 0.5rem;
@@ -232,54 +289,147 @@
       font-weight: 800;
     }
 
-    /* Test Compatibility Badge */
+    /* Test Invariant Ribbon */
     .system-status-ribbon {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      background: #fff;
-      padding: 0.35rem 1rem;
+      gap: 0.65rem;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0.45rem 1.25rem;
       border-radius: var(--radius-pill);
-      border: 1px solid #e2e8f0;
+      border: 1.5px solid var(--connext-border);
       font-size: 0.85rem;
-      color: #475569;
+      color: #334155;
+      box-shadow: var(--shadow-sm);
     }
     .badge-test {
       background: #e0f2fe;
       color: #0369a1;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 9999px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
       font-size: 0.75rem;
+      border: 1px solid #bae6fd;
     }
 
-    /* Main Container with Profile Feature (Photo 1) */
-    .profile-feature-container {
-      max-width: 1100px;
-      margin: -2.5rem auto 3.5rem;
+    /* Live Stats Ribbon (New Feature in Branch) */
+    .live-stats-container {
+      max-width: 1200px;
+      margin: -2.5rem auto 3rem;
       padding: 0 1.5rem;
       position: relative;
-      z-index: 10;
+      z-index: 20;
+    }
+
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .stat-box {
+      background: #ffffff;
+      border: 2px solid var(--connext-border);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s;
+    }
+    .stat-box:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-icon {
+      font-size: 2.2rem;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--connext-peach);
+      border: 1.5px solid var(--connext-border);
+      border-radius: 12px;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #111;
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Quick Filter Chips Bar */
+    .quick-actions-bar {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .action-chip {
+      background: #fff;
+      border: 1.5px solid var(--connext-border);
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #111;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .action-chip:hover {
+      background: #111;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .action-chip.active {
+      background: var(--connext-pink);
+    }
+
+    /* Spotlight Profile Card */
+    .profile-feature-container {
+      max-width: 1100px;
+      margin: 0 auto 3.5rem;
+      padding: 0 1.5rem;
     }
 
     .profile-feature-card {
       background: #ffffff;
       border: 2px solid var(--connext-border);
-      border-radius: 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
     }
 
     .profile-header-row {
-      padding: 1.5rem 2rem;
+      padding: 1.75rem 2.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1.5rem;
-      border-bottom: 1.5px solid var(--connext-border);
-      background: #fff;
+      border-bottom: 2px solid var(--connext-border);
+      background: linear-gradient(to right, #ffffff, #fafafa);
     }
 
     .profile-user-left {
@@ -289,38 +439,40 @@
     }
 
     .profile-avatar-circle {
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
       border: 2px solid var(--connext-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
-      background: #fafafa;
+      font-size: 2.4rem;
+      background: var(--connext-pink);
+      box-shadow: var(--shadow-sm);
     }
 
     .profile-name-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 2rem;
+      font-size: 2.1rem;
       font-weight: 800;
       color: #111;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .cn-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       border: 1.5px solid #ec4899;
       color: #ec4899;
-      font-size: 0.75rem;
-      font-weight: bold;
+      font-size: 0.8rem;
+      font-weight: 900;
+      background: #fff;
     }
 
     .profile-right-meta {
@@ -331,12 +483,13 @@
 
     .connext-icon-box {
       border: 1.5px solid var(--connext-border);
-      padding: 0.4rem 0.75rem;
-      border-radius: 10px;
+      padding: 0.45rem 0.85rem;
+      border-radius: 12px;
       font-family: 'Playfair Display', Georgia, serif;
       font-weight: 800;
       letter-spacing: 0.1em;
       font-size: 1.1rem;
+      background: var(--connext-yellow);
     }
 
     .dept-info {
@@ -348,26 +501,25 @@
       gap: 0.4rem;
     }
 
-    /* Sub-bar with Information */
     .profile-subbar {
-      padding: 0.9rem 2rem;
+      padding: 0.9rem 2.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
       border-bottom: 1.5px solid var(--connext-border);
-      background: #fafafa;
+      background: #f8fafc;
       font-size: 0.92rem;
     }
 
-    /* 3x5 Interactive Pills Grid (Photo 1) */
+    /* 3x5 Interactive Pills Grid */
     .pills-grid-container {
-      padding: 2rem;
+      padding: 2.25rem 2rem;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      max-width: 650px;
+      gap: 1.15rem;
+      max-width: 680px;
       margin: 0 auto;
     }
 
@@ -375,7 +527,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.65rem 1.25rem;
+      padding: 0.7rem 1.25rem;
       border-radius: var(--radius-pill);
       border: 1.5px solid var(--connext-border);
       font-family: 'Playfair Display', Georgia, serif;
@@ -383,96 +535,249 @@
       font-weight: 700;
       color: #111;
       text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-      transition: all 0.2s ease;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       background: var(--connext-peach);
     }
 
     .grid-pill:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+      border-color: #000;
     }
 
     .grid-pill.pill-pink-active {
       background: var(--connext-pink);
     }
 
-    /* Portal Directory Cards */
-    .portal-directory-section {
-      max-width: 1100px;
+    /* Featured Sections: Jobs & Events Preview */
+    .showcase-dual-section {
+      max-width: 1200px;
       margin: 0 auto 4rem;
       padding: 0 1.5rem;
-    }
-
-    .directory-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2rem;
     }
 
-    .dir-card {
-      background: #fff;
-      border: 1.5px solid var(--connext-border);
-      border-radius: 14px;
-      padding: 1.5rem;
-      transition: all 0.2s;
-      text-decoration: none;
-      color: inherit;
+    .showcase-card {
+      background: #ffffff;
+      border: 2px solid var(--connext-border);
+      border-radius: var(--radius-card);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
+    .showcase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 0.75rem;
+    }
+
+    .showcase-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #111;
+    }
+
+    .showcase-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .showcase-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .showcase-item:hover {
+      background: #f1f5f9;
+      border-color: var(--connext-border);
+      transform: translateX(4px);
+    }
+
+    .item-main {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+    .item-sub {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .item-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-pill);
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .item-tag.green { background: #dcfce7; color: #166534; }
+    .item-tag.purple { background: #f3e8ff; color: #6b21a8; }
+
+    /* Portal Directory Cards */
+    .portal-directory-section {
+      max-width: 1200px;
+      margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    .section-title-center {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 1.75rem;
+      text-align: center;
+      color: #111;
+    }
+
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .dir-card {
+      background: #fff;
+      border: 2px solid var(--connext-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+
     .dir-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.07);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
       border-color: #000;
+    }
+
+    .dir-card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
     }
 
     .dir-card h3 {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       margin-bottom: 0.5rem;
       color: #111;
+      font-weight: 800;
     }
 
     .dir-card p {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: #475569;
-      line-height: 1.5;
-      margin-bottom: 1rem;
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
     }
 
     .dir-card-action {
-      font-weight: 700;
-      font-size: 0.85rem;
+      font-weight: 800;
+      font-size: 0.88rem;
       color: #0284c7;
       display: flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.35rem;
+    }
+
+    /* System Dock & Developer Ribbon */
+    .system-dock {
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
+      padding: 1.25rem 2rem;
+      background: #f1f5f9;
+      border: 1.5px solid var(--connext-border);
+      border-radius: var(--radius-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .dock-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dock-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+
+    .dock-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dock-link-btn {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+      padding: 0.35rem 0.85rem;
+      background: #fff;
+      border: 1px solid var(--connext-border);
+      border-radius: var(--radius-pill);
+      transition: all 0.2s;
+    }
+    .dock-link-btn:hover {
+      background: #0f172a;
+      color: #fff;
     }
 
     footer {
       background: #ffffff;
-      border-top: 1.5px solid var(--connext-border);
-      padding: 1.75rem 2rem;
+      border-top: 2px solid var(--connext-border);
+      padding: 2.25rem 2rem;
       margin-top: auto;
       text-align: center;
       color: #64748b;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
 
     @media (max-width: 768px) {
-      .hero-title { font-size: 2rem; }
+      .hero-title { font-size: 2.2rem; }
       .pills-grid-container { grid-template-columns: 1fr; }
       .profile-header-row { flex-direction: column; text-align: center; }
       .profile-user-left { flex-direction: column; }
+      .system-dock { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top CONNEXT Gradient Header (Photo 4) -->
+  <!-- Top CONNEXT Gradient Header -->
   <header class="connext-topbar">
     <div class="topbar-inner">
       <a href="/" class="brand-group">
@@ -483,31 +788,41 @@
       <nav>
         <ul class="topbar-nav">
           <li><a href="/about">About Us</a></li>
-          <li><a href="/about">Help</a></li>
+          <li><a href="/users">Mezunlar</a></li>
+          <li><a href="/jobs">İş & Staj</a></li>
+          <li><a href="/events">Etkinlikler</a></li>
+          <li><a href="/announcements">Duyurular</a></li>
           <li><a href="/about">Contact</a></li>
-          <li><a href="/users">Team</a></li>
-          <li><a href="/about">Terms and Conditions</a></li>
         </ul>
       </nav>
 
       <div class="topbar-right">
-        <a href="/" class="circle-icon-btn" title="Home">🏠</a>
+        <a href="/" class="circle-icon-btn" title="Ana Sayfa">🏠</a>
+        <a href="/users/new" class="circle-icon-btn" title="Yeni Kayıt">➕</a>
         <span class="lang-pill">TR ▼</span>
         <div class="search-pill">
           <span>🔍</span>
-          <input type="text" placeholder="Search..." readonly onclick="window.location.href='/users'">
+          <input type="text" placeholder="Mezun, ilan ara..." readonly onclick="window.location.href='/users'">
           <span>🎙️</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section: Historical Beyazıt Gate Backdrop (Photo 4) -->
+  <!-- Hero Section: Historical Beyazıt Gate Backdrop -->
   <section class="hero-vintage-section">
+    <div class="hero-badge-pill">
+      🏛️ İstanbul Üniversitesi &bull; Mezunlar ve Kariyer Ağı
+    </div>
+
     <h1 class="hero-title">İSTANBUL UNIVERSITY ALUMNI WEB PAGE</h1>
     
+    <p class="hero-subtitle">
+      1453'ten günümüze uzanan köklü üniversite mirasıyla; mezunlarımız, öğrencilerimiz ve akademisyenlerimiz arasındaki bağları güçlendiren yeni nesil etkileşim platformu.
+    </p>
+
     <div class="hero-btn-group">
-      <a href="/users" class="hero-pill-btn">Log In</a>
+      <a href="/users" class="hero-pill-btn primary">Log In</a>
       <a href="/users/new" class="hero-pill-btn">Sign In</a>
       <div class="hero-sublink">
         Forgot Password? <a href="/about">GET HELP</a>
@@ -521,10 +836,59 @@
       <strong>Alumni Tracking System</strong>
       <span>&bull;</span>
       <span>Lead Developer: <strong>Rumeysa Aydın</strong></span>
+      <span>&bull;</span>
+      <span>Branch: <code>temp-homepage-design</code></span>
     </div>
   </section>
 
-  <!-- Spotlight Profile Preview: Frosty Franklin & Rumeysa Aydın (Photo 1) -->
+  <!-- Live Stats Ribbon -->
+  <section class="live-stats-container">
+    <div class="stats-card-grid">
+      <div class="stat-box">
+        <div class="stat-icon">🎓</div>
+        <div>
+          <div class="stat-num">12,450+</div>
+          <div class="stat-label">Kayıtlı Mezun & Öğrenci</div>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon">💼</div>
+        <div>
+          <div class="stat-num">850+</div>
+          <div class="stat-label">Aktif İş & Staj İlanı</div>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon">🤝</div>
+        <div>
+          <div class="stat-num">1,280+</div>
+          <div class="stat-label">Mentörlük Eşleşmesi</div>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon">📅</div>
+        <div>
+          <div class="stat-num">95+</div>
+          <div class="stat-label">Yıllık Etkinlik & Buluşma</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Filter Action Chips -->
+  <div class="quick-actions-bar">
+    <a href="/users" class="action-chip active">👥 Mezun Rehberi</a>
+    <a href="/jobs" class="action-chip">💼 İş & Staj Fırsatları</a>
+    <a href="/applications" class="action-chip">📝 Başvuru Takibi</a>
+    <a href="/events" class="action-chip">🎉 Etkinlik Takvimi</a>
+    <a href="/announcements" class="action-chip">📢 Resmi Duyurular</a>
+    <a href="/api/swagger" class="action-chip" target="_blank">⚡ Swagger API</a>
+  </div>
+
+  <!-- Spotlight Profile Preview: Frosty Franklin & Rumeysa Aydın -->
   <section class="profile-feature-container">
     <div class="profile-feature-card">
       <div class="profile-header-row">
@@ -534,8 +898,8 @@
             <div class="profile-name-title">
               Frosty Franklin <span class="cn-badge">Cn</span>
             </div>
-            <div style="color: #64748b; font-size: 0.9rem;">
-              Mezun Portalı Temsilci Profili &bull; Mezun ID: #101
+            <div style="color: #64748b; font-size: 0.92rem; font-weight: 600;">
+              Mezun Portalı Temsilci Profili &bull; Mezun Kimlik ID: #101
             </div>
           </div>
         </div>
@@ -549,11 +913,11 @@
       </div>
 
       <div class="profile-subbar">
-        <div><strong>Information:</strong> İstanbul Üniversitesi Mezun ve Kariyer Ağı</div>
-        <div><strong>Contact Information:</strong> +90 512 345 6789 &bull; <a href="mailto:frosty.franklin@ogr.iu.edu.tr" style="color: inherit;">frosty.franklin@ogr.iu.edu.tr</a></div>
+        <div><strong>Bilgi:</strong> İstanbul Üniversitesi Mezun ve Kariyer Ağı &bull; YBS Bölümü</div>
+        <div><strong>İletişim:</strong> +90 512 345 6789 &bull; <a href="mailto:frosty.franklin@ogr.iu.edu.tr" style="color: inherit; font-weight: 700;">frosty.franklin@ogr.iu.edu.tr</a></div>
       </div>
 
-      <!-- 3x5 Interactive Pills Grid (Photo 1) -->
+      <!-- 3x5 Interactive Pills Grid -->
       <div class="pills-grid-container">
         <a href="/events" class="grid-pill pill-pink-active">events</a>
         <a href="/users" class="grid-pill">+ follow</a>
@@ -578,31 +942,115 @@
     </div>
   </section>
 
+  <!-- Showcase Dual Section: Hot Jobs & Upcoming Reunions -->
+  <section class="showcase-dual-section">
+    <!-- Featured Jobs -->
+    <div class="showcase-card">
+      <div>
+        <div class="showcase-header">
+          <h2 class="showcase-title">💼 Öne Çıkan İş & Staj Fırsatları</h2>
+          <a href="/jobs" style="font-size: 0.85rem; font-weight: 700; color: #2563eb; text-decoration: none;">Tümünü Gör &rarr;</a>
+        </div>
+        <ul class="showcase-list">
+          <li>
+            <a href="/jobs" class="showcase-item">
+              <div>
+                <div class="item-main">Full-Stack Node.js Developer</div>
+                <div class="item-sub">TechVentures &bull; İstanbul (Hibrit)</div>
+              </div>
+              <span class="item-tag green">FULL_TIME</span>
+            </a>
+          </li>
+          <li>
+            <a href="/jobs" class="showcase-item">
+              <div>
+                <div class="item-main">Veri Analitiği & BI Stajyeri</div>
+                <div class="item-sub">FinTech Global &bull; Uzaktan (Remote)</div>
+              </div>
+              <span class="item-tag purple">INTERNSHIP</span>
+            </a>
+          </li>
+          <li>
+            <a href="/jobs" class="showcase-item">
+              <div>
+                <div class="item-main">Yapay Zeka Araştırmacısı</div>
+                <div class="item-sub">Bilişim Vadisi &bull; Kocaeli / Gebze</div>
+              </div>
+              <span class="item-tag green">FULL_TIME</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <a href="/jobs/new" class="action-chip" style="justify-content: center; width: 100%;">+ Yeni İlan Yayınla</a>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="showcase-card">
+      <div>
+        <div class="showcase-header">
+          <h2 class="showcase-title">🎉 Yaklaşan Etkinlikler & Buluşmalar</h2>
+          <a href="/events" style="font-size: 0.85rem; font-weight: 700; color: #2563eb; text-decoration: none;">Takvimi Aç &rarr;</a>
+        </div>
+        <ul class="showcase-list">
+          <li>
+            <a href="/events" class="showcase-item">
+              <div>
+                <div class="item-main">Class of 2026 Mezunlar Balosu</div>
+                <div class="item-sub">Beyazıt Yerleşkesi &bull; 15 Haziran 2026</div>
+              </div>
+              <span class="item-tag">REUNION</span>
+            </a>
+          </li>
+          <li>
+            <a href="/events" class="showcase-item">
+              <div>
+                <div class="item-main">Yapay Zeka ve Kariyer Zirvesi</div>
+                <div class="item-sub">Kongre ve Kültür Merkezi &bull; 24 Nisan 2026</div>
+              </div>
+              <span class="item-tag purple">PANEL</span>
+            </a>
+          </li>
+          <li>
+            <a href="/events" class="showcase-item">
+              <div>
+                <div class="item-main">1:1 Mentörlük Kahve Sohbetleri</div>
+                <div class="item-sub">Süleymaniye Bahçe &bull; Her Cumartesi</div>
+              </div>
+              <span class="item-tag green">MENTORSHIP</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <a href="/events/new" class="action-chip" style="justify-content: center; width: 100%;">+ Yeni Etkinlik Oluştur</a>
+    </div>
+  </section>
+
   <!-- Portal Directory: MVC Modules & APIs -->
   <section class="portal-directory-section">
-    <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.8rem; margin-bottom: 1.25rem; text-align: center;">
-      Alumni Portalı Modülleri & Hizmetler
-    </h2>
+    <h2 class="section-title-center">Alumni Portalı Modülleri & Hizmetler</h2>
     <div class="directory-grid">
       <a href="/users" class="dir-card">
         <div>
-          <h3>🎓 Mezun & Öğrenci Yönetimi</h3>
-          <p>Kullanıcı profilleri, bölüm ve mezuniyet yılı bazlı filtreleme, CRUD işlemleri.</p>
+          <div class="dir-card-icon">🎓</div>
+          <h3>Mezun & Öğrenci Yönetimi</h3>
+          <p>Kullanıcı profilleri, bölüm ve mezuniyet yılı bazlı filtreleme, tam CRUD işlemleri.</p>
         </div>
         <div class="dir-card-action">Kullanıcıları Keşfet &rarr;</div>
       </a>
 
       <a href="/jobs" class="dir-card">
         <div>
-          <h3>💼 İş ve Staj İlanları</h3>
-          <p>Kariyer fırsatları, hibrit/remote çalışma modelleri ve maaş aralıkları.</p>
+          <div class="dir-card-icon">💼</div>
+          <h3>İş ve Staj İlanları</h3>
+          <p>Kariyer fırsatları, hibrit/remote çalışma modelleri ve 120 karakter başlık standartları.</p>
         </div>
         <div class="dir-card-action">İlanları İncele &rarr;</div>
       </a>
 
       <a href="/applications" class="dir-card">
         <div>
-          <h3>📝 Başvurular & Değerlendirme</h3>
+          <div class="dir-card-icon">📝</div>
+          <h3>Başvurular & Değerlendirme</h3>
           <p>N:M aksiyon tablosu, başvuru durumları (Mülakat, Teklif, Kabul) ve aday takibi.</p>
         </div>
         <div class="dir-card-action">Başvuruları Yönet &rarr;</div>
@@ -610,15 +1058,17 @@
 
       <a href="/events" class="dir-card">
         <div>
-          <h3>📅 Buluşmalar & Reunion</h3>
-          <p>Class of 2000 Reunion, networking etkinlikleri ve katılım yönetimi.</p>
+          <div class="dir-card-icon">📅</div>
+          <h3>Buluşmalar & Reunion</h3>
+          <p>Class of 2000 Reunion, networking etkinlikleri ve N:M katılımcı yönetimi.</p>
         </div>
         <div class="dir-card-action">Etkinliklere Katıl &rarr;</div>
       </a>
 
       <a href="/announcements" class="dir-card">
         <div>
-          <h3>📢 Duyurular & Haberler</h3>
+          <div class="dir-card-icon">📢</div>
+          <h3>Duyurular & Haberler</h3>
           <p>Rektörlük, mezunlar derneği ve kariyer kulübü resmi bilgilendirmeleri.</p>
         </div>
         <div class="dir-card-action">Duyuruları Oku &rarr;</div>
@@ -626,17 +1076,36 @@
 
       <a href="/api/swagger" target="_blank" class="dir-card">
         <div>
-          <h3>📚 Swagger API & Dokümantasyon</h3>
-          <p>OpenAPI standartlarında RESTful uç noktalar ve interaktif API testleri.</p>
+          <div class="dir-card-icon">📚</div>
+          <h3>Swagger API & Dokümantasyon</h3>
+          <p>OpenAPI 3.0 standardında RESTful uç noktalar, şemalar ve interaktif API testleri.</p>
         </div>
         <div class="dir-card-action">API Dokümanını Aç ↗</div>
       </a>
     </div>
   </section>
 
+  <!-- System Health & API Quick Dock -->
+  <section style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+    <div class="system-dock">
+      <div class="dock-left">
+        <span class="dock-indicator" title="Sistem Aktif"></span>
+        <span style="font-size: 0.9rem; font-weight: 700; color: #1e293b;">
+          Sistem Durumu: <strong>Çalışıyor (UP)</strong> &bull; Node.js Express &bull; ES Modules
+        </span>
+      </div>
+      <div class="dock-links">
+        <a href="/api/health" class="dock-link-btn" target="_blank">Health Check</a>
+        <a href="/api/swagger" class="dock-link-btn" target="_blank">Swagger UI</a>
+        <a href="/api/swagger.json" class="dock-link-btn" target="_blank">OpenAPI JSON</a>
+        <a href="/404" class="dock-link-btn">Generic 404</a>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-      <p>&copy; 2026 <strong>CONNEXT</strong> &bull; İstanbul Üniversitesi Mezun Takip Sistemi</p>
+      <p>&copy; 2026 <strong>CONNEXT</strong> &bull; İstanbul Üniversitesi Mezun Takip Sistemi &bull; Geliştirici: <strong>Rumeysa Aydın</strong></p>
       <div>
         <a href="/about" style="color: #1e293b; text-decoration: none; margin-right: 1.5rem; font-weight: 600;">Hakkında</a>
         <a href="/api/health" target="_blank" style="color: #1e293b; text-decoration: none; margin-right: 1.5rem; font-weight: 600;">Sistem Sağlığı</a>
